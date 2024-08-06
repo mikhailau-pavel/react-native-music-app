@@ -12,9 +12,9 @@ const LoginScreen = () => {
     // return codeChallenge;
   }; */
   const handleLogin = () => {};
-  const codeVerifier = generateRandomString(43)
+  const codeVerifier = generateRandomString(43);
   storeData('code_verifier', codeVerifier);
-  const authUrl = new URL("https://accounts.spotify.com/authorize")
+  const authUrl = new URL('https://accounts.spotify.com/authorize');
 
   const params = {
     response_type: 'code',
@@ -25,12 +25,13 @@ const LoginScreen = () => {
     code_challenge_method: 'S256',
     //process.env.CHALLENGE_METHOD,
     code_challenge: codeChallenge(),
-    redirect_uri: 'http://localhost:8081'
+    redirect_uri: 'http://localhost:8081',
     //process.env.REDIRECT_URI,
-  }
-  
+  };
+  authUrl.search = new URLSearchParams(params).toString();
+  //const test2 = window.location.href = authUrl.toString();
 
-  console.log('params', params)
+  console.log('params', params);
   return (
     <View>
       <Text>This is login page text placeholder. Test PKCE steps</Text>
