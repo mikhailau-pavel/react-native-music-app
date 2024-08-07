@@ -1,5 +1,11 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+enum PropsRoutes {
+  HOME = 'Home',
+  LOGIN = 'Login',
+  PROFILE = 'Profile',
+}
+
 type AuthParams = {
   response_type: 'code';
   client_id: string;
@@ -13,11 +19,13 @@ type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   Profile: undefined;
+  NotFound: undefined;
 };
 
-type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
-type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
-type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, 'Profile'>;
+type HomeScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.HOME>;
+type LoginScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.LOGIN>;
+type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PROFILE>;
+type NotFoundScreenProps = NativeStackScreenProps<RootStackParamList>;
 
 export type {
   AuthParams,
@@ -25,4 +33,7 @@ export type {
   HomeScreenProps,
   LoginScreenProps,
   ProfileScreenProps,
+  NotFoundScreenProps,
 };
+
+export { PropsRoutes };

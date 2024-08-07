@@ -3,6 +3,7 @@ import { codeChallenge, generateRandomString } from '@/scripts/authentication';
 import { LoginScreenProps } from '@/types/types';
 import { useState } from 'react';
 import { Button, Text, View } from 'react-native';
+import * as Linking from 'expo-linking';
 
 const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
   const [hashed, setHashed] = useState<string>('');
@@ -10,7 +11,7 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
   const handleLogin = async () => {
     const hash = await codeChallenge();
     setHashed(hash);
-    window.location.href = authUrl.toString();
+    Linking.openURL(authUrl.toString());
   };
   //const handleLogin = () => {};
   const codeVerifier = generateRandomString(43);
