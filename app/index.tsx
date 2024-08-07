@@ -1,7 +1,13 @@
-import { Text, View } from 'react-native';
-import LoginScreen from './screens/login/login';
+import { View } from 'react-native';
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
+import App from './app';
 
 export default function Index() {
+  const queryClient = new QueryClient();
+
   return (
     <View
       style={{
@@ -10,8 +16,9 @@ export default function Index() {
         alignItems: 'center',
       }}
     >
-      <LoginScreen />
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </View>
   );
 }
