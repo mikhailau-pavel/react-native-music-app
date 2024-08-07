@@ -1,9 +1,10 @@
 import { storeData } from '@/scripts/asyncStorage';
 import { codeChallenge, generateRandomString } from '@/scripts/authentication';
+import { LoginScreenProps } from '@/types/types';
 import { useState } from 'react';
 import { Button, Text, View } from 'react-native';
 
-const LoginScreen = () => {
+const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
   const [hashed, setHashed] = useState<string>('');
   //setParams?
   const handleLogin = async () => {
@@ -37,6 +38,7 @@ const LoginScreen = () => {
       <Text>This is login page text placeholder. Test PKCE steps</Text>
       <Text>{authUrl.toString()}</Text>
       <Button title="login" onPress={handleLogin}></Button>
+      <Button title="test profile" onPress={() => navigation.navigate('Profile')}></Button>
     </View>
   );
 };
