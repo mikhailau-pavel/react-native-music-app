@@ -1,7 +1,6 @@
-import { storeData } from '@/scripts/asyncStorage';
-import { codeChallenge, generateRandomString } from '@/scripts/authentication';
+import { codeChallenge } from '@/scripts/authentication';
 import { LoginScreenProps } from '@/types/types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button, Platform, Text, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useQuery } from '@tanstack/react-query';
@@ -26,13 +25,10 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
     };
 
     authUrl.search = new URLSearchParams(params).toString();
-    console.log('url', authUrl.toString());
     return authUrl.toString();
   };
 
   const { data } = useQuery({ queryKey: [loginUrl], queryFn: createLoginUrl });
-
-  console.log('data', data);
 
   const handleLogin = async () => {
     if (data && (Platform.OS === 'ios' || Platform.OS === 'android')) {
@@ -45,24 +41,24 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
 
   const parseResponseCode = (string: string) => {
     //make it calc origin url + fixed part of response
-    return string.substring(34)
-  }
+    return string.substring(34);
+  };
 
   if (Platform.OS === 'ios' || Platform.OS === 'android') {
-    console.log('webview url', loginUrl);
-
     return (
       <View style={{ flex: 1, backgroundColor: 'tomato' }}>
-        {loginUrl ? <WebView
-          style={{ flex: 1, backgroundColor: 'tomato' }}
-          source={{ uri: loginUrl }}
-          onNavigationStateChange={({ url }) => {
-            console.log('webview version of url', parseResponseCode(url));
-          }}
-          javaScriptEnabled
-          domStorageEnabled
-          originWhitelist={['*']}
-        /> : null}
+        {loginUrl ? (
+          <WebView
+            style={{ flex: 1, backgroundColor: 'tomato' }}
+            source={{ uri: loginUrl }}
+            onNavigationStateChange={({ url }) => {
+              console.log('webview version of url', parseResponseCode(url));
+            }}
+            javaScriptEnabled
+            domStorageEnabled
+            originWhitelist={['*']}
+          />
+        ) : null}
         <Button title="login" onPress={handleLogin}></Button>
       </View>
     );

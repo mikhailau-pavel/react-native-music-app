@@ -1,8 +1,6 @@
-import { AuthParams } from '@/types/types';
 import 'core-js/actual/url';
 import 'core-js/actual/url-search-params';
 import * as Crypto from 'expo-crypto';
-import { Linking } from 'react-native';
 
 const generateRandomString = (length: number) => {
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -28,13 +26,8 @@ const hashed = async () => {
 };
 
 const codeChallenge = async () => {
-  const hash = await hashed()
+  const hash = await hashed();
   return base64encode(hash);
 };
-
-//app key for test purposes only
-const clientId = process.env.CLIENT_ID ? process.env.CLIENT_ID : 'e6d38f8e338847f0a2909ea813ec79e4';
-const redirectUri = 'http://localhost:8081';
-const scope = 'user-read-private user-read-email';
 
 export { generateRandomString, codeChallenge };

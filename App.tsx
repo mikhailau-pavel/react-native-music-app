@@ -22,7 +22,7 @@ export default function App() {
       NotFound: '*',
     },
   };
-  
+
   const linking = {
     prefixes: [prefix],
     config,
