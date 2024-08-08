@@ -26,7 +26,7 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
     code_challenge_method: 'S256',
     //process.env.CHALLENGE_METHOD,
     code_challenge: hashed,
-    redirect_uri: 'http://localhost:8081',
+    redirect_uri: 'http://localhost:8081/profile/',
     //process.env.REDIRECT_URI,
   };
 
