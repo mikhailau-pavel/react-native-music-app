@@ -1,6 +1,7 @@
 import 'core-js/actual/url';
 import 'core-js/actual/url-search-params';
 import * as Crypto from 'expo-crypto';
+import { Platform } from 'react-native';
 
 const generateRandomString = (length: number) => {
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -30,4 +31,12 @@ const codeChallenge = async () => {
   return base64encode(hash);
 };
 
-export { generateRandomString, codeChallenge };
+const parseResponseCode = (string: string) => {
+  //acc origin url + fixed part of response?
+  if (Platform.OS === 'ios' || Platform.OS === 'android') {
+    return string.substring(35);
+  }
+  return string.substring(14);
+};
+
+export { generateRandomString, codeChallenge, parseResponseCode };

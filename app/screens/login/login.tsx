@@ -1,10 +1,11 @@
-import { codeChallenge } from '@/scripts/authentication';
+import { codeChallenge, parseResponseCode } from '@/scripts/authentication';
 import { LoginScreenProps } from '@/types/types';
 import { useState } from 'react';
 import { Button, Platform, Text, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useQuery } from '@tanstack/react-query';
 import { WebView } from 'react-native-webview';
+import { storeData } from '@/scripts/asyncStorage';
 
 const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
   const [loginUrl, setLoginUrl] = useState<string>('');
@@ -39,11 +40,6 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
     }
   };
 
-  const parseResponseCode = (string: string) => {
-    //make it calc origin url + fixed part of response
-    return string.substring(34);
-  };
-
   if (Platform.OS === 'ios' || Platform.OS === 'android') {
     return (
       <View style={{ flex: 1, backgroundColor: 'tomato' }}>
@@ -52,7 +48,8 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
             style={{ flex: 1, backgroundColor: 'tomato' }}
             source={{ uri: loginUrl }}
             onNavigationStateChange={({ url }) => {
-              console.log('webview version of url', parseResponseCode(url));
+              console.log('native code', parseResponseCode(url))
+              storeData('responseCode', parseResponseCode(url));
             }}
             javaScriptEnabled
             domStorageEnabled
@@ -68,7 +65,6 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
     <View>
       <Text>This is login page text placeholder. Test PKCE steps</Text>
       <Button title="login" onPress={handleLogin}></Button>
-      <Text>{Platform.Version}</Text>
       <Button title="test profile" onPress={() => navigation.navigate('Profile')}></Button>
     </View>
   );
