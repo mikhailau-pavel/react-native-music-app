@@ -1,4 +1,11 @@
-import { codeChallenge, parseResponseCode } from '@/scripts/authentication';
+import {
+  base64encode,
+  codeChallenge,
+  generateRandomString,
+  hashed,
+  parseResponseCode,
+  sha256,
+} from '@/scripts/authentication';
 import { LoginScreenProps } from '@/types/types';
 import { useState } from 'react';
 import { Button, Platform, Text, View } from 'react-native';
@@ -10,8 +17,13 @@ import { storeData } from '@/scripts/asyncStorage';
 const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
   const [loginUrl, setLoginUrl] = useState<string>('');
   const createLoginUrl = async () => {
-    const hash = await codeChallenge();
-    const authUrl = new URL('https://accounts.spotify.com/authorize');
+    const codeVerifier = generateRandomString(44);
+    storeData('code_verifier', codeVerifier);
+    console.error('code_verifier', codeVerifier);
+    const sha = await sha256(codeVerifier);
+    const base64String = base64encode(sha);
+
+    const authUrl = new URL('http://accounts.spotify.com/authorize');
     const params = {
       response_type: 'code',
       client_id: 'e6d38f8e338847f0a2909ea813ec79e4',
@@ -20,7 +32,7 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
       //process.env.SCOPE_LOGIN,
       code_challenge_method: 'S256',
       //process.env.CHALLENGE_METHOD,
-      code_challenge: hash,
+      code_challenge: base64String,
       redirect_uri: 'http://localhost:8081/profile',
       //process.env.REDIRECT_URI,
     };
@@ -29,7 +41,7 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
     return authUrl.toString();
   };
 
-  const { data } = useQuery({ queryKey: [loginUrl], queryFn: createLoginUrl });
+  const { data,  } = useQuery({ queryFn: createLoginUrl, queryKey: ['get_login_url'] });
 
   const handleLogin = async () => {
     if (data && (Platform.OS === 'ios' || Platform.OS === 'android')) {
@@ -48,7 +60,7 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
             style={{ flex: 1, backgroundColor: 'tomato' }}
             source={{ uri: loginUrl }}
             onNavigationStateChange={({ url }) => {
-              console.log('native code', parseResponseCode(url))
+              console.log('native code', parseResponseCode(url));
               storeData('responseCode', parseResponseCode(url));
             }}
             javaScriptEnabled

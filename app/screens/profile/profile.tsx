@@ -1,15 +1,19 @@
-import { storeData } from '@/scripts/asyncStorage';
+import { fetchCurrentUserPlaylists, requestAccessToken } from '@/api/api';
+import { getData, storeData } from '@/scripts/asyncStorage';
 import { parseResponseCode } from '@/scripts/authentication';
 import { ProfileScreenProps } from '@/types/types';
 import { useEffect } from 'react';
 import { Text, View } from 'react-native';
 
 const ProfileScreen = ({ route, navigation }: ProfileScreenProps) => {
-  console.log('route-path', route)
   useEffect(() => {
   if (route.path) {
     const responseCode = parseResponseCode(route.path);
     storeData('responseCode', responseCode);
+    requestAccessToken(responseCode)
+    const token = getData('access_token')
+    // if (token)
+    // fetchCurrentUserPlaylists(token)
   }}
   , [])
   

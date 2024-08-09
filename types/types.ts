@@ -27,6 +27,18 @@ type LoginScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.L
 type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PROFILE>;
 type NotFoundScreenProps = NativeStackScreenProps<RootStackParamList>;
 
+
+type PlaylistItemData = {
+  title: string,
+  id: string
+}
+type PlaylistItemProps = {
+  item: PlaylistItemData;
+  onPress: ()=> void;
+  backgroundColor: string;
+  textColor: string;
+}
+
 export type {
   AuthParams,
   RootStackParamList,
@@ -34,6 +46,8 @@ export type {
   LoginScreenProps,
   ProfileScreenProps,
   NotFoundScreenProps,
+  PlaylistItemData,
+  PlaylistItemProps
 };
 
 export { PropsRoutes };
