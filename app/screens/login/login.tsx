@@ -19,7 +19,6 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
   const createLoginUrl = async () => {
     const codeVerifier = generateRandomString(44);
     storeData('code_verifier', codeVerifier);
-    console.error('code_verifier', codeVerifier);
     const sha = await sha256(codeVerifier);
     const base64String = base64encode(sha);
 
@@ -60,7 +59,6 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
             style={{ flex: 1, backgroundColor: 'tomato' }}
             source={{ uri: loginUrl }}
             onNavigationStateChange={({ url }) => {
-              console.log('native code', parseResponseCode(url));
               storeData('responseCode', parseResponseCode(url));
             }}
             javaScriptEnabled

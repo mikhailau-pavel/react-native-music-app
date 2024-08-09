@@ -7,16 +7,13 @@ import { Text, View } from 'react-native';
 
 const ProfileScreen = ({ route, navigation }: ProfileScreenProps) => {
   useEffect(() => {
-  if (route.path) {
-    const responseCode = parseResponseCode(route.path);
-    storeData('responseCode', responseCode);
-    requestAccessToken(responseCode)
-    const token = getData('access_token')
-    // if (token)
-    // fetchCurrentUserPlaylists(token)
-  }}
-  , [])
-  
+    if (route.path) {
+      const responseCode = parseResponseCode(route.path);
+      storeData('responseCode', responseCode);
+      requestAccessToken(responseCode);
+      fetchCurrentUserPlaylists();
+    }
+  }, []);
 
   return (
     <View>

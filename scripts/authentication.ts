@@ -25,7 +25,6 @@ export const base64encode = (input: ArrayBuffer) => {
 
 export const hashed = async () => {
   const codeVerifier = generateRandomString(44);
-  console.warn('CODE_VERIFIER', codeVerifier);
   storeData('code_verifier', codeVerifier);
   return await sha256(codeVerifier);
 };
