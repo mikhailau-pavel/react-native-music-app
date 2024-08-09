@@ -8,6 +8,10 @@ const storeData = async (key: string, value: string) => {
   }
 };
 
+const storeDataObject = async (key: string, value) {
+//digest playlist response only for valuable properties
+}
+
 const getData = async (key: string) => {
   try {
     const value = await AsyncStorage.getItem(key);

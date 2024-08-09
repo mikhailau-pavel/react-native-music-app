@@ -27,21 +27,19 @@ const requestAccessToken = async (code: string) => {
   };
   const body = await fetch(RequestUrls.TOKEN, payload);
   const response = await body.json();
-  console.error('response from token fetch', response);
   storeData('access_token', response.access_token);
 };
 //accessToken: string
 const fetchCurrentUserPlaylists = async () => {
   const token = await getData('access_token');
-  console.warn('token in playlists fetch', token);
   const response = await fetch(RequestUrls.CURRENT_USER_PLAYlISTS, {
     headers: {
       Authorization: 'Bearer ' + token,
     },
   });
-  const data = await response.json;
-  console.log('playlists', response);
-  return data;
+  const data = await response.json();
+  console.log('playlists', data.items);
+  return data.items;
 };
 
 export { fetchCurrentUserPlaylists, requestAccessToken };
