@@ -8,6 +8,9 @@ import { PropsRoutes, RootStackParamList } from './types/types';
 import HomeScreen from './app/screens/home/home';
 import * as Linking from 'expo-linking';
 import NotFoundScreen from './app/screens/notFound/notFound';
+// if (__DEV__) {
+//   require('./ReactotronConfig');
+// }
 
 const prefix = Linking.createURL('/');
 

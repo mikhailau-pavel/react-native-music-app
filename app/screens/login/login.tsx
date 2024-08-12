@@ -1,8 +1,6 @@
 import {
   base64encode,
-  codeChallenge,
   generateRandomString,
-  hashed,
   parseResponseCode,
   sha256,
 } from '@/scripts/authentication';
@@ -40,7 +38,7 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
     return authUrl.toString();
   };
 
-  const { data,  } = useQuery({ queryFn: createLoginUrl, queryKey: ['get_login_url'] });
+  const { data } = useQuery({ queryFn: createLoginUrl, queryKey: ['get_login_url'] });
 
   const handleLogin = async () => {
     if (data && (Platform.OS === 'ios' || Platform.OS === 'android')) {
@@ -59,7 +57,11 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
             style={{ flex: 1, backgroundColor: 'tomato' }}
             source={{ uri: loginUrl }}
             onNavigationStateChange={({ url }) => {
-              storeData('responseCode', parseResponseCode(url));
+              if (url.includes('localhost:8081/profile?code=')) {
+                storeData('responseCode', parseResponseCode(url));
+                navigation.navigate('Profile');
+              }
+              //web ignores
             }}
             javaScriptEnabled
             domStorageEnabled

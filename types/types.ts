@@ -55,9 +55,8 @@ type CurrentUserPlaylist = {
   playlistName: string;
   playlistOwnerName: string;
   playlistOwnerLink: string;
-  playlistOwnerId: 
-  //utility type for response result or returntype for extraction function?
-
+  playlistOwnerId: string;
+  name: string;
 };
 
 export type {
@@ -69,6 +68,7 @@ export type {
   NotFoundScreenProps,
   PlaylistItemData,
   PlaylistItemProps,
+  CurrentUserPlaylist,
 };
 
 export { PropsRoutes };
