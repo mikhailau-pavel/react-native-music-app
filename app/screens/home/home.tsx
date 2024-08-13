@@ -60,7 +60,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
     const playlists = await readPlaylistsFromStorage();
     if (playlists) {
       const currentPlaylistsList = playlists.map((elem: CurrentUserPlaylist, index: number) => {
-        console.log('playlists objects one by one', elem);
+        //console.log('playlists objects one by one', elem);
         return new Object({
           title: elem.name,
           id: `${elem.name}-${index}`,

@@ -78,14 +78,26 @@ const fetchCurrentUserPlaylists = async () => {
 
 const fetchTracksFromPlaylist = async (playlistId: string) => {
   const token = await getData('access_token');
-  const response = await fetch(`${RequestUrls.CURRENT_USER_PLAYlISTS}/${playlistId}/tracks`, {
-    headers: {
-      Authorization: 'Bearer ' + token,
-    },
-  });
-  const data = await response.json();
-  console.log('tracks', await data);
-  return data;
+  const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks/`
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    });
+    const data = await response.json();
+    if (data.error && data.error.message === 'The access token expired') {
+      requestRefreshToken()
+      console.error('error', data.error);
+    } else {
+    // console.log('token tracks', token )
+    // console.log('url tracks', url )
+    // console.log('response tracks', response )
+    console.log('tracks', await data);
+    return data;}
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 export {
