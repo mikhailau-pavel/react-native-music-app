@@ -38,7 +38,7 @@ const requestAccessToken = async () => {
 
 const requestRefreshToken = async () => {
   const refreshToken = (await getData('refresh_token')) || '';
-
+  console.log('refresh token on refresh', await refreshToken);
   const params: Record<string, string> = {
     grant_type: 'refresh_token',
     refresh_token: refreshToken,
@@ -78,7 +78,7 @@ const fetchCurrentUserPlaylists = async () => {
 
 const fetchTracksFromPlaylist = async (playlistId: string) => {
   const token = await getData('access_token');
-  const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks/`
+  const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks/`;
   try {
     const response = await fetch(url, {
       headers: {
@@ -87,14 +87,15 @@ const fetchTracksFromPlaylist = async (playlistId: string) => {
     });
     const data = await response.json();
     if (data.error && data.error.message === 'The access token expired') {
-      requestRefreshToken()
+      requestRefreshToken();
       console.error('error', data.error);
     } else {
-    // console.log('token tracks', token )
-    // console.log('url tracks', url )
-    // console.log('response tracks', response )
-    console.log('tracks', await data);
-    return data;}
+      // console.log('token tracks', token )
+      // console.log('url tracks', url )
+      // console.log('response tracks', response )
+      console.log('tracks', await data.items);
+      return data.items;
+    }
   } catch (err) {
     console.error(err);
   }

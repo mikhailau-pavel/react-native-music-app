@@ -8,6 +8,7 @@ import { PropsRoutes, RootStackParamList } from './types/types';
 import HomeScreen from './app/screens/home/home';
 import * as Linking from 'expo-linking';
 import NotFoundScreen from './app/screens/notFound/notFound';
+import PlaylistScreen from './app/screens/playlist/playlist';
 // if (__DEV__) {
 //   require('./ReactotronConfig');
 // }
@@ -22,6 +23,7 @@ export default function App() {
       Home: 'home',
       Login: 'login',
       Profile: 'profile',
+      Playlist: 'playlist',
       NotFound: '*',
     },
   };
@@ -49,6 +51,11 @@ export default function App() {
             name={PropsRoutes.PROFILE}
             component={ProfileScreen}
             options={{ title: 'Profile' }}
+          />
+          <Stack.Screen
+            name={PropsRoutes.PLAYLIST}
+            component={PlaylistScreen}
+            options={{ title: 'Playlist' }}
           />
           <Stack.Screen
             name={'NotFound'}
