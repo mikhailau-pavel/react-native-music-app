@@ -88,7 +88,7 @@ const fetchTracksFromPlaylist = async (playlistId: string) => {
     const data = await response.json();
     if (data.error && data.error.message === 'The access token expired') {
       requestRefreshToken();
-      console.error('error', data.error);
+      console.error('error2', data.error);
     } else {
       // console.log('token tracks', token )
       // console.log('url tracks', url )
