@@ -31,6 +31,7 @@ type PlaylistItemData = {
   title: string;
   id: string;
   imageURL: string;
+  playlistId: string;
 };
 type PlaylistItemProps = {
   item: PlaylistItemData;

@@ -1,5 +1,4 @@
 import { getData, storeData } from '@/scripts/asyncStorage';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 enum RequestUrls {
   TOKEN = 'https://accounts.spotify.com/api/token',
@@ -35,9 +34,33 @@ const requestAccessToken = async () => {
   const response = await body.json();
   await storeData('access_token', response.access_token);
   await storeData('refresh_token', response.refresh_token);
-  console.warn('acc2code', payload.body);
-  console.warn('acc2response', response);
-  console.log('test', await getData('refresh_token'));
+};
+
+const requestRefreshToken = async () => {
+  const refreshToken = (await getData('refresh_token')) || '';
+
+  const params: Record<string, string> = {
+    grant_type: 'refresh_token',
+    refresh_token: refreshToken,
+    client_id: 'e6d38f8e338847f0a2909ea813ec79e4',
+    //process.env.CLIENT_ID,
+  };
+  const payloadBody = Object.keys(params)
+    .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
+    .join('&');
+
+  const payload = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: payloadBody,
+  };
+  const body = await fetch(RequestUrls.TOKEN, payload);
+  const response = await body.json();
+  console.log('refresh token response', response);
+  await storeData('access_token', response.access_token);
+  await storeData('refresh_token', response.refresh_token);
 };
 
 const fetchCurrentUserPlaylists = async () => {
@@ -53,4 +76,21 @@ const fetchCurrentUserPlaylists = async () => {
   return data.items;
 };
 
-export { fetchCurrentUserPlaylists, requestAccessToken };
+const fetchTracksFromPlaylist = async (playlistId: string) => {
+  const token = await getData('access_token');
+  const response = await fetch(`${RequestUrls.CURRENT_USER_PLAYlISTS}/${playlistId}/tracks`, {
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  const data = await response.json();
+  console.log('tracks', await data);
+  return data;
+};
+
+export {
+  fetchCurrentUserPlaylists,
+  requestAccessToken,
+  fetchTracksFromPlaylist,
+  requestRefreshToken,
+};

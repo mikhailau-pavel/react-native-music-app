@@ -1,4 +1,4 @@
-import { fetchCurrentUserPlaylists, requestAccessToken } from '@/api/api';
+import { fetchCurrentUserPlaylists, fetchTracksFromPlaylist, requestAccessToken } from '@/api/api';
 import { getData } from '@/scripts/asyncStorage';
 import {
   CurrentUserPlaylist,
@@ -9,25 +9,26 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { Text, Button, Image, FlatList, StyleSheet, View, TouchableOpacity } from 'react-native';
 
-const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228'
+const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
+const mockPlaylistId = '3cEYpjA9oz9GiPac4AsH4n'
 
 const playlistsMockList: PlaylistItemData[] = [
-  { title: 'Playlist_item_1', id: 'playlist-1', imageURL: mockImage },
-  { title: 'Playlist_item_2', id: 'playlist-2', imageURL: mockImage },
-  { title: 'Playlist_item_3', id: 'playlist-3', imageURL: mockImage },
-  { title: 'Playlist_item_4', id: 'playlist-4', imageURL: mockImage },
+  { title: 'Playlist_item_1', id: 'playlist-1', imageURL: mockImage, playlistId: '3cEYpjA9oz9GiPac4AsH4n' },
+  { title: 'Playlist_item_2', id: 'playlist-2', imageURL: mockImage, playlistId: '3cEYpjA9oz9GiPac4AsH4n' },
+  { title: 'Playlist_item_3', id: 'playlist-3', imageURL: mockImage, playlistId: '3cEYpjA9oz9GiPac4AsH4n' },
+  { title: 'Playlist_item_4', id: 'playlist-4', imageURL: mockImage, playlistId: '3cEYpjA9oz9GiPac4AsH4n' },
 ];
 const tracksMockList: PlaylistItemData[] = [
-  { title: 'Track_item_1', id: 'track-1', imageURL: mockImage },
-  { title: 'Track_item_2', id: 'track-2', imageURL: mockImage },
-  { title: 'Track_item_3', id: 'track-3', imageURL: mockImage },
-  { title: 'Track_item_4', id: 'track-4', imageURL: mockImage },
+  { title: 'Track_item_1', id: 'track-1', imageURL: mockImage, playlistId: '3cEYpjA9oz9GiPac4AsH4n' },
+  { title: 'Track_item_2', id: 'track-2', imageURL: mockImage, playlistId: '3cEYpjA9oz9GiPac4AsH4n' },
+  { title: 'Track_item_3', id: 'track-3', imageURL: mockImage, playlistId: '3cEYpjA9oz9GiPac4AsH4n' },
+  { title: 'Track_item_4', id: 'track-4', imageURL: mockImage, playlistId: '3cEYpjA9oz9GiPac4AsH4n' },
 ];
 
 const PlaylistItem = ({ item, onPress, backgroundColor, textColor }: PlaylistItemProps) => (
   <TouchableOpacity onPress={onPress} style={[styles.item, { backgroundColor }]}>
     <View style={styles.item}>
-      <Image source={{ height: 100, width: 100, uri: item.imageURL}} />
+      <Image source={{ height: 100, width: 100, uri: item.imageURL }} />
       <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
     </View>
   </TouchableOpacity>
@@ -58,16 +59,16 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const createPlaylistsList = useCallback(async () => {
     const playlists = await readPlaylistsFromStorage();
     if (playlists) {
-      console.log('playlists together', playlists);
-      const testPlaylistsList = playlists.map((elem: CurrentUserPlaylist, index: number) => {
-        console.log('images one by one', elem.images[0].url);
+      const currentPlaylistsList = playlists.map((elem: CurrentUserPlaylist, index: number) => {
+        console.log('playlists objects one by one', elem);
         return new Object({
           title: elem.name,
           id: `${elem.name}-${index}`,
           imageURL: `${elem.images[0].url}`,
+          playlistId: `${elem.id}`,
         });
       });
-      setCurrentPlaylistsList(testPlaylistsList);
+      setCurrentPlaylistsList(currentPlaylistsList);
     } else {
       setCurrentPlaylistsList(playlistsMockList);
     }
@@ -93,7 +94,10 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
     return (
       <PlaylistItem
         item={item}
-        onPress={() => setSelectedPlaylistId(item.id)}
+        onPress={() => {
+          fetchTracksFromPlaylist(item.playlistId)
+          setSelectedPlaylistId(item.id)
+        }}
         backgroundColor={backgroundColor}
         textColor={color}
       />
@@ -118,7 +122,6 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
       ></FlatList>
       <Text>This is Home Page text placeholder.</Text>
       <Button title="to login" onPress={() => navigation.navigate('Login')}></Button>
-      <Button title="to " onPress={() => navigation.navigate('Profile')}></Button>
     </View>
   );
 };
