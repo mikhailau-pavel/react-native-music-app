@@ -30,6 +30,7 @@ type NotFoundScreenProps = NativeStackScreenProps<RootStackParamList>;
 type PlaylistItemData = {
   title: string;
   id: string;
+  imageURL: string;
 };
 type PlaylistItemProps = {
   item: PlaylistItemData;
@@ -38,20 +39,17 @@ type PlaylistItemProps = {
   textColor: string;
 };
 
-type ObjectToStore = {
-  value: CurrentUserPlaylist;
-};
 type CurrentUserPlaylist = {
   index: number;
   description: string;
   external_url: string;
   href: string;
   id: string;
-  image: {
+  images: [{
     height: number | null;
     width: number | null;
     url: string;
-  };
+  }];
   playlistName: string;
   playlistOwnerName: string;
   playlistOwnerLink: string;

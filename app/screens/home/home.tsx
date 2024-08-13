@@ -9,23 +9,25 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { Text, Button, Image, FlatList, StyleSheet, View, TouchableOpacity } from 'react-native';
 
+const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228'
+
 const playlistsMockList: PlaylistItemData[] = [
-  { title: 'Playlist_item_1', id: 'playlist-1' },
-  { title: 'Playlist_item_2', id: 'playlist-2' },
-  { title: 'Playlist_item_3', id: 'playlist-3' },
-  { title: 'Playlist_item_4', id: 'playlist-4' },
+  { title: 'Playlist_item_1', id: 'playlist-1', imageURL: mockImage },
+  { title: 'Playlist_item_2', id: 'playlist-2', imageURL: mockImage },
+  { title: 'Playlist_item_3', id: 'playlist-3', imageURL: mockImage },
+  { title: 'Playlist_item_4', id: 'playlist-4', imageURL: mockImage },
 ];
 const tracksMockList: PlaylistItemData[] = [
-  { title: 'Track_item_1', id: 'track-1' },
-  { title: 'Track_item_2', id: 'track-2' },
-  { title: 'Track_item_3', id: 'track-3' },
-  { title: 'Track_item_4', id: 'track-4' },
+  { title: 'Track_item_1', id: 'track-1', imageURL: mockImage },
+  { title: 'Track_item_2', id: 'track-2', imageURL: mockImage },
+  { title: 'Track_item_3', id: 'track-3', imageURL: mockImage },
+  { title: 'Track_item_4', id: 'track-4', imageURL: mockImage },
 ];
 
 const PlaylistItem = ({ item, onPress, backgroundColor, textColor }: PlaylistItemProps) => (
   <TouchableOpacity onPress={onPress} style={[styles.item, { backgroundColor }]}>
     <View style={styles.item}>
-      <Image source={require('../../../assets/images/react-logo.png')} />
+      <Image source={{ height: 100, width: 100, uri: item.imageURL}} />
       <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
     </View>
   </TouchableOpacity>
@@ -56,8 +58,14 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const createPlaylistsList = useCallback(async () => {
     const playlists = await readPlaylistsFromStorage();
     if (playlists) {
+      console.log('playlists together', playlists);
       const testPlaylistsList = playlists.map((elem: CurrentUserPlaylist, index: number) => {
-        return new Object({ title: elem.name, id: `${elem.name}-${index}` });
+        console.log('images one by one', elem.images[0].url);
+        return new Object({
+          title: elem.name,
+          id: `${elem.name}-${index}`,
+          imageURL: `${elem.images[0].url}`,
+        });
       });
       setCurrentPlaylistsList(testPlaylistsList);
     } else {
