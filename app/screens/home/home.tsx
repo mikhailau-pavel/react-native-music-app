@@ -66,13 +66,16 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   }, []);
 
   useEffect(() => {
-    const getPlaylists = async ()=> {
-      requestAccessToken();
-      // await fetchCurrentUserPlaylists();
-      // await readPlaylistsFromStorage();
-      // await createPlaylistsList();
-    }
-    getPlaylists()
+    const getPlaylists = async () => {
+      //or access token expired? refresh not to keep session alive
+      if (typeof (await getData('access_token')) === 'undefined') {
+        requestAccessToken();
+      }
+      await fetchCurrentUserPlaylists();
+      await readPlaylistsFromStorage();
+      await createPlaylistsList();
+    };
+    getPlaylists();
   }, [createPlaylistsList]);
 
   const renderItem = ({ item }: { item: PlaylistItemData }) => {
