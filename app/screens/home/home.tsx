@@ -109,6 +109,8 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
           if (typeof item.playlistId !== 'undefined') {
             navigation.navigate('Playlist', {
               playlistId: item.playlistId,
+              playlistCover: item.imageURL,
+              playlistTitle: item.title
             });
           }
         }}
@@ -124,6 +126,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
       <ImageBackground
         source={require('../../../assets/images/main_background.png')}
         resizeMode="cover"
+        style={styles.background}
       >
         <FlatList
           data={currentPlaylistsList}
@@ -143,13 +146,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  background: {
+    padding: 5,
+  },
   item: {
     flex: 1,
     backgroundColor: '#7bfdc7',
-    elevation: 3
+    margin: 5
   },
   title: {
-    fontFamily: 'Hiykaya',
+    gap: 5,
+    fontFamily: 'AngemeBold',
     fontSize: 20,
   },
 });

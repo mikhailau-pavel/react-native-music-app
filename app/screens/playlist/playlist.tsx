@@ -5,17 +5,17 @@ import {
   TrackItemData,
   TrackItemProps,
 } from '@/types/types';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   FlatList,
   View,
   Text,
   Image,
-  Pressable,
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
   TextInput,
+  ScrollView,
 } from 'react-native';
 
 const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
@@ -104,13 +104,13 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   };
 
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require('../../../assets/images/main_background.png')}
-        resizeMode="cover"
-      >
-        <TextInput style={styles.searchbar}>Searchbar?</TextInput>
-        <Pressable>
+    <ImageBackground
+      source={require('../../../assets/images/main_background.png')}
+      resizeMode="cover"
+      style={styles.background}
+    >
+      <TextInput style={styles.searchbar}> Search</TextInput>
+      {/* <Pressable>
           <Text>Sort button</Text>
         </Pressable>
         <Text>Album cover</Text>
@@ -125,36 +125,71 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
         </Pressable>
         <Pressable>
           <Text>Option dots</Text>
-        </Pressable>
-        <Pressable>
-          <Text>Play button</Text>
-        </Pressable>
-        <FlatList
-          data={currentPlaylistsTracks}
-          renderItem={renderTrackItem}
-          keyExtractor={(item) => item.trackId}
-          extraData={selectedTrackId}
-        />
-        <Pressable>
-          <Text>Add songs</Text>
-        </Pressable>
-      </ImageBackground>
-    </View>
+        </Pressable>*/}
+      <FlatList
+        data={currentPlaylistsTracks}
+        renderItem={renderTrackItem}
+        keyExtractor={(item) => item.trackId}
+        extraData={selectedTrackId}
+        ListHeaderComponent={
+          <View style={styles.playlistCoverContainer}>
+            <Text style={styles.playlistTitle}>{route.params.playlistTitle}</Text>
+            <Image
+              style={styles.playlistCover}
+              source={{ height: 300, width: 300, uri: route.params.playlistCover }}
+            />
+            <TouchableOpacity>
+              <Image
+                style={styles.playButton}
+                source={require('../../../assets/images/elements/play-button-image-transparent.png')}
+              ></Image>
+            </TouchableOpacity>
+          </View>
+        }
+      />
+      {/* <TouchableOpacity>
+        <Text>Add songs</Text>
+      </TouchableOpacity> */}
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
+  },
+  playlistCoverContainer: {
+    backgroundColor: '#017371',
+    margin: 5,
+  },
+  playlistTitle: {
+    fontSize: 50,
+    alignSelf: 'center',
+    fontFamily: 'AngemeBold',
+    margin: 5,
+  },
+  playlistCover: {
+    alignSelf: 'center',
   },
   item: {
     backgroundColor: '#7bfdc7',
+    margin: 5,
   },
   searchbar: {
     borderWidth: 3,
+    backgroundColor: 'white',
+    fontFamily: 'AngemeBold',
   },
   title: {
+    fontFamily: 'AngemeBold',
     fontSize: 20,
+    alignSelf: 'flex-end',
+  },
+  playButton: {
+    width: 60,
+    height: 60,
+    alignSelf: 'flex-end',
+    margin: 15,
   },
 });
 

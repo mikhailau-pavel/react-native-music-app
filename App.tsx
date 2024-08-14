@@ -23,6 +23,8 @@ export default function App() {
     'Beograd': require('./assets/fonts/Beograd.ttf'),
     'Cartoon': require('./assets/fonts/Cartoon1471Extended-x3oyq.ttf'),
     'Hiykaya': require('./assets/fonts/HiykayaRegular.ttf'),
+    'AngemeBold': require('./assets/fonts/Angeme-Bold.ttf'),
+    'AngemeRegular': require('./assets/fonts/Angeme-Regular.ttf'),
   });
 
   useEffect(() => {

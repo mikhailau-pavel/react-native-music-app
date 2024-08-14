@@ -37,7 +37,7 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/Beograd.ttf", "./assets/fonts/Cartoon1471Extended-x3oyq.ttf", "./assets/fonts/HiykayaRegular.ttf"]
+          "fonts": ["./assets/fonts/Beograd.ttf", "./assets/fonts/Cartoon1471Extended-x3oyq.ttf", "./assets/fonts/HiykayaRegular.ttf", "./assets/fonts/Angeme-Bold.ttf", "./assets/fonts/Angeme-Regular.ttf"]
         }
       ]
     ]

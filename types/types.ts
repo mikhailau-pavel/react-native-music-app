@@ -20,7 +20,7 @@ type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   Profile: undefined;
-  Playlist: { playlistId: string };
+  Playlist: { playlistId: string, playlistCover: string, playlistTitle: string };
   NotFound: undefined;
 };
 
