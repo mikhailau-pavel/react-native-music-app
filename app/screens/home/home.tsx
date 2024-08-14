@@ -132,7 +132,8 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
           extraData={selectedPlaylistId}
           numColumns={2}
         />
-        <Button title="to login" onPress={() => navigation.navigate('Login')}></Button>
+        <Button title="to login" onPress={() => {
+          navigation.navigate('Login')}}></Button>
       </ImageBackground>
     </View>
   );

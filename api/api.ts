@@ -1,4 +1,5 @@
 import { getData, removeData, storeData } from '@/scripts/asyncStorage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 enum RequestUrls {
   TOKEN = 'https://accounts.spotify.com/api/token',
@@ -32,7 +33,6 @@ const requestAccessToken = async () => {
 
   const body = await fetch(RequestUrls.TOKEN, payload);
   const response = await body.json();
-  console.log('response access token', response);
   await storeData('access_token', response.access_token);
   await storeData('refresh_token', response.refresh_token);
 };
@@ -58,7 +58,6 @@ const requestRefreshToken = async () => {
   };
   const body = await fetch(RequestUrls.TOKEN, payload);
   const response = await body.json();
-
   if (response.error_description && response.error_description === 'Refresh token revoked') {
     await removeData('access_token');
     await removeData('refresh_token');
@@ -96,7 +95,8 @@ const fetchTracksFromPlaylist = async (playlistId: string) => {
     const data = await response.json();
     if (data.error && data.error.message === 'The access token expired') {
       requestRefreshToken();
-      console.error('error', data);
+    } else if (data.error && data.error.message === 'Invalid access token') {
+      await requestAccessToken();
     } else {
       return data.items;
     }
