@@ -1,4 +1,5 @@
 import { getData, removeData, storeData } from '@/scripts/asyncStorage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 enum RequestUrls {
   TOKEN = 'https://accounts.spotify.com/api/token',
@@ -104,9 +105,16 @@ const fetchTracksFromPlaylist = async (playlistId: string) => {
   }
 };
 
+const resetAccessToken = async () => {
+  console.log('reset happening');
+  await AsyncStorage.multiRemove(['access_token', 'refresh_token', 'code_verifier', 'responseCode', 'playlists'])
+  console.log('state', await AsyncStorage.multiGet(['access_token', 'refresh_token', 'code_verifier', 'responseCode', 'playlists']))
+};
+
 export {
   fetchCurrentUserPlaylists,
   requestAccessToken,
   fetchTracksFromPlaylist,
   requestRefreshToken,
+  resetAccessToken,
 };

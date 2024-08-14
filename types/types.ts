@@ -17,10 +17,10 @@ type AuthParams = {
 };
 
 type RootStackParamList = {
-  Home: undefined;
+  Home: { loginAttempt: boolean };
   Login: undefined;
   Profile: undefined;
-  Playlist: { playlistId: string, playlistCover: string, playlistTitle: string };
+  Playlist: { playlistId: string; playlistCover: string; playlistTitle: string };
   NotFound: undefined;
 };
 

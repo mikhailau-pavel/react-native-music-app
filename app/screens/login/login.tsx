@@ -6,11 +6,12 @@ import {
 } from '@/scripts/authentication';
 import { LoginScreenProps } from '@/types/types';
 import { useState } from 'react';
-import { Button, Platform, Text, View } from 'react-native';
+import { Button, Platform, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useQuery } from '@tanstack/react-query';
 import { WebView } from 'react-native-webview';
 import { storeData } from '@/scripts/asyncStorage';
+import { requestAccessToken } from '@/api/api';
 
 const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
   const [loginUrl, setLoginUrl] = useState<string>('');
@@ -51,17 +52,17 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
 
   if (Platform.OS === 'ios' || Platform.OS === 'android') {
     return (
-      <View style={{ flex: 1, backgroundColor: 'tomato' }}>
+      <View style={{ flex: 1 }}>
         {loginUrl ? (
           <WebView
-            style={{ flex: 1, backgroundColor: 'tomato' }}
+            style={{ flex: 1 }}
             source={{ uri: loginUrl }}
-            onNavigationStateChange={({ url }) => {
+            onNavigationStateChange={ async ({ url }) => {
               if (url.includes('localhost:8081/profile?code=')) {
                 storeData('responseCode', parseResponseCode(url));
-                navigation.navigate('Profile');
+                await requestAccessToken();
+                navigation.navigate('Home', { loginAttempt: true });
               }
-              //web ignores
             }}
             javaScriptEnabled
             domStorageEnabled
@@ -75,7 +76,6 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
 
   return (
     <View>
-      <Text>This is login page text placeholder. Test PKCE steps</Text>
       <Button title="login" onPress={handleLogin}></Button>
       <Button title="test profile" onPress={() => navigation.navigate('Profile')}></Button>
     </View>

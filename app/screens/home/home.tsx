@@ -1,4 +1,4 @@
-import { fetchCurrentUserPlaylists, requestAccessToken } from '@/api/api';
+import { fetchCurrentUserPlaylists, requestAccessToken, resetAccessToken } from '@/api/api';
 import { getData } from '@/scripts/asyncStorage';
 import {
   CurrentUserPlaylist,
@@ -9,7 +9,6 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import {
   Text,
-  Button,
   Image,
   FlatList,
   StyleSheet,
@@ -50,18 +49,30 @@ const playlistsMockList: PlaylistItemData[] = [
 const PlaylistItem = ({ item, onPress, backgroundColor, textColor }: PlaylistItemProps) => (
   <TouchableOpacity onPress={onPress} style={[styles.item, { backgroundColor }]}>
     <View style={styles.item}>
-      <Image
-        source={{ height: 120, width: 120, uri: item.imageURL }}
-      />
+      <Image source={{ height: 120, width: 120, uri: item.imageURL }} />
       <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
     </View>
   </TouchableOpacity>
 );
 
-const HomeScreen = ({ navigation }: HomeScreenProps) => {
+const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string>('');
   const [currentPlaylistsList, setCurrentPlaylistsList] = useState(playlistsMockList);
+  const [isLogined, setIsLogined] = useState(false);
 
+  
+  const tokenCheck = useCallback(async () => {
+    const token = await getData('access_token');
+    const status = !!token
+    setIsLogined(status);
+  }, [route]);
+  
+  useEffect(() => {
+    if (route.params?.loginAttempt) {
+      tokenCheck();
+    }
+  }, [tokenCheck, route]);
+  
   const readPlaylistsFromStorage = async () => {
     const currentUserPlaylists = await getData('playlists');
     if (currentUserPlaylists) {
@@ -92,12 +103,14 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
       if (typeof (await getData('access_token')) === 'undefined') {
         requestAccessToken();
       }
-      await fetchCurrentUserPlaylists();
-      await readPlaylistsFromStorage();
-      await createPlaylistsList();
+      if (isLogined) {
+        await fetchCurrentUserPlaylists();
+        await readPlaylistsFromStorage();
+        await createPlaylistsList();
+      }
     };
     getPlaylists();
-  }, [createPlaylistsList]);
+  }, [createPlaylistsList, isLogined, tokenCheck, route]);
 
   const renderItem = ({ item }: { item: PlaylistItemData }) => {
     const backgroundColor = item.id === selectedPlaylistId ? '#017371' : '#7bfdc7';
@@ -122,30 +135,53 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
     );
     // }
   };
-
-  return (
-    <View style={styles.container}>
+  if (!isLogined) {
+    return (
       <ImageBackground
         source={require('../../../assets/images/main_background.png')}
         resizeMode="cover"
         style={styles.background}
       >
-        <FlatList
-          data={currentPlaylistsList}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          extraData={selectedPlaylistId}
-          numColumns={2}
-        />
-        <Button
-          title="to login"
+        <TouchableOpacity
           onPress={() => {
             navigation.navigate('Login');
           }}
-        ></Button>
+          style={styles.welcomeButton}
+        >
+          <Text style={styles.welcomeText}>Hello, tap to login!</Text>
+        </TouchableOpacity>
       </ImageBackground>
-    </View>
-  );
+    );
+  } else {
+    return (
+      <View style={styles.container}>
+        <ImageBackground
+          source={require('../../../assets/images/main_background.png')}
+          resizeMode="cover"
+          style={styles.background}
+        >
+          <FlatList
+            data={currentPlaylistsList}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            extraData={selectedPlaylistId}
+            numColumns={2}
+            ListFooterComponent={
+              <TouchableOpacity
+                onPress={() => {
+                  resetAccessToken();
+                  setIsLogined(false);
+                }}
+                style={styles.welcomeButton}
+              >
+                <Text style={styles.welcomeText}>Log out</Text>
+              </TouchableOpacity>
+            }
+          />
+        </ImageBackground>
+      </View>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -153,6 +189,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   background: {
+    flex: 1,
     padding: 5,
   },
   item: {
@@ -165,6 +202,19 @@ const styles = StyleSheet.create({
     fontFamily: 'AngemeBold',
     fontSize: 20,
     alignSelf: 'flex-end',
+  },
+  welcomeButton: {
+    flex: 1,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    width: 200,
+    height: 'auto',
+  },
+  welcomeText: {
+    fontFamily: 'Beograd',
+    fontSize: 20,
   },
 });
 export default HomeScreen;
