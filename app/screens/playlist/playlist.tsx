@@ -64,13 +64,11 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const createPlaylistsTrackList = useCallback(async (playlistId: string) => {
     const tracks = await fetchTracksFromPlaylist(playlistId);
     if (tracks) {
-      console.log('tracks info', tracks)
       const currentPlaylistTracks = tracks.map((elem: CurrentPlaylistTracksResponse) => {
         const test = new Object({
           title: elem.track.name,
           artist: elem.track.artists[0].name,
           imageURL: elem.track.album.images[0].url,
-          //trackId for extractor?
           trackId: elem.track.id,
         });
         return test;
