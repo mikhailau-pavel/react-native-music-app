@@ -50,7 +50,9 @@ const playlistsMockList: PlaylistItemData[] = [
 const PlaylistItem = ({ item, onPress, backgroundColor, textColor }: PlaylistItemProps) => (
   <TouchableOpacity onPress={onPress} style={[styles.item, { backgroundColor }]}>
     <View style={styles.item}>
-      <Image source={{ height: 200, width: 200, uri: item.imageURL }} />
+      <Image
+        source={{ height: 120, width: 120, uri: item.imageURL }}
+      />
       <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
     </View>
   </TouchableOpacity>
@@ -110,7 +112,7 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
             navigation.navigate('Playlist', {
               playlistId: item.playlistId,
               playlistCover: item.imageURL,
-              playlistTitle: item.title
+              playlistTitle: item.title,
             });
           }
         }}
@@ -135,8 +137,12 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
           extraData={selectedPlaylistId}
           numColumns={2}
         />
-        <Button title="to login" onPress={() => {
-          navigation.navigate('Login')}}></Button>
+        <Button
+          title="to login"
+          onPress={() => {
+            navigation.navigate('Login');
+          }}
+        ></Button>
       </ImageBackground>
     </View>
   );
@@ -152,12 +158,13 @@ const styles = StyleSheet.create({
   item: {
     flex: 1,
     backgroundColor: '#7bfdc7',
-    margin: 5
+    margin: 5,
   },
   title: {
     gap: 5,
     fontFamily: 'AngemeBold',
     fontSize: 20,
+    alignSelf: 'flex-end',
   },
 });
 export default HomeScreen;

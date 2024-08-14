@@ -15,7 +15,6 @@ import {
   StyleSheet,
   ImageBackground,
   TextInput,
-  ScrollView,
 } from 'react-native';
 
 const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
@@ -110,22 +109,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       style={styles.background}
     >
       <TextInput style={styles.searchbar}> Search</TextInput>
-      {/* <Pressable>
-          <Text>Sort button</Text>
-        </Pressable>
-        <Text>Album cover</Text>
-        <Text>PlaylistName</Text>
-        <Text>PlaylistDescription</Text>
-        <Text>All songs duration</Text>
-        <Pressable>
-          <Text>Enhance</Text>
-        </Pressable>
-        <Pressable>
-          <Text>Invite button</Text>
-        </Pressable>
-        <Pressable>
-          <Text>Option dots</Text>
-        </Pressable>*/}
       <FlatList
         data={currentPlaylistsTracks}
         renderItem={renderTrackItem}
