@@ -65,7 +65,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
     const token = await getData('access_token');
     const status = !!token
     setIsLogined(status);
-  }, [route]);
+  }, []);
   
   useEffect(() => {
     if (route.params?.loginAttempt) {
