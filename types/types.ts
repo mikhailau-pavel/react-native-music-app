@@ -89,8 +89,8 @@ type CurrentPlaylistTracksResponse = {
         url: string;
       }[];
     };
+    id: string;
   };
-  id: string;
 };
 
 export type {

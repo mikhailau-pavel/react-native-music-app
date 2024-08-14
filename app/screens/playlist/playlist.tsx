@@ -30,7 +30,7 @@ const tracksMockList: TrackItemData[] = [
     title: 'Track_item_2',
     artist: 'track-2',
     imageURL: mockImage,
-    trackId: '3cEYpjA9oz9GiPac4AsH4nr',
+    trackId: '3cEYpjA9oz9GiPac4AsH4nur',
   },
   {
     title: 'Track_item_3',
@@ -42,7 +42,7 @@ const tracksMockList: TrackItemData[] = [
     title: 'Track_item_4',
     artist: 'track-4',
     imageURL: mockImage,
-    trackId: '3cEYpjA9oz9GiPac4AsH4nerKe',
+    trackId: '3cEYpjA9oz9GiPac4AsH4n3rKe',
   },
 ];
 
@@ -64,12 +64,14 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const createPlaylistsTrackList = useCallback(async (playlistId: string) => {
     const tracks = await fetchTracksFromPlaylist(playlistId);
     if (tracks) {
+      console.log('tracks info', tracks)
       const currentPlaylistTracks = tracks.map((elem: CurrentPlaylistTracksResponse) => {
         const test = new Object({
           title: elem.track.name,
           artist: elem.track.artists[0].name,
           imageURL: elem.track.album.images[0].url,
-          id: elem.id,
+          //trackId for extractor?
+          trackId: elem.track.id,
         });
         return test;
       });

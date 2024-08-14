@@ -127,7 +127,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
           title: elem.track.name,
           artist: elem.track.artists[0].name,
           imageURL: elem.track.album.images[0].url,
-          id: elem.id,
+          trackId: elem.track.id,
         });
         return test;
       });
