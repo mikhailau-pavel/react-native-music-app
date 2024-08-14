@@ -7,7 +7,16 @@ import {
   PlaylistItemProps,
 } from '@/types/types';
 import { useCallback, useEffect, useState } from 'react';
-import { Text, Button, Image, FlatList, StyleSheet, View, TouchableOpacity } from 'react-native';
+import {
+  Text,
+  Button,
+  Image,
+  FlatList,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
 
 const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
 
@@ -112,14 +121,19 @@ const HomeScreen = ({ navigation }: HomeScreenProps) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={currentPlaylistsList}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        extraData={selectedPlaylistId}
-        horizontal
-      />
-      <Button title="to login" onPress={() => navigation.navigate('Login')}></Button>
+      <ImageBackground
+        source={require('../../../assets/images/main_background.png')}
+        resizeMode="cover"
+      >
+        <FlatList
+          data={currentPlaylistsList}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          extraData={selectedPlaylistId}
+          numColumns={2}
+        />
+        <Button title="to login" onPress={() => navigation.navigate('Login')}></Button>
+      </ImageBackground>
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import { getData, storeData } from '@/scripts/asyncStorage';
+import { getData, removeData, storeData } from '@/scripts/asyncStorage';
 
 enum RequestUrls {
   TOKEN = 'https://accounts.spotify.com/api/token',
@@ -32,13 +32,13 @@ const requestAccessToken = async () => {
 
   const body = await fetch(RequestUrls.TOKEN, payload);
   const response = await body.json();
+  console.log('response access token', response);
   await storeData('access_token', response.access_token);
   await storeData('refresh_token', response.refresh_token);
 };
 
 const requestRefreshToken = async () => {
   const refreshToken = (await getData('refresh_token')) || '';
-  console.log('refresh token on refresh', await refreshToken);
   const params: Record<string, string> = {
     grant_type: 'refresh_token',
     refresh_token: refreshToken,
@@ -58,9 +58,15 @@ const requestRefreshToken = async () => {
   };
   const body = await fetch(RequestUrls.TOKEN, payload);
   const response = await body.json();
-  console.log('refresh token response', response);
-  await storeData('access_token', response.access_token);
-  await storeData('refresh_token', response.refresh_token);
+
+  if (response.error_description && response.error_description === 'Refresh token revoked') {
+    await removeData('access_token');
+    await removeData('refresh_token');
+    requestAccessToken();
+  } else {
+    await storeData('access_token', response.access_token);
+    await storeData('refresh_token', response.refresh_token);
+  }
 };
 
 const fetchCurrentUserPlaylists = async () => {
@@ -72,7 +78,9 @@ const fetchCurrentUserPlaylists = async () => {
   });
   const data = await response.json();
   const playlistsData = JSON.stringify(data.items);
-  await storeData('playlists', playlistsData);
+  if (playlistsData) {
+    await storeData('playlists', playlistsData);
+  }
   return data.items;
 };
 
@@ -88,12 +96,8 @@ const fetchTracksFromPlaylist = async (playlistId: string) => {
     const data = await response.json();
     if (data.error && data.error.message === 'The access token expired') {
       requestRefreshToken();
-      console.error('error2', data.error);
+      console.error('error', data);
     } else {
-      // console.log('token tracks', token )
-      // console.log('url tracks', url )
-      // console.log('response tracks', response )
-      console.log('tracks', await data.items);
       return data.items;
     }
   } catch (err) {
