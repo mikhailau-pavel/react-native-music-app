@@ -144,9 +144,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
+    flex: 1,
     backgroundColor: '#7bfdc7',
+    elevation: 3
   },
   title: {
+    fontFamily: 'Hiykaya',
     fontSize: 20,
   },
 });

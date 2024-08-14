@@ -1,5 +1,4 @@
 import { getData, removeData, storeData } from '@/scripts/asyncStorage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 enum RequestUrls {
   TOKEN = 'https://accounts.spotify.com/api/token',

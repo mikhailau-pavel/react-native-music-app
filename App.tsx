@@ -9,13 +9,31 @@ import HomeScreen from './app/screens/home/home';
 import * as Linking from 'expo-linking';
 import NotFoundScreen from './app/screens/notFound/notFound';
 import PlaylistScreen from './app/screens/playlist/playlist';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
 // if (__DEV__) {
 //   require('./ReactotronConfig');
 // }
-
+SplashScreen.preventAutoHideAsync();
 const prefix = Linking.createURL('/');
 
 export default function App() {
+  const [loaded, error] = useFonts({
+    'Beograd': require('./assets/fonts/Beograd.ttf'),
+    'Cartoon': require('./assets/fonts/Cartoon1471Extended-x3oyq.ttf'),
+    'Hiykaya': require('./assets/fonts/HiykayaRegular.ttf'),
+  });
+
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return null;
+  }
   const queryClient = new QueryClient();
   const Stack = createNativeStackNavigator<RootStackParamList>();
   const config = {
@@ -32,7 +50,7 @@ export default function App() {
     prefixes: [prefix],
     config,
   };
-
+  
   return (
     <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
       <QueryClientProvider client={queryClient}>
