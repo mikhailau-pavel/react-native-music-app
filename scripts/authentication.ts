@@ -2,36 +2,39 @@ import 'core-js/actual/url';
 import 'core-js/actual/url-search-params';
 import * as Crypto from 'expo-crypto';
 import { Platform } from 'react-native';
+import { storeData } from './asyncStorage';
 
-const generateRandomString = (length: number) => {
+export const generateRandomString = (length: number) => {
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const values = Crypto.getRandomValues(new Uint8Array(length));
   return values.reduce((acc: string, x: number) => acc + possible[x % possible.length], '');
 };
 
-const sha256 = async (plain: string) => {
+export const sha256 = async (plain: string) => {
   const encoder = new TextEncoder();
   const data = encoder.encode(plain);
   return Crypto.digest(Crypto.CryptoDigestAlgorithm.SHA256, data);
 };
 
-const base64encode = (input: ArrayBuffer) => {
+export const base64encode = (input: ArrayBuffer) => {
   return btoa(String.fromCharCode(...new Uint8Array(input)))
     .replace(/=/g, '')
     .replace(/\+/g, '-')
     .replace(/\//g, '_');
 };
 
-const hashed = async () => {
-  return await sha256(generateRandomString(43));
+export const hashed = async () => {
+  const codeVerifier = generateRandomString(44);
+  storeData('code_verifier', codeVerifier);
+  return await sha256(codeVerifier);
 };
 
-const codeChallenge = async () => {
+export const codeChallenge = async () => {
   const hash = await hashed();
   return base64encode(hash);
 };
 
-const parseResponseCode = (string: string) => {
+export const parseResponseCode = (string: string) => {
   //acc origin url + fixed part of response?
   if (Platform.OS === 'ios' || Platform.OS === 'android') {
     return string.substring(35);
@@ -39,4 +42,4 @@ const parseResponseCode = (string: string) => {
   return string.substring(14);
 };
 
-export { generateRandomString, codeChallenge, parseResponseCode };
+export const requestAccessToken = async (authCode: string) => {};

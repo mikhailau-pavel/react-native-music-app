@@ -4,19 +4,25 @@ const storeData = async (key: string, value: string) => {
   try {
     await AsyncStorage.setItem(key, value);
   } catch (err) {
-    console.log(err);
+    console.error(err);
+  }
+};
+
+const removeData = async (key: string) => {
+  try {
+    await AsyncStorage.removeItem(key);
+  } catch (err) {
+    console.error(err);
   }
 };
 
 const getData = async (key: string) => {
   try {
     const value = await AsyncStorage.getItem(key);
-    if (value !== null) {
-      return value;
-    }
+    return value;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
-export { storeData, getData };
+export { storeData, getData, removeData };
