@@ -1,8 +1,10 @@
-import 'core-js/actual/url';
-import 'core-js/actual/url-search-params';
 import * as Crypto from 'expo-crypto';
 import { Platform } from 'react-native';
-import { storeData } from './asyncStorage';
+import { getData, storeData } from './asyncStorage';
+
+enum AuthURLs {
+  TOKEN = 'https://accounts.spotify.com/api/token',
+}
 
 export const generateRandomString = (length: number) => {
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -25,7 +27,8 @@ export const base64encode = (input: ArrayBuffer) => {
 
 export const hashed = async () => {
   const codeVerifier = generateRandomString(44);
-  storeData('code_verifier', codeVerifier);
+  await storeData('code_verifier', codeVerifier);
+  console.log('initially set code verifier', await getData('code_verifier'))
   return await sha256(codeVerifier);
 };
 
@@ -42,4 +45,64 @@ export const parseResponseCode = (string: string) => {
   return string.substring(14);
 };
 
-export const requestAccessToken = async (authCode: string) => {};
+export const createLoginUrl = async () => {
+  const codeVerifier = generateRandomString(44);
+  storeData('code_verifier', codeVerifier);
+  const sha = await sha256(codeVerifier);
+  const base64String = base64encode(sha);
+
+  const authUrl = new URL('http://accounts.spotify.com/authorize');
+  const params = {
+    response_type: 'code',
+    client_id: 'e6d38f8e338847f0a2909ea813ec79e4',
+    //process.env.CLIENT_ID,
+    scope: 'user-read-private user-read-email',
+    //process.env.SCOPE_LOGIN,
+    code_challenge_method: 'S256',
+    //process.env.CHALLENGE_METHOD,
+    code_challenge: base64String,
+    redirect_uri: 'http://localhost:8081/profile',
+    //process.env.REDIRECT_URI,
+  };
+
+  authUrl.search = new URLSearchParams(params).toString();
+  return authUrl.toString();
+};
+
+
+export const requestAccessToken = async () => {
+    const codeVerifier = (await getData('code_verifier')) || '';
+    console.log('checked for token code verifier', codeVerifier)
+    const code = (await getData('responseCode')) || '';
+    // console.log('code-prev', codeVerifier)
+    // console.log('code', code)
+    const params: Record<string, string> = {
+      client_id: 'e6d38f8e338847f0a2909ea813ec79e4',
+      //process.env.CLIENT_ID,
+      grant_type: 'authorization_code',
+      code,
+      redirect_uri: 'http://localhost:8081/profile',
+      //process.env.REDIRECT_URI,
+      code_verifier: codeVerifier,
+    };
+    const payloadBody = Object.keys(params)
+      .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
+      .join('&');
+      
+    const payload = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: payloadBody,
+    };
+  
+    const body = await fetch(AuthURLs.TOKEN, payload);
+    const result = await body.json();
+    //console.log('payload', body)
+    console.log('result', result)
+    return result
+  
+    // await storeData('access_token', response.access_token);
+    // await storeData('refresh_token', response.refresh_token);
+  };

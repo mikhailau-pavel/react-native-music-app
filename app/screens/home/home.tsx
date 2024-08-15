@@ -1,11 +1,13 @@
-import { fetchCurrentUserPlaylists, requestAccessToken, resetAccessToken } from '@/api/api';
-import { getData } from '@/scripts/asyncStorage';
+import { fetchCurrentUserPlaylists, //requestAccessToken, 
+  resetAccessToken } from '@/api/api';
+import { getData, storeData } from '@/scripts/asyncStorage';
 import {
   CurrentUserPlaylist,
   HomeScreenProps,
   PlaylistItemData,
   PlaylistItemProps,
 } from '@/types/types';
+import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Text,
@@ -59,20 +61,29 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string>('');
   const [currentPlaylistsList, setCurrentPlaylistsList] = useState(playlistsMockList);
   const [isLogined, setIsLogined] = useState(false);
+  // const { data, error } = useQuery({
+  //   queryKey: ['request_access_token'],
+  //   queryFn: requestAccessToken,
+  // });
+  // if(data) {
+  //   console.log('data-query-first', data)
+  // }
+  // if (error) {
+  //   throw new Error(`An error has occurred: ' + ${error.message}`);
+  // }
 
-  
   const tokenCheck = useCallback(async () => {
     const token = await getData('access_token');
-    const status = !!token
+    const status = !!token;
     setIsLogined(status);
   }, []);
-  
+
   useEffect(() => {
     if (route.params?.loginAttempt) {
       tokenCheck();
     }
   }, [tokenCheck, route]);
-  
+
   const readPlaylistsFromStorage = async () => {
     const currentUserPlaylists = await getData('playlists');
     if (currentUserPlaylists) {
@@ -100,9 +111,13 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
 
   useEffect(() => {
     const getPlaylists = async () => {
-      if (typeof (await getData('access_token')) === 'undefined') {
-        requestAccessToken();
-      }
+      // if (typeof (await getData('access_token')) === 'undefined' && data) {
+      //   console.log('sync con test', getData('access_token'));
+      //   console.log('async con test', getData('access_token'));
+      //   console.log('data-query-second', data);
+      //   await storeData('access_token', data.access_token);
+      //   await storeData('refresh_token', data.refresh_token);
+      // }
       if (isLogined) {
         await fetchCurrentUserPlaylists();
         await readPlaylistsFromStorage();
