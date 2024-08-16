@@ -1,13 +1,14 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-enum PropsRoutes {
+export enum PropsRoutes {
   HOME = 'Home',
   LOGIN = 'Login',
   PROFILE = 'Profile',
   PLAYLIST = 'Playlist',
+  PLAYER = 'Player',
 }
 
-type AuthParams = {
+export type AuthParams = {
   response_type: 'code';
   client_id: string;
   scope: string;
@@ -16,49 +17,52 @@ type AuthParams = {
   redirect_uri: string;
 };
 
-type RootStackParamList = {
-  Home: { loginAttempt: boolean };
+export type RootStackParamList = {
+  Home: { loginAttempt: boolean } | undefined;
   Login: undefined;
   Profile: undefined;
   Playlist: { playlistId: string; playlistCover: string; playlistTitle: string };
+  Player: TrackItemData[];
   NotFound: undefined;
 };
 
-type HomeScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.HOME>;
-type LoginScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.LOGIN>;
-type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PROFILE>;
-type PlaylistScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PLAYLIST>;
-type NotFoundScreenProps = NativeStackScreenProps<RootStackParamList>;
+export type HomeScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.HOME>;
+export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.LOGIN>;
+export type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PROFILE>;
+export type PlaylistScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PLAYLIST>;
+export type PlayerScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PLAYER>;
+export type NotFoundScreenProps = NativeStackScreenProps<RootStackParamList>;
 
-type PlaylistItemData = {
+export type PlaylistItemData = {
   title: string;
   id: string;
   imageURL: string;
   playlistId: string;
 };
 
-type TrackItemData = {
+export type TrackItemData = {
   title: string;
   artist: string;
   imageURL: string;
   trackId: string;
+  previewUrl: string;
 };
 
-type PlaylistItemProps = {
+export type PlaylistItemProps = {
   item: PlaylistItemData;
   onPress: () => void;
   backgroundColor: string;
   textColor: string;
 };
 
-type TrackItemProps = {
+export type TrackItemProps = {
   item: TrackItemData;
   onPress: () => void;
   backgroundColor: string;
   textColor: string;
 };
 
-type CurrentUserPlaylist = {
+export type CurrentUserPlaylist = {
   index: number;
   description: string;
   external_url: string;
@@ -78,7 +82,7 @@ type CurrentUserPlaylist = {
   name: string;
 };
 
-type CurrentPlaylistTracksResponse = {
+export type CurrentPlaylistTracksResponse = {
   track: {
     name: string;
     artists: {
@@ -90,23 +94,6 @@ type CurrentPlaylistTracksResponse = {
       }[];
     };
     id: string;
+    preview_url: string;
   };
 };
-
-export type {
-  AuthParams,
-  RootStackParamList,
-  HomeScreenProps,
-  LoginScreenProps,
-  ProfileScreenProps,
-  PlaylistScreenProps,
-  NotFoundScreenProps,
-  PlaylistItemData,
-  PlaylistItemProps,
-  CurrentUserPlaylist,
-  TrackItemData,
-  TrackItemProps,
-  CurrentPlaylistTracksResponse,
-};
-
-export { PropsRoutes };

@@ -24,25 +24,15 @@ const tracksMockList: TrackItemData[] = [
     artist: 'track-1',
     imageURL: mockImage,
     trackId: '3cEYpjA9oz9GiPac4AsH4nsa',
+    preview_url: ''
   },
   {
     title: 'Track_item_2',
     artist: 'track-2',
     imageURL: mockImage,
     trackId: '3cEYpjA9oz9GiPac4AsH4nur',
-  },
-  {
-    title: 'Track_item_3',
-    artist: 'track-3',
-    imageURL: mockImage,
-    trackId: '3cEYpjA9oz9GiPac4AsH4ner',
-  },
-  {
-    title: 'Track_item_4',
-    artist: 'track-4',
-    imageURL: mockImage,
-    trackId: '3cEYpjA9oz9GiPac4AsH4n3rKe',
-  },
+    preview_url: ''
+  }
 ];
 
 const TrackItem = ({ item, onPress, backgroundColor, textColor }: TrackItemProps) => (
@@ -64,13 +54,14 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
     const tracks = await fetchTracksFromPlaylist(playlistId);
     if (tracks) {
       const currentPlaylistTracks = tracks.map((elem: CurrentPlaylistTracksResponse) => {
-        const test = new Object({
+        const tracksInfoList = new Object({
           title: elem.track.name,
           artist: elem.track.artists[0].name,
           imageURL: elem.track.album.images[0].url,
           trackId: elem.track.id,
+          previewUrl: elem.track.preview_url,
         });
-        return test;
+        return tracksInfoList; 
       });
       setCurrentPlaylistsTracks(currentPlaylistTracks);
     } else {
@@ -121,7 +112,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
               style={styles.playlistCover}
               source={{ height: 300, width: 300, uri: route.params.playlistCover }}
             />
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Player', currentPlaylistsTracks)}>
               <Image
                 style={styles.playButton}
                 source={require('../../../assets/images/elements/play-button-image-transparent.png')}

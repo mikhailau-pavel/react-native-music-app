@@ -1,36 +1,29 @@
-import {
-  createLoginUrl,
-  parseResponseCode,
-  requestAccessToken,
-} from '@/scripts/authentication';
+import { createLoginUrl, parseResponseCode, requestAccessToken } from '@/scripts/authentication';
 import { LoginScreenProps } from '@/types/types';
 import { useEffect, useState } from 'react';
 import { Button, Platform, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useQuery } from '@tanstack/react-query';
 import { WebView } from 'react-native-webview';
-import { storeData } from '@/scripts/asyncStorage';
-//import { requestAccessToken } from '@/api/api';
+import { getData, storeData } from '@/scripts/asyncStorage';
 
 const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
   const [loginUrl, setLoginUrl] = useState<string>('');
   const loginUrlQuery = useQuery({ queryFn: createLoginUrl, queryKey: ['get_login_url'] });
-  const accessTokenQuery = useQuery({ queryFn: requestAccessToken, queryKey: ['request_access_token'], enabled: false})
+  const accessTokenQuery = useQuery({
+    queryFn: requestAccessToken,
+    queryKey: ['request_access_token'],
+    enabled: false,
+  });
 
-
-  if (accessTokenQuery.data) {
-    // console.log('new_query_test', accessTokenQuery)
-  }
-  // if (error) {
-  //   throw new Error (`An error has occurred: ' + ${error.message}`)
-  // }
   useEffect(() => {
     if (loginUrlQuery.data && (Platform.OS === 'ios' || Platform.OS === 'android')) {
       setLoginUrl(loginUrlQuery.data);
     } else if (loginUrlQuery.data && Platform.OS === 'web') {
       setLoginUrl(loginUrlQuery.data);
       Linking.openURL(loginUrlQuery.data);
-    }}, [loginUrlQuery.data])
+    }
+  }, [loginUrlQuery.data]);
 
   if (Platform.OS === 'ios' || Platform.OS === 'android') {
     return (
@@ -39,10 +32,18 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
           <WebView
             style={{ flex: 1 }}
             source={{ uri: loginUrl }}
-            onNavigationStateChange={ async ({ url }) => {
+            onNavigationStateChange={async ({ url }) => {
               if (url.includes('localhost:8081/profile?code=')) {
                 storeData('responseCode', parseResponseCode(url));
-                await requestAccessToken();
+                await accessTokenQuery.refetch();
+                const testToken = await getData('access_token')
+                console.log('set test token1', testToken)
+                if (accessTokenQuery.data) {
+                  await storeData('access_token', accessTokenQuery.data.access_token);
+                  await storeData('refresh_token', accessTokenQuery.data.refresh_token);
+                  const testToken = await getData('access_token')
+                  console.log('set test token2', testToken)
+                }
                 navigation.navigate('Home', { loginAttempt: true });
               }
             }}
@@ -51,14 +52,13 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
             originWhitelist={['*']}
           />
         ) : null}
-        {/* <Button title="login" onPress={handleLogin}></Button> */}
       </View>
     );
   }
 
   return (
     <View>
-      {/* <Button title="login" onPress={handleLogin}></Button> */}
+      <Button title="login"></Button>
       <Button title="test profile" onPress={() => navigation.navigate('Profile')}></Button>
     </View>
   );

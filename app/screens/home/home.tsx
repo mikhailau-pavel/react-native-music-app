@@ -1,6 +1,9 @@
-import { fetchCurrentUserPlaylists, //requestAccessToken, 
-  resetAccessToken } from '@/api/api';
+import {
+  fetchCurrentUserPlaylists, //requestAccessToken,
+  resetAccessToken,
+} from '@/api/api';
 import { getData, storeData } from '@/scripts/asyncStorage';
+import { requestAccessToken } from '@/scripts/authentication';
 import {
   CurrentUserPlaylist,
   HomeScreenProps,
@@ -64,6 +67,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   // const { data, error } = useQuery({
   //   queryKey: ['request_access_token'],
   //   queryFn: requestAccessToken,
+  //   enabled: false,
   // });
   // if(data) {
   //   console.log('data-query-first', data)
@@ -72,17 +76,23 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   //   throw new Error(`An error has occurred: ' + ${error.message}`);
   // }
 
-  const tokenCheck = useCallback(async () => {
+  //useCallback
+  const tokenCheck = async () => {
     const token = await getData('access_token');
+    console.log('token on home page is present', token);
     const status = !!token;
     setIsLogined(status);
-  }, []);
-
+  };
   useEffect(() => {
-    if (route.params?.loginAttempt) {
-      tokenCheck();
-    }
-  }, [tokenCheck, route]);
+    tokenCheck();
+  }, []);
+  //, []);
+
+  // useEffect(() => {
+  //   if (route.params?.loginAttempt) {
+  //     tokenCheck();
+  //   }
+  // }, [tokenCheck, route]);
 
   const readPlaylistsFromStorage = async () => {
     const currentUserPlaylists = await getData('playlists');
@@ -125,7 +135,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
       }
     };
     getPlaylists();
-  }, [createPlaylistsList, isLogined, tokenCheck, route]);
+  }, [createPlaylistsList, isLogined, route]);
 
   const renderItem = ({ item }: { item: PlaylistItemData }) => {
     const backgroundColor = item.id === selectedPlaylistId ? '#017371' : '#7bfdc7';

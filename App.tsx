@@ -12,6 +12,7 @@ import PlaylistScreen from './app/screens/playlist/playlist';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import PlayerScreen from './app/screens/player/player';
 // if (__DEV__) {
 //   require('./ReactotronConfig');
 // }
@@ -44,6 +45,7 @@ export default function App() {
       Login: 'login',
       Profile: 'profile',
       Playlist: 'playlist',
+      Player: 'player',
       NotFound: '*',
     },
   };
@@ -76,6 +78,11 @@ export default function App() {
             name={PropsRoutes.PLAYLIST}
             component={PlaylistScreen}
             options={{ title: 'Playlist' }}
+          />
+          <Stack.Screen
+            name={PropsRoutes.PLAYER}
+            component={PlayerScreen}
+            options={{ title: 'Player' }}
           />
           <Stack.Screen
             name={'NotFound'}
