@@ -41,14 +41,11 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
   // sound._onPlaybackStatusUpdate = (playbackStatus) =>
   //   console.log('playback_status', playbackStatus);
   const pauseTrack = async () => {
-    if (sound)
-    await sound.pauseAsync();
+    if (sound) await sound.pauseAsync();
   };
 
-
   const stopTrack = async () => {
-    if (sound)
-    await sound.stopAsync();
+    if (sound) await sound.stopAsync();
   };
 
   return (
@@ -76,6 +73,8 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
           onPress={() => {
             if (currentTrackInPlaylist > 0) {
               setCurrentTrackInPlaylist(currentTrackInPlaylist - 1);
+              setIsPlaying(false);
+              stopTrack();
             } else return;
           }}
         >
@@ -111,6 +110,8 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
           onPress={() => {
             if (currentTrackInPlaylist < amountOfTracksInPlaylist) {
               setCurrentTrackInPlaylist(currentTrackInPlaylist + 1);
+              setIsPlaying(false);
+              stopTrack();
             } else return;
           }}
         >
