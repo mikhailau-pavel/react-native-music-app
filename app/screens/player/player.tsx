@@ -54,7 +54,7 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
         {/* faded version of the button for disabled? */}
         <TouchableOpacity
           onPress={() => {
-            if (currentTrackInPlaylist >= amountOfTrackInPlaylist) {
+            if (currentTrackInPlaylist > 0) {
               setCurrentTrackInPlaylist(currentTrackInPlaylist - 1);
             } else return;
           }}
