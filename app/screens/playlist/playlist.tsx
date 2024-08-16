@@ -24,14 +24,14 @@ const tracksMockList: TrackItemData[] = [
     artist: 'track-1',
     imageURL: mockImage,
     trackId: '3cEYpjA9oz9GiPac4AsH4nsa',
-    preview_url: ''
+    previewUrl: ''
   },
   {
     title: 'Track_item_2',
     artist: 'track-2',
     imageURL: mockImage,
     trackId: '3cEYpjA9oz9GiPac4AsH4nur',
-    preview_url: ''
+    previewUrl: ''
   }
 ];
 
