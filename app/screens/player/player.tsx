@@ -42,16 +42,14 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
     sound._onPlaybackStatusUpdate = (playbackStatus) => {
       if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
         const currentTrackProgress = playbackStatus.positionMillis / playbackStatus.durationMillis;
-        console.log('currentTrackProgress', currentTrackProgress);
         progress.setValue(currentTrackProgress);
-        console.log('current progress', currentTrackProgress * 100);
         setPlayTimeTotal(playbackStatus.durationMillis);
         setPlayTimeCurrent(playbackStatus.positionMillis);
-        setPlayProgress(currentTrackProgress)
+        setPlayProgress(currentTrackProgress);
         Animated.timing(progress, {
           useNativeDriver: false,
           toValue: currentTrackProgress * 100,
-          duration: 2000,
+          duration: 200,
         }).start();
       }
     };
@@ -64,15 +62,6 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
   const stopTrack = async () => {
     if (sound) await sound.stopAsync();
   };
-
-  useEffect(() => {
-    console.log('progress', progress);
-    // Animated.timing(progress, {
-    //   useNativeDriver: false,
-    //   toValue: playTimeTotal,
-    //   //duration: 2000,
-    // }).start();
-  }, [playTimeTotal, progress]);
 
   return (
     <View style={styles.background}>
@@ -87,9 +76,12 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
           style={styles.playButton}
           source={require('../../../assets/icons/favButton.png')}
         ></Image>
-        <Text>{playTimeCurrent}</Text>
+        <View style={styles.timersContainer}>
+          <Text>{`${Math.floor(playTimeCurrent / 1000 / 60)}:${Math.floor((playTimeCurrent / 1000) % 60) < 10 ? '0' : ''}${Math.floor((playTimeCurrent / 1000) % 60)}`}</Text>
+          <Text>0:29</Text>
+        </View>
         <View style={styles.barContainer}>
-          <Animated.View style={[styles.bar, { width: `${(playProgress * 100)}%` }]} />
+          <Animated.View style={[styles.bar, { width: `${playProgress * 100}%` }]} />
         </View>
       </View>
       <View style={styles.trackControlContainer}>
@@ -165,6 +157,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontFamily: 'AngemeBold',
     margin: 5,
+  },
+  timersContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 5,
   },
   trackControlContainer: {
     backgroundColor: 'white',
