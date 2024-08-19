@@ -44,6 +44,7 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
                   const testToken = await getData('access_token')
                   console.log('set test token2', testToken)
                 }
+                //goBack after
                 navigation.navigate('Home', { loginAttempt: true });
               }
             }}

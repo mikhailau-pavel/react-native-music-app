@@ -1,5 +1,5 @@
 import { PlayerScreenProps } from '@/types/types';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -8,6 +8,8 @@ import {
   StyleSheet,
   Animated,
   ScrollView,
+  LayoutAnimation,
+  Easing,
 } from 'react-native';
 import { Audio } from 'expo-av';
 import { Sound } from 'expo-av/build/Audio';
@@ -18,6 +20,7 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playProgress, setPlayProgress] = useState(0);
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
+  const [expanded, setExpanded] = useState(true);
   const progress = useRef(new Animated.Value(0)).current;
 
   const playlistInfoArr = route.params;
@@ -35,6 +38,10 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
     }
   };
 
+  const handlePress = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+    setExpanded(!expanded);
+  };
   useEffect(() => {
     return sound
       ? () => {
@@ -52,10 +59,10 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
         setPlayProgress(currentTrackProgress);
         Animated.timing(progress, {
           useNativeDriver: false,
-          toValue: currentTrackProgress + 0.1 * 100 ,
-          duration: 3000,
+          toValue: (currentTrackProgress + 1) * 100,
+          duration: 200,
         }).start(({ finished }) => {
-          console.log('animation is over', finished);
+          // console.log('animation is over', finished);
         });
       }
     };
@@ -79,10 +86,41 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
           source={{ height: 300, width: 300, uri: route.params[currentTrackInPlaylist].imageURL }}
         />
         <Text style={styles.trackTitle}>{route.params[currentTrackInPlaylist].title}</Text>
-        <Image
-          style={styles.playButton}
-          source={require('../../../assets/icons/favButton.png')}
-        ></Image>
+        {!expanded ? (
+          <View style={styles.trackInfoControlContainer}>
+            <TouchableOpacity>
+              <Image
+                style={styles.playButton}
+                source={require('../../../assets/icons/favButton.png')}
+              ></Image>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image
+                style={styles.playButton}
+                source={require('../../../assets/icons/loopButton.png')}
+              ></Image>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image
+                style={styles.playButton}
+                source={require('../../../assets/icons/muteButton.png')}
+              ></Image>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handlePress}>
+              <Image
+                style={styles.playButton}
+                source={require('../../../assets/icons/closeButton.png')}
+              ></Image>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity onPress={handlePress}>
+            <Image
+              style={styles.playButton}
+              source={require('../../../assets/icons/infoButton.png')}
+            ></Image>
+          </TouchableOpacity>
+        )}
         <View style={styles.timersContainer}>
           <Text>{`${Math.floor(playTimeCurrent / 1000 / 60)}:${Math.floor((playTimeCurrent / 1000) % 60) < 10 ? '0' : ''}${Math.floor((playTimeCurrent / 1000) % 60)}`}</Text>
           <Text>0:29</Text>
@@ -171,6 +209,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 5,
+  },
+  trackInfoControlContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'center',
   },
   trackControlContainer: {
     backgroundColor: 'white',

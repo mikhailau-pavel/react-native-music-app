@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Text } from 'react-native';
+import { Platform, Text, UIManager } from 'react-native';
 import LoginScreen from './app/screens/login/login';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -13,19 +13,27 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import PlayerScreen from './app/screens/player/player';
+import Animated from 'react-native-reanimated';
+
 // if (__DEV__) {
 //   require('./ReactotronConfig');
 // }
+
 SplashScreen.preventAutoHideAsync();
 const prefix = Linking.createURL('/');
+if (Platform.OS === 'android') {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
 
 export default function App() {
   const [loaded, error] = useFonts({
-    'Beograd': require('./assets/fonts/Beograd.ttf'),
-    'Cartoon': require('./assets/fonts/Cartoon1471Extended-x3oyq.ttf'),
-    'Hiykaya': require('./assets/fonts/HiykayaRegular.ttf'),
-    'AngemeBold': require('./assets/fonts/Angeme-Bold.ttf'),
-    'AngemeRegular': require('./assets/fonts/Angeme-Regular.ttf'),
+    Beograd: require('./assets/fonts/Beograd.ttf'),
+    Cartoon: require('./assets/fonts/Cartoon1471Extended-x3oyq.ttf'),
+    Hiykaya: require('./assets/fonts/HiykayaRegular.ttf'),
+    AngemeBold: require('./assets/fonts/Angeme-Bold.ttf'),
+    AngemeRegular: require('./assets/fonts/Angeme-Regular.ttf'),
   });
 
   useEffect(() => {
@@ -54,7 +62,7 @@ export default function App() {
     prefixes: [prefix],
     config,
   };
-  
+
   return (
     <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
       <QueryClientProvider client={queryClient}>
