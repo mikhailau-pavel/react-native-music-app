@@ -2,15 +2,14 @@ import {
   fetchCurrentUserPlaylists, //requestAccessToken,
   resetAccessToken,
 } from '@/api/api';
-import { getData, storeData } from '@/scripts/asyncStorage';
-import { requestAccessToken } from '@/scripts/authentication';
+import { getData } from '@/scripts/asyncStorage';
 import {
   CurrentUserPlaylist,
   HomeScreenProps,
   PlaylistItemData,
   PlaylistItemProps,
 } from '@/types/types';
-import { useQuery } from '@tanstack/react-query';
+import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Text,
@@ -64,35 +63,19 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string>('');
   const [currentPlaylistsList, setCurrentPlaylistsList] = useState(playlistsMockList);
   const [isLogined, setIsLogined] = useState(false);
-  // const { data, error } = useQuery({
-  //   queryKey: ['request_access_token'],
-  //   queryFn: requestAccessToken,
-  //   enabled: false,
-  // });
-  // if(data) {
-  //   console.log('data-query-first', data)
-  // }
-  // if (error) {
-  //   throw new Error(`An error has occurred: ' + ${error.message}`);
-  // }
 
-  //useCallback
-  const tokenCheck = async () => {
-    const token = await getData('access_token');
-    console.log('token on home page is present', token);
-    const status = !!token;
-    setIsLogined(status);
-  };
-  useEffect(() => {
-    tokenCheck();
-  }, []);
-  //, []);
-
-  // useEffect(() => {
-  //   if (route.params?.loginAttempt) {
-  //     tokenCheck();
-  //   }
-  // }, [tokenCheck, route]);
+  useFocusEffect(
+    useCallback(() => {
+      const tokenCheck = async () => {
+        const token = await getData('access_token');
+        if (token) {
+          setIsLogined(true);
+          await createPlaylistsList();
+        }
+      };
+      tokenCheck();
+    }, [])
+  );
 
   const readPlaylistsFromStorage = async () => {
     const currentUserPlaylists = await getData('playlists');
@@ -121,13 +104,6 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
 
   useEffect(() => {
     const getPlaylists = async () => {
-      // if (typeof (await getData('access_token')) === 'undefined' && data) {
-      //   console.log('sync con test', getData('access_token'));
-      //   console.log('async con test', getData('access_token'));
-      //   console.log('data-query-second', data);
-      //   await storeData('access_token', data.access_token);
-      //   await storeData('refresh_token', data.refresh_token);
-      // }
       if (isLogined) {
         await fetchCurrentUserPlaylists();
         await readPlaylistsFromStorage();

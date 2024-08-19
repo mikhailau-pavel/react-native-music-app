@@ -34,7 +34,7 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
             source={{ uri: loginUrl }}
             onNavigationStateChange={async ({ url }) => {
               if (url.includes('localhost:8081/profile?code=')) {
-                storeData('responseCode', parseResponseCode(url));
+                await storeData('responseCode', parseResponseCode(url));
                 await accessTokenQuery.refetch();
                 const testToken = await getData('access_token')
                 console.log('set test token1', testToken)
