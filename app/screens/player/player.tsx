@@ -1,6 +1,6 @@
 import { PlayerScreenProps } from '@/types/types';
 import { useEffect, useState } from 'react';
-import { Text, TouchableOpacity, View, Image, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, View, Image, StyleSheet, Animated } from 'react-native';
 import { Audio } from 'expo-av';
 import { Sound } from 'expo-av/build/Audio';
 
@@ -8,6 +8,12 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
   const [sound, setSound] = useState<Sound>();
   const [currentTrackInPlaylist, setCurrentTrackInPlaylist] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [playProgress, setPlayProgress] = useState(0);
+  const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
+  const [playTimeTotal, setPlayTimeTotal] = useState(0);
+  const progress = new Animated.Value(0);
+  // testProgress.setValue(10);
+  // console.log('test progress', testProgress);
 
   const playlistInfoArr = route.params;
   const amountOfTracksInPlaylist = playlistInfoArr.length - 1;
@@ -18,17 +24,11 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
       uri: route.params[currentTrackInPlaylist].previewUrl,
     });
 
-    // track.sound._onPlaybackStatusUpdate = (playbackStatus) =>
-    // console.log('playback_status2', playbackStatus);
-
     setSound(track.sound);
     if (track) {
       await track.sound.playAsync();
     }
   };
-  // if (track) {
-  //   await track.playAsync();
-  // }
 
   useEffect(() => {
     return sound
@@ -38,8 +38,25 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
       : undefined;
   }, [sound]);
 
-  // sound._onPlaybackStatusUpdate = (playbackStatus) =>
-  //   console.log('playback_status', playbackStatus);
+  if (sound) {
+    sound._onPlaybackStatusUpdate = (playbackStatus) => {
+      if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
+        const currentTrackProgress = playbackStatus.positionMillis / playbackStatus.durationMillis;
+        console.log('currentTrackProgress', currentTrackProgress);
+        progress.setValue(currentTrackProgress);
+        console.log('current progress', currentTrackProgress * 100);
+        setPlayTimeTotal(playbackStatus.durationMillis);
+        setPlayTimeCurrent(playbackStatus.positionMillis);
+        setPlayProgress(currentTrackProgress)
+        Animated.timing(progress, {
+          useNativeDriver: false,
+          toValue: currentTrackProgress * 100,
+          duration: 2000,
+        }).start();
+      }
+    };
+  }
+
   const pauseTrack = async () => {
     if (sound) await sound.pauseAsync();
   };
@@ -48,12 +65,16 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
     if (sound) await sound.stopAsync();
   };
 
+  useEffect(() => {
+    console.log('progress', progress);
+    // Animated.timing(progress, {
+    //   useNativeDriver: false,
+    //   toValue: playTimeTotal,
+    //   //duration: 2000,
+    // }).start();
+  }, [playTimeTotal, progress]);
+
   return (
-    // <ImageBackground
-    //   source={require('../../../assets/images/main_background.png')}
-    //   resizeMode="cover"
-    //   style={styles.background}
-    // >
     <View style={styles.background}>
       <View style={styles.trackCoverContainer}>
         <Text style={styles.trackTitle}>{route.params[currentTrackInPlaylist].artist}</Text>
@@ -66,9 +87,12 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
           style={styles.playButton}
           source={require('../../../assets/icons/favButton.png')}
         ></Image>
+        <Text>{playTimeCurrent}</Text>
+        <View style={styles.barContainer}>
+          <Animated.View style={[styles.bar, { width: `${(playProgress * 100)}%` }]} />
+        </View>
       </View>
       <View style={styles.trackControlContainer}>
-        {/* faded version of the button for disabled? */}
         <TouchableOpacity
           onPress={() => {
             if (currentTrackInPlaylist > 0) {
@@ -122,7 +146,6 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
         </TouchableOpacity>
       </View>
     </View>
-    // </ImageBackground>
   );
 };
 
@@ -154,6 +177,17 @@ const styles = StyleSheet.create({
     height: 60,
     alignSelf: 'flex-end',
     margin: 15,
+  },
+  barContainer: {
+    height: 20,
+    backgroundColor: 'grey',
+    borderRadius: 10,
+    margin: 10,
+  },
+  bar: {
+    height: 20,
+    backgroundColor: 'black',
+    borderRadius: 10,
   },
 });
 

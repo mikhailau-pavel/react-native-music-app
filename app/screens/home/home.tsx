@@ -1,5 +1,5 @@
 import {
-  fetchCurrentUserPlaylists, //requestAccessToken,
+  fetchCurrentUserPlaylists,
   resetAccessToken,
 } from '@/api/api';
 import { getData } from '@/scripts/asyncStorage';
