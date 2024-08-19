@@ -21,6 +21,7 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
   const [playProgress, setPlayProgress] = useState(0);
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
   const [expanded, setExpanded] = useState(true);
+  const [isFirstTrack, setIsFirstTrack] = useState(true);
   const progress = useRef(new Animated.Value(0)).current;
 
   const playlistInfoArr = route.params;
@@ -127,25 +128,30 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
         </View>
         <View style={styles.barContainer}>
           <Animated.View style={[styles.bar, { width: `${playProgress * 100}%` }]} />
-          {/* width: `${progress}%` */}
-          {/* width: `75%` */}
         </View>
       </View>
       <View style={styles.trackControlContainer}>
-        <TouchableOpacity
-          onPress={() => {
-            if (currentTrackInPlaylist > 0) {
-              setCurrentTrackInPlaylist(currentTrackInPlaylist - 1);
-              setIsPlaying(false);
-              stopTrack();
-            } else return;
-          }}
-        >
+        {!isFirstTrack ? (
+          <TouchableOpacity
+            onPress={() => {
+              if (currentTrackInPlaylist > 0) {
+                setCurrentTrackInPlaylist(currentTrackInPlaylist - 1);
+                setIsPlaying(false);
+                stopTrack();
+              } else return;
+            }}
+          >
+            <Image
+              style={[styles.playButton]}
+              source={require('../../../assets/icons/prevTrackButton.png')}
+            ></Image>
+          </TouchableOpacity>
+        ) : (
           <Image
-            style={styles.playButton}
+            style={[styles.playButton, { opacity: 0.3 }]}
             source={require('../../../assets/icons/prevTrackButton.png')}
           ></Image>
-        </TouchableOpacity>
+        )}
         <TouchableOpacity
           onPress={() => {
             if (!isPlaying) {
