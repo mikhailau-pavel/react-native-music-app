@@ -1,6 +1,14 @@
 import { PlayerScreenProps } from '@/types/types';
-import { useEffect, useState } from 'react';
-import { Text, TouchableOpacity, View, Image, StyleSheet, Animated } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  StyleSheet,
+  Animated,
+  ScrollView,
+} from 'react-native';
 import { Audio } from 'expo-av';
 import { Sound } from 'expo-av/build/Audio';
 
@@ -10,10 +18,7 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playProgress, setPlayProgress] = useState(0);
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
-  const [playTimeTotal, setPlayTimeTotal] = useState(0);
-  const progress = new Animated.Value(0);
-  // testProgress.setValue(10);
-  // console.log('test progress', testProgress);
+  const progress = useRef(new Animated.Value(0)).current;
 
   const playlistInfoArr = route.params;
   const amountOfTracksInPlaylist = playlistInfoArr.length - 1;
@@ -42,15 +47,16 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
     sound._onPlaybackStatusUpdate = (playbackStatus) => {
       if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
         const currentTrackProgress = playbackStatus.positionMillis / playbackStatus.durationMillis;
-        progress.setValue(currentTrackProgress);
-        setPlayTimeTotal(playbackStatus.durationMillis);
+        progress.setValue(currentTrackProgress * 100);
         setPlayTimeCurrent(playbackStatus.positionMillis);
         setPlayProgress(currentTrackProgress);
         Animated.timing(progress, {
           useNativeDriver: false,
-          toValue: currentTrackProgress * 100,
-          duration: 200,
-        }).start();
+          toValue: currentTrackProgress + 0.1 * 100 ,
+          duration: 3000,
+        }).start(({ finished }) => {
+          console.log('animation is over', finished);
+        });
       }
     };
   }
@@ -64,7 +70,8 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
   };
 
   return (
-    <View style={styles.background}>
+    //scale track cover on Android depending on controls availability?
+    <ScrollView style={styles.background}>
       <View style={styles.trackCoverContainer}>
         <Text style={styles.trackTitle}>{route.params[currentTrackInPlaylist].artist}</Text>
         <Image
@@ -82,6 +89,8 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
         </View>
         <View style={styles.barContainer}>
           <Animated.View style={[styles.bar, { width: `${playProgress * 100}%` }]} />
+          {/* width: `${progress}%` */}
+          {/* width: `75%` */}
         </View>
       </View>
       <View style={styles.trackControlContainer}>
@@ -137,7 +146,7 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
           ></Image>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
