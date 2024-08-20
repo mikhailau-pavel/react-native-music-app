@@ -26,32 +26,47 @@ const tracksMockList: TrackItemData[] = [
     artist: 'track-1',
     imageURL: mockImage,
     trackId: '3cEYpjA9oz9GiPac4AsH4nsa',
-    previewUrl: ''
+    previewUrl: '',
   },
   {
     title: 'Track_item_2',
     artist: 'track-2',
     imageURL: mockImage,
     trackId: '3cEYpjA9oz9GiPac4AsH4nur',
-    previewUrl: ''
-  }
+    previewUrl: '',
+  },
 ];
 
 const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const [selectedTrackId, setSelectedTrackId] = useState<string>('');
   const [currentPlaylistsTracks, setCurrentPlaylistsTracks] = useState(tracksMockList);
+  const [currentTrackInPlaylist, setCurrentTrackInPlaylist] = useState('none');
   const [sound, setSound] = useState<Sound>();
-
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const handleItemPress = (item: TrackItemData) => {
-    console.log(item.previewUrl)
-    playTrack(item.previewUrl)
-  }
+    setCurrentTrackInPlaylist(item.trackId);
+    playTrack(item.previewUrl);
+  };
 
   const TrackItem = ({ item, onPress, backgroundColor, textColor }: TrackItemProps) => (
-    <TouchableOpacity onPress={() => handleItemPress(item)} style={[styles.item, { backgroundColor }]}>
+    <TouchableOpacity
+      onPress={() => handleItemPress(item)}
+      style={[styles.trackItemContainer, { backgroundColor }]}
+    >
       <View style={styles.item}>
-        <Image source={{ height: 70, width: 70, uri: item.imageURL }} />
+        <Image
+          style={styles.trackAlbumImage}
+          source={{ height: 70, width: 70, uri: item.imageURL }}
+        />
+        {((currentTrackInPlaylist === item.trackId) && isPlaying) ? (
+          <TouchableOpacity style={styles.pauseButtonContainer}>
+            <Image
+              style={{ width: 50, height: 50 }}
+              source={require('../../../assets/icons/pauseTrackButton.png')}
+            />
+          </TouchableOpacity>
+        ) : null}
         <Text style={[styles.title, { color: textColor }]}>
           {item.title} by {item.artist}
         </Text>
@@ -70,7 +85,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
           trackId: elem.track.id,
           previewUrl: elem.track.preview_url,
         });
-        return tracksInfoList; 
+        return tracksInfoList;
       });
       setCurrentPlaylistsTracks(currentPlaylistTracks);
     } else {
@@ -111,6 +126,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
     setSound(track.sound);
     if (track) {
       await track.sound.playAsync();
+      setIsPlaying(true);
     }
   };
 
@@ -136,7 +152,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
             <TouchableOpacity onPress={() => navigation.navigate('Player', currentPlaylistsTracks)}>
               <Image
                 style={styles.playButton}
-                source={require('../../../assets/images/elements/play-button-image-transparent.png')}
+                source={require('../../../assets/icons/playButton.png')}
               ></Image>
             </TouchableOpacity>
           </View>
@@ -166,7 +182,19 @@ const styles = StyleSheet.create({
   playlistCover: {
     alignSelf: 'center',
   },
+  trackItemContainer: {
+    flex: 1,
+  },
+  trackAlbumImage: {
+  },
+  pauseButtonContainer: {
+    flex: 1,
+    alignSelf: 'baseline',
+    margin: 3,
+  },
   item: {
+    flex: 1,
+    flexDirection: 'row',
     backgroundColor: '#7bfdc7',
     margin: 5,
   },
