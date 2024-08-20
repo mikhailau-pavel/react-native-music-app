@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { Audio } from 'expo-av';
 import { Sound } from 'expo-av/build/Audio';
+import { opacity } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 
 const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
   const [sound, setSound] = useState<Sound>();
@@ -91,25 +92,25 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
           <View style={styles.trackInfoControlContainer}>
             <TouchableOpacity>
               <Image
-                style={styles.playButton}
+                style={styles.controlButton}
                 source={require('../../../assets/icons/favButton.png')}
               ></Image>
             </TouchableOpacity>
             <TouchableOpacity>
               <Image
-                style={styles.playButton}
+                style={styles.controlButton}
                 source={require('../../../assets/icons/loopButton.png')}
               ></Image>
             </TouchableOpacity>
             <TouchableOpacity>
               <Image
-                style={styles.playButton}
+                style={styles.controlButton}
                 source={require('../../../assets/icons/muteButton.png')}
               ></Image>
             </TouchableOpacity>
             <TouchableOpacity onPress={handlePress}>
               <Image
-                style={styles.playButton}
+                style={styles.controlButton}
                 source={require('../../../assets/icons/closeButton.png')}
               ></Image>
             </TouchableOpacity>
@@ -117,7 +118,7 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
         ) : (
           <TouchableOpacity onPress={handlePress}>
             <Image
-              style={styles.playButton}
+              style={styles.controlButton}
               source={require('../../../assets/icons/infoButton.png')}
             ></Image>
           </TouchableOpacity>
@@ -131,7 +132,7 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
         </View>
       </View>
       <View style={styles.trackControlContainer}>
-        {!isFirstTrack ? (
+        {!(currentTrackInPlaylist === 0) ? (
           <TouchableOpacity
             onPress={() => {
               if (currentTrackInPlaylist > 0) {
@@ -142,13 +143,13 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
             }}
           >
             <Image
-              style={[styles.playButton]}
+              style={[styles.controlButton]}
               source={require('../../../assets/icons/prevTrackButton.png')}
             ></Image>
           </TouchableOpacity>
         ) : (
           <Image
-            style={[styles.playButton, { opacity: 0.3 }]}
+            style={[styles.controlButton, { opacity: 0.3 }]}
             source={require('../../../assets/icons/prevTrackButton.png')}
           ></Image>
         )}
@@ -165,30 +166,36 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
         >
           {!isPlaying ? (
             <Image
-              style={styles.playButton}
+              style={styles.controlButton}
               source={require('../../../assets/icons/playButton.png')}
             ></Image>
           ) : (
             <Image
-              style={styles.playButton}
+              style={styles.controlButton}
               source={require('../../../assets/icons/pauseTrackButton.png')}
             ></Image>
           )}
         </TouchableOpacity>
+        {!(currentTrackInPlaylist === amountOfTracksInPlaylist) ?
         <TouchableOpacity
-          onPress={() => {
-            if (currentTrackInPlaylist < amountOfTracksInPlaylist) {
-              setCurrentTrackInPlaylist(currentTrackInPlaylist + 1);
-              setIsPlaying(false);
-              stopTrack();
-            } else return;
-          }}
-        >
-          <Image
-            style={styles.playButton}
-            source={require('../../../assets/icons/nextTrackButton.png')}
-          ></Image>
-        </TouchableOpacity>
+        onPress={() => {
+          if (currentTrackInPlaylist < amountOfTracksInPlaylist) {
+            setCurrentTrackInPlaylist(currentTrackInPlaylist + 1);
+            setIsPlaying(false);
+            stopTrack();
+          } else return;
+        }}
+      >
+        <Image
+          style={styles.controlButton}
+          source={require('../../../assets/icons/nextTrackButton.png')}
+        ></Image>
+      </TouchableOpacity> : <Image
+          style={[styles.controlButton, {opacity: 0.3}]}
+          source={require('../../../assets/icons/nextTrackButton.png')}
+        ></Image>
+      }
+        
       </View>
     </ScrollView>
   );
@@ -227,7 +234,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  playButton: {
+  controlButton: {
     width: 60,
     height: 60,
     alignSelf: 'flex-end',
