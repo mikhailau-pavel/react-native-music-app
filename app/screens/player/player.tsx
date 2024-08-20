@@ -1,5 +1,5 @@
 import { PlayerScreenProps } from '@/types/types';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -9,11 +9,9 @@ import {
   Animated,
   ScrollView,
   LayoutAnimation,
-  Easing,
 } from 'react-native';
 import { Audio } from 'expo-av';
 import { Sound } from 'expo-av/build/Audio';
-import { opacity } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 
 const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
   const [sound, setSound] = useState<Sound>();
@@ -21,8 +19,7 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playProgress, setPlayProgress] = useState(0);
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
-  const [expanded, setExpanded] = useState(true);
-  const [isFirstTrack, setIsFirstTrack] = useState(true);
+  const [expanded, setExpanded] = useState(true)
   const progress = useRef(new Animated.Value(0)).current;
 
   const playlistInfoArr = route.params;

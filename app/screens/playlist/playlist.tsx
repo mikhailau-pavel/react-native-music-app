@@ -16,6 +16,8 @@ import {
   ImageBackground,
   TextInput,
 } from 'react-native';
+import { Audio } from 'expo-av';
+import { Sound } from 'expo-av/build/Audio/Sound';
 
 const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
 const tracksMockList: TrackItemData[] = [
@@ -35,20 +37,27 @@ const tracksMockList: TrackItemData[] = [
   }
 ];
 
-const TrackItem = ({ item, onPress, backgroundColor, textColor }: TrackItemProps) => (
-  <TouchableOpacity onPress={onPress} style={[styles.item, { backgroundColor }]}>
-    <View style={styles.item}>
-      <Image source={{ height: 70, width: 70, uri: item.imageURL }} />
-      <Text style={[styles.title, { color: textColor }]}>
-        {item.title} by {item.artist}
-      </Text>
-    </View>
-  </TouchableOpacity>
-);
-
 const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const [selectedTrackId, setSelectedTrackId] = useState<string>('');
   const [currentPlaylistsTracks, setCurrentPlaylistsTracks] = useState(tracksMockList);
+  const [sound, setSound] = useState<Sound>();
+
+
+  const handleItemPress = (item: TrackItemData) => {
+    console.log(item.previewUrl)
+    playTrack(item.previewUrl)
+  }
+
+  const TrackItem = ({ item, onPress, backgroundColor, textColor }: TrackItemProps) => (
+    <TouchableOpacity onPress={() => handleItemPress(item)} style={[styles.item, { backgroundColor }]}>
+      <View style={styles.item}>
+        <Image source={{ height: 70, width: 70, uri: item.imageURL }} />
+        <Text style={[styles.title, { color: textColor }]}>
+          {item.title} by {item.artist}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   const createPlaylistsTrackList = useCallback(async (playlistId: string) => {
     const tracks = await fetchTracksFromPlaylist(playlistId);
@@ -91,6 +100,18 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
         textColor={color}
       />
     );
+  };
+
+  const playTrack = async (url: string) => {
+    await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+    const track = await Audio.Sound.createAsync({
+      uri: url,
+    });
+
+    setSound(track.sound);
+    if (track) {
+      await track.sound.playAsync();
+    }
   };
 
   return (
