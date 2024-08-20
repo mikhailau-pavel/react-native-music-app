@@ -19,7 +19,7 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playProgress, setPlayProgress] = useState(0);
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
-  const [expanded, setExpanded] = useState(true)
+  const [expanded, setExpanded] = useState(true);
   const progress = useRef(new Animated.Value(0)).current;
 
   const playlistInfoArr = route.params;
@@ -173,26 +173,27 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
             ></Image>
           )}
         </TouchableOpacity>
-        {!(currentTrackInPlaylist === amountOfTracksInPlaylist) ?
-        <TouchableOpacity
-        onPress={() => {
-          if (currentTrackInPlaylist < amountOfTracksInPlaylist) {
-            setCurrentTrackInPlaylist(currentTrackInPlaylist + 1);
-            setIsPlaying(false);
-            stopTrack();
-          } else return;
-        }}
-      >
-        <Image
-          style={styles.controlButton}
-          source={require('../../../assets/icons/nextTrackButton.png')}
-        ></Image>
-      </TouchableOpacity> : <Image
-          style={[styles.controlButton, {opacity: 0.3}]}
-          source={require('../../../assets/icons/nextTrackButton.png')}
-        ></Image>
-      }
-        
+        {!(currentTrackInPlaylist === amountOfTracksInPlaylist) ? (
+          <TouchableOpacity
+            onPress={() => {
+              if (currentTrackInPlaylist < amountOfTracksInPlaylist) {
+                setCurrentTrackInPlaylist(currentTrackInPlaylist + 1);
+                setIsPlaying(false);
+                stopTrack();
+              } else return;
+            }}
+          >
+            <Image
+              style={styles.controlButton}
+              source={require('../../../assets/icons/nextTrackButton.png')}
+            ></Image>
+          </TouchableOpacity>
+        ) : (
+          <Image
+            style={[styles.controlButton, { opacity: 0.3 }]}
+            source={require('../../../assets/icons/nextTrackButton.png')}
+          ></Image>
+        )}
       </View>
     </ScrollView>
   );

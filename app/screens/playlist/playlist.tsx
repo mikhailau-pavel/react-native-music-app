@@ -59,7 +59,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
           style={styles.trackAlbumImage}
           source={{ height: 70, width: 70, uri: item.imageURL }}
         />
-        {((currentTrackInPlaylist === item.trackId) && isPlaying) ? (
+        {currentTrackInPlaylist === item.trackId && isPlaying ? (
           <TouchableOpacity style={styles.pauseButtonContainer}>
             <Image
               style={{ width: 50, height: 50 }}
@@ -185,8 +185,7 @@ const styles = StyleSheet.create({
   trackItemContainer: {
     flex: 1,
   },
-  trackAlbumImage: {
-  },
+  trackAlbumImage: {},
   pauseButtonContainer: {
     flex: 1,
     alignSelf: 'baseline',

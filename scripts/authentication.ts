@@ -28,7 +28,6 @@ export const base64encode = (input: ArrayBuffer) => {
 export const hashed = async () => {
   const codeVerifier = generateRandomString(44);
   await storeData('code_verifier', codeVerifier);
-  console.log('initially set code verifier', await getData('code_verifier'))
   return await sha256(codeVerifier);
 };
 
@@ -69,40 +68,33 @@ export const createLoginUrl = async () => {
   return authUrl.toString();
 };
 
-
 export const requestAccessToken = async () => {
-    const codeVerifier = (await getData('code_verifier')) || '';
-    console.log('checked for token code verifier', codeVerifier)
-    const code = (await getData('responseCode')) || '';
-    // console.log('code-prev', codeVerifier)
-    // console.log('code', code)
-    const params: Record<string, string> = {
-      client_id: 'e6d38f8e338847f0a2909ea813ec79e4',
-      //process.env.CLIENT_ID,
-      grant_type: 'authorization_code',
-      code,
-      redirect_uri: 'http://localhost:8081/profile',
-      //process.env.REDIRECT_URI,
-      code_verifier: codeVerifier,
-    };
-    const payloadBody = Object.keys(params)
-      .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
-      .join('&');
-      
-    const payload = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: payloadBody,
-    };
-  
-    const body = await fetch(AuthURLs.TOKEN, payload);
-    const result = await body.json();
-    //console.log('payload', body)
-    console.log('result', result)
-    return result
-  
-    // await storeData('access_token', response.access_token);
-    // await storeData('refresh_token', response.refresh_token);
+  const codeVerifier = (await getData('code_verifier')) || '';
+  const code = (await getData('responseCode')) || '';
+  // console.log('code-prev', codeVerifier)
+  // console.log('code', code)
+  const params: Record<string, string> = {
+    client_id: 'e6d38f8e338847f0a2909ea813ec79e4',
+    //process.env.CLIENT_ID,
+    grant_type: 'authorization_code',
+    code,
+    redirect_uri: 'http://localhost:8081/profile',
+    //process.env.REDIRECT_URI,
+    code_verifier: codeVerifier,
   };
+  const payloadBody = Object.keys(params)
+    .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
+    .join('&');
+
+  const payload = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: payloadBody,
+  };
+
+  const body = await fetch(AuthURLs.TOKEN, payload);
+  const result = await body.json();
+  return result;
+};

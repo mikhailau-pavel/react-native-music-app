@@ -6,7 +6,6 @@ enum RequestUrls {
   CURRENT_USER_PLAYlISTS = 'https://api.spotify.com/v1/me/playlists',
 }
 
-
 const requestRefreshToken = async () => {
   const refreshToken = (await getData('refresh_token')) || '';
   const params: Record<string, string> = {
@@ -66,7 +65,7 @@ const fetchTracksFromPlaylist = async (playlistId: string) => {
     if (data.error && data.error.message === 'The access token expired') {
       requestRefreshToken();
     } else if (data.error && data.error.message === 'Invalid access token') {
-     // await requestAccessToken();
+      // await requestAccessToken();
     } else {
       return data.items;
     }
@@ -77,7 +76,13 @@ const fetchTracksFromPlaylist = async (playlistId: string) => {
 
 const resetAccessToken = async () => {
   //console.log('reset happening');
-  await AsyncStorage.multiRemove(['access_token', 'refresh_token', 'code_verifier', 'responseCode', 'playlists'])
+  await AsyncStorage.multiRemove([
+    'access_token',
+    'refresh_token',
+    'code_verifier',
+    'responseCode',
+    'playlists',
+  ]);
   //console.log('state', await AsyncStorage.multiGet(['access_token', 'refresh_token', 'code_verifier', 'responseCode', 'playlists']))
 };
 
