@@ -25,37 +25,36 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
   const playlistInfoArr = route.params;
   const amountOfTracksInPlaylist = playlistInfoArr.length - 1;
 
-  const playTrack = async () => {
+  const createPlayback = async () => {
     await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
     const track = await Audio.Sound.createAsync({
       uri: route.params[currentTrackInPlaylist].previewUrl,
     });
-
-    setSound(track.sound);
-    if (track) {
-      await track.sound.playAsync();
-    }
+    setSound(track.sound)
   };
 
   const handlePress = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
     setExpanded(!expanded);
   };
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
+
+  // useEffect(() => {
+  //   return sound
+  //     ? () => {
+  //         sound.unloadAsync();
+  //       }
+  //     : undefined;
+  // }, [sound]);
 
   if (sound) {
     sound._onPlaybackStatusUpdate = (playbackStatus) => {
       if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
         const currentTrackProgress = playbackStatus.positionMillis / playbackStatus.durationMillis;
         progress.setValue(currentTrackProgress * 100);
+        //console.log('playback status:', playbackStatus.positionMillis)
         setPlayTimeCurrent(playbackStatus.positionMillis);
         setPlayProgress(currentTrackProgress);
+        //swap to reanimated
         Animated.timing(progress, {
           useNativeDriver: false,
           toValue: (currentTrackProgress + 1) * 100,
@@ -64,8 +63,32 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
           // console.log('animation is over', finished);
         });
       }
+      if (
+        playbackStatus.isLoaded &&
+        playbackStatus.didJustFinish &&
+        !(currentTrackInPlaylist === amountOfTracksInPlaylist)
+      ) {
+        console.log('track is finished');
+        playNextTrack();
+      }
     };
   }
+
+  const playTrack = async () => {
+    if (sound) {
+      console.log('playing being called');
+      const test = await sound.playAsync();
+      console.log('test', test)
+      //await sound.playFromPositionAsync(26000);
+    }
+  };
+
+  const playNextTrack = async () => {
+    await stopTrack();
+    setCurrentTrackInPlaylist(currentTrackInPlaylist + 1);
+    await createPlayback();
+    await playTrack();
+  };
 
   const pauseTrack = async () => {
     if (sound) await sound.pauseAsync();
@@ -153,8 +176,18 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
         <TouchableOpacity
           onPress={() => {
             if (!isPlaying) {
-              playTrack();
-              setIsPlaying(true);
+              // if (typeof sound === 'undefined'){
+              //   createPlayback()
+              // }
+              { ( async ()=> {
+                await createPlayback();
+                await playTrack();
+              })()
+                // createPlayback();
+                // playTrack();
+                // setIsPlaying(true);
+                // console.log('current track id:', currentTrackInPlaylist);
+              };
             } else {
               pauseTrack();
               setIsPlaying(false);
