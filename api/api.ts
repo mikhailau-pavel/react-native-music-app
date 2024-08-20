@@ -1,4 +1,4 @@
-import { getData, removeData, storeData } from '@/scripts/asyncStorage';
+import { getData, storeData } from '@/scripts/asyncStorage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 enum RequestUrls {
@@ -25,16 +25,6 @@ const requestRefreshToken = async () => {
     },
     body: payloadBody,
   };
-  //const body = await fetch(RequestUrls.TOKEN, payload);
-  //const response = await body.json();
-  // if (response.error_description && response.error_description === 'Refresh token revoked') {
-  //   await removeData('access_token');
-  //   await removeData('refresh_token');
-  //   //requestAccessToken();
-  // } else {
-  //   await storeData('access_token', response.access_token);
-  //   await storeData('refresh_token', response.refresh_token);
-  // }
 };
 
 const fetchCurrentUserPlaylists = async () => {
@@ -70,12 +60,11 @@ const fetchTracksFromPlaylist = async (playlistId: string) => {
       return data.items;
     }
   } catch (err) {
-    console.error(err);
+    throw new Error(`Error message is:${err}`);
   }
 };
 
 const resetAccessToken = async () => {
-  //console.log('reset happening');
   await AsyncStorage.multiRemove([
     'access_token',
     'refresh_token',
@@ -83,12 +72,10 @@ const resetAccessToken = async () => {
     'responseCode',
     'playlists',
   ]);
-  //console.log('state', await AsyncStorage.multiGet(['access_token', 'refresh_token', 'code_verifier', 'responseCode', 'playlists']))
 };
 
 export {
   fetchCurrentUserPlaylists,
-  //requestAccessToken,
   fetchTracksFromPlaylist,
   requestRefreshToken,
   resetAccessToken,

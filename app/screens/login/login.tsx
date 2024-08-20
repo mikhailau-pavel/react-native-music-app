@@ -37,12 +37,10 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
                 await storeData('responseCode', parseResponseCode(url));
                 await accessTokenQuery.refetch();
                 const testToken = await getData('access_token');
-                console.log('set test token1', testToken);
                 if (accessTokenQuery.data) {
                   await storeData('access_token', accessTokenQuery.data.access_token);
                   await storeData('refresh_token', accessTokenQuery.data.refresh_token);
                   const testToken = await getData('access_token');
-                  console.log('set test token2', testToken);
                 }
                 //goBack after
                 navigation.navigate('Home', { loginAttempt: true });
