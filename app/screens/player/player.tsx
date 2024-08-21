@@ -14,7 +14,7 @@ import { Audio } from 'expo-av';
 import { Sound } from 'expo-av/build/Audio';
 
 const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
-  const [sound, setSound] = useState<Sound>();
+  const [sound, setSound] = useState<Sound | null>(null);
   const [currentTrackInPlaylist, setCurrentTrackInPlaylist] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playProgress, setPlayProgress] = useState(0);
@@ -25,12 +25,11 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
   const playlistInfoArr = route.params;
   const amountOfTracksInPlaylist = playlistInfoArr.length - 1;
 
-  const createPlayback = async () => {
+  const createPlayback = async (url: string) => {
     await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-    const track = await Audio.Sound.createAsync({
-      uri: route.params[currentTrackInPlaylist].previewUrl,
-    });
-    setSound(track.sound)
+    const track = await Audio.Sound.createAsync({ uri: url });
+    setSound(track.sound);
+    return track.sound;
   };
 
   const handlePress = () => {
@@ -38,64 +37,89 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
     setExpanded(!expanded);
   };
 
-  // useEffect(() => {
-  //   return sound
-  //     ? () => {
-  //         sound.unloadAsync();
-  //       }
-  //     : undefined;
-  // }, [sound]);
+  useEffect(() => {
+    return sound
+      ? () => {
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
 
-  if (sound) {
-    sound._onPlaybackStatusUpdate = (playbackStatus) => {
-      if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
-        const currentTrackProgress = playbackStatus.positionMillis / playbackStatus.durationMillis;
-        progress.setValue(currentTrackProgress * 100);
-        //console.log('playback status:', playbackStatus.positionMillis)
-        setPlayTimeCurrent(playbackStatus.positionMillis);
-        setPlayProgress(currentTrackProgress);
-        //swap to reanimated
-        Animated.timing(progress, {
-          useNativeDriver: false,
-          toValue: (currentTrackProgress + 1) * 100,
-          duration: 200,
-        }).start(({ finished }) => {
-          // console.log('animation is over', finished);
-        });
-      }
-      if (
-        playbackStatus.isLoaded &&
-        playbackStatus.didJustFinish &&
-        !(currentTrackInPlaylist === amountOfTracksInPlaylist)
-      ) {
-        console.log('track is finished');
-        playNextTrack();
-      }
-    };
-  }
+  useEffect(() => {
+    if (sound) {
+      sound._onPlaybackStatusUpdate = (playbackStatus) => {
+        if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
+          const currentTrackProgress =
+            playbackStatus.positionMillis / playbackStatus.durationMillis;
+          progress.setValue(currentTrackProgress * 100);
+          console.log('playback status:', playbackStatus.positionMillis);
+          setPlayTimeCurrent(playbackStatus.positionMillis);
+          setPlayProgress(currentTrackProgress);
+          //swap to reanimated
+          Animated.timing(progress, {
+            useNativeDriver: false,
+            toValue: (currentTrackProgress + 1) * 100,
+            duration: 200,
+          }).start(({ finished }) => {
+            // console.log('animation is over', finished);
+          });
+        }
+        if (
+          playbackStatus.isLoaded &&
+          playbackStatus.didJustFinish &&
+          !(currentTrackInPlaylist === amountOfTracksInPlaylist)
+        ) {
+          playNextTrack();
+        }
+      };
+    }
+  }, [sound]);
 
   const playTrack = async () => {
     if (sound) {
-      console.log('playing being called');
-      const test = await sound.playAsync();
-      console.log('test', test)
-      //await sound.playFromPositionAsync(26000);
+      setIsPlaying(true);
+      await sound.playAsync();
     }
   };
 
   const playNextTrack = async () => {
     await stopTrack();
+    if (sound) {
+      await sound.unloadAsync();
+      setSound(null);
+    }
     setCurrentTrackInPlaylist(currentTrackInPlaylist + 1);
-    await createPlayback();
-    await playTrack();
+    //current + 1 (sync)?
+    const nextTrackUrl = route.params[currentTrackInPlaylist + 1].previewUrl;
+    const nextSound = await createPlayback(nextTrackUrl);
+    await createPlayback(nextTrackUrl);
+    await nextSound.playAsync();
+    setIsPlaying(true);
   };
 
   const pauseTrack = async () => {
     if (sound) await sound.pauseAsync();
+    setIsPlaying(false);
   };
 
   const stopTrack = async () => {
     if (sound) await sound.stopAsync();
+  };
+
+  const handlePlayButtonPress = async () => {
+    if (!isPlaying) {
+      if (!sound) {
+        const url = route.params[currentTrackInPlaylist].previewUrl;
+        const newTrack = await createPlayback(url);
+        await newTrack.playAsync();
+      } else {
+        await playTrack();
+      }
+      setIsPlaying(true);
+    } else {
+      await pauseTrack();
+      setIsPlaying(false);
+    }
   };
 
   return (
@@ -173,27 +197,7 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
             source={require('../../../assets/icons/prevTrackButton.png')}
           ></Image>
         )}
-        <TouchableOpacity
-          onPress={() => {
-            if (!isPlaying) {
-              // if (typeof sound === 'undefined'){
-              //   createPlayback()
-              // }
-              { ( async ()=> {
-                await createPlayback();
-                await playTrack();
-              })()
-                // createPlayback();
-                // playTrack();
-                // setIsPlaying(true);
-                // console.log('current track id:', currentTrackInPlaylist);
-              };
-            } else {
-              pauseTrack();
-              setIsPlaying(false);
-            }
-          }}
-        >
+        <TouchableOpacity onPress={handlePlayButtonPress}>
           {!isPlaying ? (
             <Image
               style={styles.controlButton}
