@@ -89,21 +89,24 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
       setSound(null);
     }
     setCurrentTrackInPlaylist(currentTrackInPlaylist + 1);
-    //current + 1 (sync)?
     const nextTrackUrl = route.params[currentTrackInPlaylist + 1].previewUrl;
     const nextSound = await createPlayback(nextTrackUrl);
     await nextSound.playAsync();
     setIsPlaying(true);
   };
 
-  // const playPreviousTrack = async ()=> {
-  //   await stopTrack();
-  //   if (sound) {
-  //     await sound.unloadAsync();
-  //     setSound(null)
-  //   }
-  //   setCurrentTrackInPlaylist(currentTrackInPlaylist + 1)
-  // }
+  const playPreviousTrack = async () => {
+    await stopTrack();
+    if (sound) {
+      await sound.unloadAsync();
+      setSound(null);
+    }
+    setCurrentTrackInPlaylist(currentTrackInPlaylist - 1);
+    const prevTrackUrl = route.params[currentTrackInPlaylist - 1].previewUrl;
+    const prevSound = await createPlayback(prevTrackUrl);
+    await prevSound.playAsync();
+    setIsPlaying(true);
+  };
 
   const pauseTrack = async () => {
     if (sound) await sound.pauseAsync();
@@ -188,9 +191,7 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
           <TouchableOpacity
             onPress={() => {
               if (currentTrackInPlaylist > 0) {
-                setCurrentTrackInPlaylist(currentTrackInPlaylist - 1);
-                setIsPlaying(false);
-                stopTrack();
+                playPreviousTrack()
               } else return;
             }}
           >
@@ -222,7 +223,7 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
           <TouchableOpacity
             onPress={() => {
               if (currentTrackInPlaylist < amountOfTracksInPlaylist) {
-                playNextTrack()
+                playNextTrack();
               } else return;
             }}
           >
