@@ -6,21 +6,21 @@ import {
   View,
   Image,
   StyleSheet,
-  Animated,
   ScrollView,
   LayoutAnimation,
 } from 'react-native';
+import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 import { Audio } from 'expo-av';
 import { Sound } from 'expo-av/build/Audio';
 
-const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
+const PlayerScreen = ({ route }: PlayerScreenProps) => {
   const [sound, setSound] = useState<Sound | null>(null);
   const [currentTrackInPlaylist, setCurrentTrackInPlaylist] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [playProgress, setPlayProgress] = useState(0);
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
   const [expanded, setExpanded] = useState(true);
-  const progress = useRef(new Animated.Value(0)).current;
+  const [progressBarWidth, setProgressBarWidth] = useState(0);
+  const progress = useSharedValue(0);
 
   const playlistInfoArr = route.params;
   const amountOfTracksInPlaylist = playlistInfoArr.length - 1;
@@ -50,19 +50,12 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
       sound._onPlaybackStatusUpdate = (playbackStatus) => {
         if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
           const currentTrackProgress =
-            playbackStatus.positionMillis / playbackStatus.durationMillis;
-          progress.setValue(currentTrackProgress * 100);
-          console.log('playback status:', playbackStatus.positionMillis);
+            (playbackStatus.positionMillis / playbackStatus.durationMillis) * 100;
+          const calcProgressWidth = (progressBarWidth / 100) * currentTrackProgress;
+          progress.value = withSpring(calcProgressWidth);
+          console.log('progress value: ', progress.value);
+          console.log('calc progress:', calcProgressWidth);
           setPlayTimeCurrent(playbackStatus.positionMillis);
-          setPlayProgress(currentTrackProgress);
-          //swap to reanimated
-          Animated.timing(progress, {
-            useNativeDriver: false,
-            toValue: (currentTrackProgress + 1) * 100,
-            duration: 200,
-          }).start(({ finished }) => {
-            // console.log('animation is over', finished);
-          });
         }
         if (
           playbackStatus.isLoaded &&
@@ -182,8 +175,16 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
           <Text>{`${Math.floor(playTimeCurrent / 1000 / 60)}:${Math.floor((playTimeCurrent / 1000) % 60) < 10 ? '0' : ''}${Math.floor((playTimeCurrent / 1000) % 60)}`}</Text>
           <Text>0:29</Text>
         </View>
-        <View style={styles.barContainer}>
-          <Animated.View style={[styles.bar, { width: `${playProgress * 100}%` }]} />
+        <View
+          style={styles.barContainer}
+          onLayout={(e) => {
+            const { width } = e.nativeEvent.layout;
+            setProgressBarWidth(width);
+            console.log('width', width);
+          }}
+        >
+          <Animated.View style={[styles.bar, { width: progress }]} />
+          {/* `${playProgress * 100}%` */}
         </View>
       </View>
       <View style={styles.trackControlContainer}>
@@ -191,7 +192,7 @@ const PlayerScreen = ({ route, navigation }: PlayerScreenProps) => {
           <TouchableOpacity
             onPress={() => {
               if (currentTrackInPlaylist > 0) {
-                playPreviousTrack()
+                playPreviousTrack();
               } else return;
             }}
           >
@@ -287,6 +288,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
     borderRadius: 10,
     margin: 10,
+    overflow: 'hidden',
   },
   bar: {
     height: 20,
