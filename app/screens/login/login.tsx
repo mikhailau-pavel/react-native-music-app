@@ -36,11 +36,9 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
               if (url.includes('localhost:8081/profile?code=')) {
                 await storeData('responseCode', parseResponseCode(url));
                 await accessTokenQuery.refetch();
-                const testToken = await getData('access_token');
                 if (accessTokenQuery.data) {
                   await storeData('access_token', accessTokenQuery.data.access_token);
                   await storeData('refresh_token', accessTokenQuery.data.refresh_token);
-                  const testToken = await getData('access_token');
                 }
                 //goBack after
                 navigation.navigate('Home', { loginAttempt: true });

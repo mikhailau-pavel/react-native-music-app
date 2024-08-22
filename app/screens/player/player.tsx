@@ -1,5 +1,5 @@
 import { PlayerScreenProps } from '@/types/types';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -186,7 +186,6 @@ const PlayerScreen = ({ route }: PlayerScreenProps) => {
           onLayout={(e) => {
             const { width } = e.nativeEvent.layout;
             setProgressBarWidth(width);
-            console.log('width', width);
           }}
         >
           <Animated.View style={[styles.bar, { width: progress }]} />

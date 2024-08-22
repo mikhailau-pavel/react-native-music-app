@@ -15,9 +15,11 @@ import {
   StyleSheet,
   ImageBackground,
   TextInput,
+  Modal,
 } from 'react-native';
 import { Audio } from 'expo-av';
 import { Sound } from 'expo-av/build/Audio/Sound';
+import PlaybackBar from '@/app/components/playbackBar';
 
 const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
 const tracksMockList: TrackItemData[] = [
@@ -137,6 +139,8 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       style={styles.background}
     >
       <TextInput style={styles.searchbar}> Search</TextInput>
+      <PlaybackBar></PlaybackBar>
+
       <FlatList
         data={currentPlaylistsTracks}
         renderItem={renderTrackItem}
@@ -158,6 +162,16 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
           </View>
         }
       />
+      <View style={styles.playbackBar}>
+        <Image style={styles.playbackBarImage}></Image>
+        <Text style={styles.playbackBarText}>Song by Name{currentTrackInPlaylist}</Text>
+        <TouchableOpacity>
+          <Image
+            style={styles.playbackBarButtonImage}
+            source={require('../../../assets/icons/playButton.png')}
+          ></Image>
+        </TouchableOpacity>
+      </View>
       {/* <TouchableOpacity>
         <Text>Add songs</Text>
       </TouchableOpacity> */}
@@ -212,6 +226,28 @@ const styles = StyleSheet.create({
     height: 60,
     alignSelf: 'flex-end',
     margin: 15,
+  },
+  playbackBar: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 40,
+    margin: 10,
+    //picker?
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    elevation: 5,
+  },
+  playbackBarImage: { flex: 1 },
+  playbackBarText: { flex: 2 },
+  playbackBarButtonContainer: {
+    flex: 1,
+  },
+  playbackBarButtonImage: {
+    height: 35,
+    width: 35,
   },
 });
 

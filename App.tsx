@@ -11,8 +11,9 @@ import NotFoundScreen from './app/screens/notFound/notFound';
 import PlaylistScreen from './app/screens/playlist/playlist';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import PlayerScreen from './app/screens/player/player';
+import { initialPlaybackData, PlaybackContext } from './scripts/playbackContext';
 
 // if (__DEV__) {
 //   require('./ReactotronConfig');
@@ -34,6 +35,8 @@ export default function App() {
     AngemeBold: require('./assets/fonts/Angeme-Bold.ttf'),
     AngemeRegular: require('./assets/fonts/Angeme-Regular.ttf'),
   });
+  const [playbackData, setPlaybackData] = useState(initialPlaybackData);
+  const playbackContextValue = { playbackData, setPlaybackData };
 
   useEffect(() => {
     if (loaded || error) {
@@ -64,40 +67,42 @@ export default function App() {
 
   return (
     <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-      <QueryClientProvider client={queryClient}>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen
-            name={PropsRoutes.HOME}
-            component={HomeScreen}
-            options={{ title: 'Home' }}
-          />
-          <Stack.Screen
-            name={PropsRoutes.LOGIN}
-            component={LoginScreen}
-            options={{ title: 'Login' }}
-          />
-          <Stack.Screen
-            name={PropsRoutes.PROFILE}
-            component={ProfileScreen}
-            options={{ title: 'Profile' }}
-          />
-          <Stack.Screen
-            name={PropsRoutes.PLAYLIST}
-            component={PlaylistScreen}
-            options={{ title: 'Playlist' }}
-          />
-          <Stack.Screen
-            name={PropsRoutes.PLAYER}
-            component={PlayerScreen}
-            options={{ title: 'Player' }}
-          />
-          <Stack.Screen
-            name={'NotFound'}
-            component={NotFoundScreen}
-            options={{ title: '404 Not Found' }}
-          />
-        </Stack.Navigator>
-      </QueryClientProvider>
+      <PlaybackContext.Provider value={playbackContextValue}>
+        <QueryClientProvider client={queryClient}>
+          <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen
+              name={PropsRoutes.HOME}
+              component={HomeScreen}
+              options={{ title: 'Home' }}
+            />
+            <Stack.Screen
+              name={PropsRoutes.LOGIN}
+              component={LoginScreen}
+              options={{ title: 'Login' }}
+            />
+            <Stack.Screen
+              name={PropsRoutes.PROFILE}
+              component={ProfileScreen}
+              options={{ title: 'Profile' }}
+            />
+            <Stack.Screen
+              name={PropsRoutes.PLAYLIST}
+              component={PlaylistScreen}
+              options={{ title: 'Playlist' }}
+            />
+            <Stack.Screen
+              name={PropsRoutes.PLAYER}
+              component={PlayerScreen}
+              options={{ title: 'Player' }}
+            />
+            <Stack.Screen
+              name={'NotFound'}
+              component={NotFoundScreen}
+              options={{ title: '404 Not Found' }}
+            />
+          </Stack.Navigator>
+        </QueryClientProvider>
+      </PlaybackContext.Provider>
     </NavigationContainer>
   );
 }
