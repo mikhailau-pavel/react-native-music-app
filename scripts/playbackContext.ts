@@ -1,3 +1,4 @@
+import { Audio } from 'expo-av';
 import { createContext } from 'react';
 
 export type PlaybackData = {
@@ -7,6 +8,7 @@ export type PlaybackData = {
   currentTrackUrl: string;
   isPlaying: boolean;
   isShowing: boolean;
+  currentSound: Audio.Sound | null;
 };
 
 export type PlaybackDataContext = {
@@ -17,10 +19,11 @@ export type PlaybackDataContext = {
 export const initialPlaybackData: PlaybackData = {
   currentArtist: '',
   currentSong: '',
-  currentAlbumImage: ' ',
+  currentAlbumImage: '',
   currentTrackUrl: '',
   isPlaying: false,
   isShowing: false,
+  currentSound: null,
 };
 
 export const initialPlaybackContext: PlaybackDataContext = {

@@ -4,7 +4,11 @@ import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 const PlaybackBar = () => {
   const { playbackData } = useContext(PlaybackContext);
-  
+  console.log('playback data:', playbackData)
+  const handlePlayButton = () => {
+    return 
+  };
+
   return (
     //opposite
     <View style={playbackData.isShowing ? styles.playbackBar : { display: 'none' }}>
@@ -15,10 +19,14 @@ const PlaybackBar = () => {
       <Text style={styles.playbackBarText}>
         {playbackData.currentSong} by {playbackData.currentArtist}
       </Text>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={handlePlayButton}>
         <Image
           style={styles.playbackBarButtonImage}
-          source={require('../../assets/icons/playButton.png')}
+          source={
+            playbackData.isPlaying
+              ? require('../../assets/icons/pauseTrackButton.png')
+              : require('../../assets/icons/playButton.png')
+          }
         ></Image>
       </TouchableOpacity>
     </View>
@@ -39,12 +47,12 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     elevation: 5,
   },
-  playbackBarImage: { 
+  playbackBarImage: {
     height: 55,
     minWidth: 55,
     margin: 5,
     borderRadius: 10,
-   },
+  },
   playbackBarText: { flex: 2 },
   playbackBarButtonContainer: {
     flex: 1,

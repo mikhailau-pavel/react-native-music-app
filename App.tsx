@@ -64,7 +64,7 @@ export default function App() {
     prefixes: [prefix],
     config,
   };
-  
+
   return (
     <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
       <PlaybackContext.Provider value={playbackContextValue}>

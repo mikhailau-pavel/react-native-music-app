@@ -16,9 +16,9 @@ import {
   ImageBackground,
   TextInput,
 } from 'react-native';
-import { Audio } from 'expo-av';
 import { Sound } from 'expo-av/build/Audio/Sound';
 import { PlaybackContext } from '@/scripts/playbackContext';
+import { createPlayback, playTrack } from '@/scripts/player';
 
 const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
 const tracksMockList: TrackItemData[] = [
@@ -44,15 +44,29 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const [currentTrackInPlaylist, setCurrentTrackInPlaylist] = useState('none');
   const [sound, setSound] = useState<Sound>();
   const [isPlaying, setIsPlaying] = useState(false);
-  const { playbackData,setPlaybackData } = useContext(PlaybackContext)
+  const { playbackData, setPlaybackData } = useContext(PlaybackContext);
 
-  const handleItemPress = (item: TrackItemData) => {
+  const handleItemPress = async (item: TrackItemData) => {
     setCurrentTrackInPlaylist(item.trackId);
-    setPlaybackData(
-      {...playbackData, currentArtist: item.artist , currentSong: item.title, currentAlbumImage: item.imageURL, isPlaying: true, isShowing: true}
-      )
-    //playTrack(item.previewUrl);
+    setPlaybackData({
+      ...playbackData,
+      currentArtist: item.artist,
+      currentSong: item.title,
+      currentAlbumImage: item.imageURL,
+      isShowing: true,
+      currentSound: await createPlayback(item.previewUrl)
+    });
   };
+
+  // useEffect(() => {
+  //   const playback = async () =>{
+  //     if (playbackData.currentSound) {
+  //       const result = await playTrack(playbackData.currentSound);
+  //       setPlaybackData({ ...playbackData, isPlaying: result });
+  //     }
+  //   }
+  //   playback()
+  // }, [playbackData.currentSound]);
 
   const TrackItem = ({ item, onPress, backgroundColor, textColor }: TrackItemProps) => (
     <TouchableOpacity
@@ -122,19 +136,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
     );
   };
 
-  const playTrack = async (url: string) => {
-    await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-    const track = await Audio.Sound.createAsync({
-      uri: url,
-    });
-
-    setSound(track.sound);
-    if (track) {
-      await track.sound.playAsync();
-      setIsPlaying(true);
-    }
-  };
-
   return (
     <ImageBackground
       source={require('../../../assets/images/main_background.png')}
@@ -154,7 +155,12 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
               style={styles.playlistCover}
               source={{ height: 300, width: 300, uri: route.params.playlistCover }}
             />
-            <TouchableOpacity onPress={() => navigation.navigate('Player', currentPlaylistsTracks)}>
+            <TouchableOpacity
+              onPress={() => {
+                setPlaybackData({ ...playbackData, isShowing: false });
+                navigation.navigate('Player', currentPlaylistsTracks);
+              }}
+            >
               <Image
                 style={styles.playButton}
                 source={require('../../../assets/icons/playButton.png')}

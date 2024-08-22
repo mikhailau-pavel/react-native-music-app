@@ -36,13 +36,13 @@ const PlayerScreen = ({ route }: PlayerScreenProps) => {
     setExpanded(!expanded);
   };
 
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
+  // useEffect(() => {
+  //   return sound
+  //     ? () => {
+  //         sound.unloadAsync();
+  //       }
+  //     : undefined;
+  // }, [sound]);
 
   useEffect(() => {
     if (sound) {
