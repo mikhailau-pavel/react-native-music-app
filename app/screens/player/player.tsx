@@ -9,7 +9,7 @@ import {
   ScrollView,
   LayoutAnimation,
 } from 'react-native';
-import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { ReduceMotion, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Audio } from 'expo-av';
 import { Sound } from 'expo-av/build/Audio';
 
@@ -49,12 +49,16 @@ const PlayerScreen = ({ route }: PlayerScreenProps) => {
     if (sound) {
       sound._onPlaybackStatusUpdate = (playbackStatus) => {
         if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
-          const currentTrackProgress =
-            (playbackStatus.positionMillis / playbackStatus.durationMillis) * 100;
-          const calcProgressWidth = (progressBarWidth / 100) * currentTrackProgress;
-          progress.value = withSpring(calcProgressWidth);
-          console.log('progress value: ', progress.value);
-          console.log('calc progress:', calcProgressWidth);
+          const progressConfig = {
+            duration: playbackStatus.durationMillis,
+            dampingRatio: 1,
+            stiffness: 0.1,
+            overshootClamping: false,
+            restDisplacementThreshold: 0.01,
+            restSpeedThreshold: 2,
+            reduceMotion: ReduceMotion.System,
+          };
+          progress.value = withTiming(progressBarWidth, progressConfig);
           setPlayTimeCurrent(playbackStatus.positionMillis);
         }
         if (
@@ -85,6 +89,7 @@ const PlayerScreen = ({ route }: PlayerScreenProps) => {
     const nextTrackUrl = route.params[currentTrackInPlaylist + 1].previewUrl;
     const nextSound = await createPlayback(nextTrackUrl);
     await nextSound.playAsync();
+    progress.value = 0;
     setIsPlaying(true);
   };
 
@@ -99,6 +104,7 @@ const PlayerScreen = ({ route }: PlayerScreenProps) => {
     const prevSound = await createPlayback(prevTrackUrl);
     await prevSound.playAsync();
     setIsPlaying(true);
+    progress.value = 0;
   };
 
   const pauseTrack = async () => {
