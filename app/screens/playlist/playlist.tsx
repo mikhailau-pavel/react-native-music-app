@@ -54,7 +54,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       currentSong: item.title,
       currentAlbumImage: item.imageURL,
       isShowing: true,
-      currentSound: await createPlayback(item.previewUrl)
+      currentSound: await createPlayback(item.previewUrl),
     });
   };
 

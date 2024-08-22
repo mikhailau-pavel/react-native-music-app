@@ -1,12 +1,19 @@
 import { PlaybackContext } from '@/scripts/playbackContext';
+import { pauseTrack, playTrack } from '@/scripts/player';
 import { useContext } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 const PlaybackBar = () => {
   const { playbackData } = useContext(PlaybackContext);
-  console.log('playback data:', playbackData)
+  console.log('playback data:', playbackData);
   const handlePlayButton = () => {
-    return 
+    console.log('happening')
+    if (playbackData.currentSound) {
+      console.log('happening2')
+      playbackData.isPlaying
+        ? playTrack(playbackData.currentSound)
+        : pauseTrack(playbackData.currentSound);
+    }
   };
 
   return (
