@@ -14,6 +14,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import PlayerScreen from './app/screens/player/player';
 import { initialPlaybackData, PlaybackContext } from './scripts/playbackContext';
+import PlaybackBar from './app/components/playbackBar';
 
 // if (__DEV__) {
 //   require('./ReactotronConfig');
@@ -37,7 +38,6 @@ export default function App() {
   });
   const [playbackData, setPlaybackData] = useState(initialPlaybackData);
   const playbackContextValue = { playbackData, setPlaybackData };
-
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
@@ -64,7 +64,7 @@ export default function App() {
     prefixes: [prefix],
     config,
   };
-
+  
   return (
     <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
       <PlaybackContext.Provider value={playbackContextValue}>
@@ -101,6 +101,7 @@ export default function App() {
               options={{ title: '404 Not Found' }}
             />
           </Stack.Navigator>
+          <PlaybackBar />
         </QueryClientProvider>
       </PlaybackContext.Provider>
     </NavigationContainer>

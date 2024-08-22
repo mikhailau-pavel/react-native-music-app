@@ -1,72 +1,57 @@
-import { useState } from 'react';
-import { Modal, Text, View, StyleSheet, Pressable } from 'react-native';
+import { PlaybackContext } from '@/scripts/playbackContext';
+import { useContext } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 const PlaybackBar = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-
+  const { playbackData } = useContext(PlaybackContext);
+  
   return (
-    <View style={styles.centeredView}>
-      <Modal animationType="slide" visible={modalVisible} transparent={true}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Song by Artist</Text>
-            <Pressable style={[styles.button, styles.buttonClose]} onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.textStyle}>Play</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-        <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}>
-        <Text style={styles.textStyle}>Show Modal</Text>
-      </Pressable>
-        <Text style={styles.modalText}>Playback Text Placeholder</Text>
+    //opposite
+    <View style={playbackData.isShowing ? styles.playbackBar : { display: 'none' }}>
+      <Image
+        style={styles.playbackBarImage}
+        source={{ uri: playbackData.currentAlbumImage }}
+      ></Image>
+      <Text style={styles.playbackBarText}>
+        {playbackData.currentSong} by {playbackData.currentArtist}
+      </Text>
+      <TouchableOpacity>
+        <Image
+          style={styles.playbackBarButtonImage}
+          source={require('../../assets/icons/playButton.png')}
+        ></Image>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
+  playbackBar: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 40,
+    margin: 10,
+    //picker?
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    padding: 15,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
     elevation: 5,
   },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+  playbackBarImage: { 
+    height: 55,
+    minWidth: 55,
+    margin: 5,
+    borderRadius: 10,
+   },
+  playbackBarText: { flex: 2 },
+  playbackBarButtonContainer: {
+    flex: 1,
   },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
+  playbackBarButtonImage: {
+    height: 55,
+    width: 55,
   },
 });
 

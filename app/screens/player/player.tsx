@@ -21,7 +21,6 @@ const PlayerScreen = ({ route }: PlayerScreenProps) => {
   const [expanded, setExpanded] = useState(true);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
   const progress = useSharedValue(0);
-
   const playlistInfoArr = route.params;
   const amountOfTracksInPlaylist = playlistInfoArr.length - 1;
 
