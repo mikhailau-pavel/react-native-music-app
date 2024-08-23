@@ -5,7 +5,7 @@ import { Button, Platform, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useQuery } from '@tanstack/react-query';
 import { WebView } from 'react-native-webview';
-import { getData, storeData } from '@/scripts/asyncStorage';
+import { storeData } from '@/scripts/asyncStorage';
 
 const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
   const [loginUrl, setLoginUrl] = useState<string>('');

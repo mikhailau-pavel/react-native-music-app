@@ -18,7 +18,7 @@ import {
 } from 'react-native';
 import { Sound } from 'expo-av/build/Audio/Sound';
 import { PlaybackContext } from '@/scripts/playbackContext';
-import { createPlayback, playTrack } from '@/scripts/player';
+import { createPlayback } from '@/scripts/player';
 
 const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
 const tracksMockList: TrackItemData[] = [
@@ -42,7 +42,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const [selectedTrackId, setSelectedTrackId] = useState<string>('');
   const [currentPlaylistsTracks, setCurrentPlaylistsTracks] = useState(tracksMockList);
   const [currentTrackInPlaylist, setCurrentTrackInPlaylist] = useState('none');
-  const [sound, setSound] = useState<Sound>();
   const [isPlaying, setIsPlaying] = useState(false);
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
 
