@@ -4,15 +4,16 @@ import { useContext } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 const PlaybackBar = () => {
-  const { playbackData } = useContext(PlaybackContext);
+  const { playbackData, setPlaybackData } = useContext(PlaybackContext);
   console.log('playback data:', playbackData);
   const handlePlayButton = () => {
-    console.log('happening')
-    if (playbackData.currentSound) {
-      console.log('happening2')
-      playbackData.isPlaying
-        ? playTrack(playbackData.currentSound)
-        : pauseTrack(playbackData.currentSound);
+    console.log('current sound:', playbackData.currentSound && !playbackData.isPlaying);
+    if (playbackData.currentSound && !playbackData.isPlaying) {
+      playTrack(playbackData.currentSound);
+      setPlaybackData({ ...playbackData, isPlaying: true });
+    } else if (playbackData.currentSound && playbackData.isPlaying) {
+      pauseTrack(playbackData.currentSound);
+      setPlaybackData({ ...playbackData, isPlaying: false });
     }
   };
 
