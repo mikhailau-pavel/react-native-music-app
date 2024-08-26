@@ -32,8 +32,7 @@ const PlaybackBar = () => {
           source={{ uri: playbackData.currentAlbumImage }}
         ></Image>
         <Text style={styles.playbackBarText}>
-          {playbackData.currentSong} by {playbackData.currentArtist} id 
-          {playbackData.currentTrackNumberInPlaylist}
+          {playbackData.currentSong} by {playbackData.currentArtist}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handlePlayButton} style={styles.playButtonContainer}>

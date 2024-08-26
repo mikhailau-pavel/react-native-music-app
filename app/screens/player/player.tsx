@@ -16,10 +16,10 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { Audio } from 'expo-av';
 import { Sound } from 'expo-av/build/Audio';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { PlaybackContext } from '@/scripts/playbackContext';
+import { createPlayback, playTrack } from '@/scripts/player';
 
 const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const active = useSharedValue(false);
@@ -53,32 +53,16 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     transform: [{ translateY: panY.value }],
   }));
   const [sound, setSound] = useState<Sound | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
   const [expanded, setExpanded] = useState(true);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
   const progress = useSharedValue(0);
   const amountOfTracksInPlaylist = playbackData.currentPlaylistData.length - 1;
 
-  const createPlayback = async (url: string) => {
-    await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-    const track = await Audio.Sound.createAsync({ uri: url });
-    setSound(track.sound);
-    return track.sound;
-  };
-
   const handlePress = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
     setExpanded(!expanded);
   };
-
-  // useEffect(() => {
-  //   return sound
-  //     ? () => {
-  //         sound.unloadAsync();
-  //       }
-  //     : undefined;
-  // }, [sound]);
 
   useEffect(() => {
     if (sound) {
@@ -107,29 +91,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     }
   }, [sound]);
 
-  const playTrack = async () => {
-    if (sound) {
-      setIsPlaying(true);
-      await sound.playAsync();
-    }
-  };
-
-  const playNextTrack = async () => {
-    await stopTrack();
-    if (sound) {
-      await sound.unloadAsync();
-      setSound(null);
-    }
-    setPlaybackData({
-      ...playbackData,
-      currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist + 1,
-    });
-    const nextTrackUrl = playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist + 1].previewUrl;
-    const nextSound = await createPlayback(nextTrackUrl);
-    await nextSound.playAsync();
-    progress.value = 0;
-    setIsPlaying(true);
-  };
+  
 
   const playPreviousTrack = async () => {
     await stopTrack();
@@ -141,16 +103,17 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
       ...playbackData,
       currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist - 1,
     });
-    const prevTrackUrl = playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist - 1].previewUrl;
+    const prevTrackUrl =
+      playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist - 1].previewUrl;
     const prevSound = await createPlayback(prevTrackUrl);
     await prevSound.playAsync();
-    setIsPlaying(true);
+    setPlaybackData({...playbackData, isPlaying: true})
     progress.value = 0;
   };
 
   const pauseTrack = async () => {
     if (sound) await sound.pauseAsync();
-    setIsPlaying(false);
+    setPlaybackData({...playbackData, isPlaying: false})
   };
 
   const stopTrack = async () => {
@@ -158,18 +121,19 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   };
 
   const handlePlayButtonPress = async () => {
-    if (!isPlaying) {
-      if (!sound) {
-        const url = playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist].previewUrl;
+    if (!playbackData.isPlaying) {
+      if (!playbackData.currentSound) {
+        const url =
+          playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist].previewUrl;
         const newTrack = await createPlayback(url);
         await newTrack.playAsync();
       } else {
-        await playTrack();
+        await playTrack(playbackData.currentSound);
       }
-      setIsPlaying(true);
+      setPlaybackData({ ...playbackData, isPlaying: true });
     } else {
       await pauseTrack();
-      setIsPlaying(false);
+      setPlaybackData({ ...playbackData, isPlaying: false });
     }
   };
   return (
@@ -185,7 +149,8 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
             source={{
               height: 300,
               width: 300,
-              uri: playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist].imageURL,
+              uri: playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist]
+                .imageURL,
             }}
           />
           <Text style={styles.trackTitle}>
@@ -261,7 +226,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
             ></Image>
           )}
           <TouchableOpacity onPress={handlePlayButtonPress}>
-            {!isPlaying ? (
+            {!playbackData.isPlaying ? (
               <Image
                 style={styles.controlButton}
                 source={require('../../../assets/icons/playButton.png')}

@@ -43,7 +43,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
 
   const handleItemPress = async (item: TrackItemData, index: number) => {
-    console.log('index from touchable', index)
     setPlaybackData({
       ...playbackData,
       currentArtist: item.artist,
@@ -110,7 +109,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
     getTrackFromPlaylist();
   }, [createPlaylistsTrackList, route.params.playlistId]);
 
-  const renderTrackItem = ({ item, index }: {item: TrackItemData, index: number}) => {
+  const renderTrackItem = ({ item, index }: { item: TrackItemData; index: number }) => {
     const backgroundColor = '#017371';
     const color = 'black';
     return (
@@ -118,8 +117,8 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
         item={item}
         index={index}
         onPress={() => {
-          console.log('index:', index)
-          setPlaybackData({...playbackData, currentTrackNumberInPlaylist: index})
+          console.log('index:', index);
+          setPlaybackData({ ...playbackData, currentTrackNumberInPlaylist: index });
         }}
         backgroundColor={backgroundColor}
         textColor={color}
