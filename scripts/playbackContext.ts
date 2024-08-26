@@ -1,3 +1,4 @@
+import { TrackItemData } from '@/types/types';
 import { Audio } from 'expo-av';
 import { createContext } from 'react';
 
@@ -9,6 +10,7 @@ export type PlaybackData = {
   isPlaying: boolean;
   isShowing: boolean;
   currentSound: Audio.Sound | null;
+  currentPlaylistData: TrackItemData[] | [];
 };
 
 export type PlaybackDataContext = {
@@ -24,6 +26,7 @@ export const initialPlaybackData: PlaybackData = {
   isPlaying: false,
   isShowing: false,
   currentSound: null,
+  currentPlaylistData: [],
 };
 
 export const initialPlaybackContext: PlaybackDataContext = {

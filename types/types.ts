@@ -22,7 +22,7 @@ export type RootStackParamList = {
   Login: undefined;
   Profile: undefined;
   Playlist: { playlistId: string; playlistCover: string; playlistTitle: string };
-  Player: TrackItemData[];
+  Player: TrackItemData[] | undefined;
   NotFound: undefined;
 };
 

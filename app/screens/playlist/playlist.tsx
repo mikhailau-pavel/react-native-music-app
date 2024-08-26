@@ -16,7 +16,6 @@ import {
   ImageBackground,
   TextInput,
 } from 'react-native';
-import { Sound } from 'expo-av/build/Audio/Sound';
 import { PlaybackContext } from '@/scripts/playbackContext';
 import { createPlayback } from '@/scripts/player';
 
@@ -41,12 +40,9 @@ const tracksMockList: TrackItemData[] = [
 const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const [selectedTrackId, setSelectedTrackId] = useState<string>('');
   const [currentPlaylistsTracks, setCurrentPlaylistsTracks] = useState(tracksMockList);
-  const [currentTrackInPlaylist, setCurrentTrackInPlaylist] = useState('none');
-  const [isPlaying, setIsPlaying] = useState(false);
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
 
   const handleItemPress = async (item: TrackItemData) => {
-    setCurrentTrackInPlaylist(item.trackId);
     setPlaybackData({
       ...playbackData,
       currentArtist: item.artist,
@@ -77,14 +73,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
           style={styles.trackAlbumImage}
           source={{ height: 70, width: 70, uri: item.imageURL }}
         />
-        {currentTrackInPlaylist === item.trackId && isPlaying ? (
-          <TouchableOpacity style={styles.pauseButtonContainer}>
-            <Image
-              style={{ width: 50, height: 50 }}
-              source={require('../../../assets/icons/pauseTrackButton.png')}
-            />
-          </TouchableOpacity>
-        ) : null}
         <Text style={[styles.title, { color: textColor }]}>
           {item.title} by {item.artist}
         </Text>
@@ -106,6 +94,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
         return tracksInfoList;
       });
       setCurrentPlaylistsTracks(currentPlaylistTracks);
+      setPlaybackData({...playbackData, currentPlaylistData: currentPlaylistTracks})
     } else {
       setCurrentPlaylistsTracks(tracksMockList);
     }

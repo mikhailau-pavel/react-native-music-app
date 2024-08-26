@@ -1,10 +1,14 @@
 import { PlaybackContext } from '@/scripts/playbackContext';
 import { pauseTrack, playTrack } from '@/scripts/player';
+import { RootStackParamList } from '@/types/types';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useContext } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 const PlaybackBar = () => {
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const handlePlayButton = () => {
     if (playbackData.currentSound && !playbackData.isPlaying) {
       playTrack(playbackData.currentSound);
@@ -15,17 +19,23 @@ const PlaybackBar = () => {
     }
   };
 
+  const handlePlaybackBarPress = () => {
+    navigation.navigate('Player');
+    setPlaybackData({ ...playbackData, isShowing: false });
+  };
+
   return (
-    //opposite
     <View style={playbackData.isShowing ? styles.playbackBar : { display: 'none' }}>
-      <Image
-        style={styles.playbackBarImage}
-        source={{ uri: playbackData.currentAlbumImage }}
-      ></Image>
-      <Text style={styles.playbackBarText}>
-        {playbackData.currentSong} by {playbackData.currentArtist}
-      </Text>
-      <TouchableOpacity onPress={handlePlayButton}>
+      <TouchableOpacity onPress={handlePlaybackBarPress} style={styles.trackCreditsContainer}>
+        <Image
+          style={styles.playbackBarImage}
+          source={{ uri: playbackData.currentAlbumImage }}
+        ></Image>
+        <Text style={styles.playbackBarText}>
+          {playbackData.currentSong} by {playbackData.currentArtist}
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handlePlayButton} style={styles.playButtonContainer}>
         <Image
           style={styles.playbackBarButtonImage}
           source={
@@ -41,6 +51,9 @@ const PlaybackBar = () => {
 
 const styles = StyleSheet.create({
   playbackBar: {
+    flex: 1,
+    width: '90%',
+    alignSelf: 'center',
     flexDirection: 'row',
     position: 'absolute',
     bottom: 40,
@@ -54,8 +67,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   playbackBarImage: {
+    flex: 1,
     height: 55,
-    minWidth: 55,
+    width: 55,
     margin: 5,
     borderRadius: 10,
   },
@@ -66,6 +80,12 @@ const styles = StyleSheet.create({
   playbackBarButtonImage: {
     height: 55,
     width: 55,
+  },
+  trackCreditsContainer: {
+    flex: 5,
+  },
+  playButtonContainer: {
+    flex: 1,
   },
 });
 

@@ -1,46 +1,38 @@
 import { PlayerScreenProps } from '@/types/types';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
   View,
   Image,
   StyleSheet,
-  ScrollView,
   LayoutAnimation,
-  Animated as AnimatedRN,
-  PanResponder,
   Dimensions,
-  PanResponderGestureState,
-  GestureResponderEvent,
-  Button,
 } from 'react-native';
 import Animated, {
   ReduceMotion,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import { Audio } from 'expo-av';
 import { Sound } from 'expo-av/build/Audio';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { PlaybackContext } from '@/scripts/playbackContext';
 
-const PlayerScreen = ({ route }: PlayerScreenProps) => {
-  const pan = useRef(new AnimatedRN.ValueXY()).current;
+const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const active = useSharedValue(false);
-  const panX = useSharedValue(0);
   const panY = useSharedValue(0);
-  const isOut = useRef(false);
   const screenHeight = Dimensions.get('screen').height;
-  const panTest = useMemo(() => {
+  const { playbackData } = useContext(PlaybackContext)
+
+  const pan = useMemo(() => {
     return Gesture.Pan()
       .onStart(() => {
         active.value = true;
       })
-      .onUpdate(({ y, translationY }) => {
-        console.log('event', y);
+      .onUpdate(({ translationY }) => {
         panY.value = translationY;
       })
       .onEnd((e) => {
@@ -49,11 +41,12 @@ const PlayerScreen = ({ route }: PlayerScreenProps) => {
         const threshold = screenHeight - screenHeight / 6;
         if (e.absoluteY > threshold) {
           panY.value = withTiming(screenHeight);
+          runOnJS(navigation.goBack)()
         } else {
           panY.value = withTiming(0);
         }
       });
-  }, [active, panY, screenHeight]);
+  }, [active, navigation.goBack, panY, screenHeight]);
 
   const animatedStyles = useAnimatedStyle(() => ({
     flex: 1,
@@ -66,8 +59,8 @@ const PlayerScreen = ({ route }: PlayerScreenProps) => {
   const [expanded, setExpanded] = useState(true);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
   const progress = useSharedValue(0);
-  const playlistInfoArr = route.params;
-  const amountOfTracksInPlaylist = playlistInfoArr.length - 1;
+  const playlistInfoArr = playbackData.currentPlaylistData;
+  const amountOfTracksInPlaylist = playbackData.currentPlaylistData.length - 1;
 
   const createPlayback = async (url: string) => {
     await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
@@ -130,7 +123,7 @@ const PlayerScreen = ({ route }: PlayerScreenProps) => {
       setSound(null);
     }
     setCurrentTrackInPlaylist(currentTrackInPlaylist + 1);
-    const nextTrackUrl = route.params[currentTrackInPlaylist + 1].previewUrl;
+    const nextTrackUrl = playbackData.currentPlaylistData[currentTrackInPlaylist + 1].previewUrl;
     const nextSound = await createPlayback(nextTrackUrl);
     await nextSound.playAsync();
     progress.value = 0;
@@ -144,7 +137,7 @@ const PlayerScreen = ({ route }: PlayerScreenProps) => {
       setSound(null);
     }
     setCurrentTrackInPlaylist(currentTrackInPlaylist - 1);
-    const prevTrackUrl = route.params[currentTrackInPlaylist - 1].previewUrl;
+    const prevTrackUrl = playbackData.currentPlaylistData[currentTrackInPlaylist - 1].previewUrl;
     const prevSound = await createPlayback(prevTrackUrl);
     await prevSound.playAsync();
     setIsPlaying(true);
@@ -163,7 +156,7 @@ const PlayerScreen = ({ route }: PlayerScreenProps) => {
   const handlePlayButtonPress = async () => {
     if (!isPlaying) {
       if (!sound) {
-        const url = route.params[currentTrackInPlaylist].previewUrl;
+        const url = playbackData.currentPlaylistData[currentTrackInPlaylist].previewUrl;
         const newTrack = await createPlayback(url);
         await newTrack.playAsync();
       } else {
@@ -177,17 +170,15 @@ const PlayerScreen = ({ route }: PlayerScreenProps) => {
   };
   return (
     //scale track cover on Android depending on controls availability?
-    <GestureDetector gesture={panTest}>
-      <Animated.View
-        style={[styles.background, animatedStyles]}
-      >
+    <GestureDetector gesture={pan}>
+      <Animated.View style={[styles.background, animatedStyles]}>
         <View style={styles.trackCoverContainer}>
-          <Text style={styles.trackTitle}>{route.params[currentTrackInPlaylist].artist}</Text>
+          <Text style={styles.trackTitle}>{playbackData.currentPlaylistData[currentTrackInPlaylist].artist}</Text>
           <Image
             style={styles.trackCover}
-            source={{ height: 300, width: 300, uri: route.params[currentTrackInPlaylist].imageURL }}
+            source={{ height: 300, width: 300, uri: playbackData.currentPlaylistData[currentTrackInPlaylist].imageURL }}
           />
-          <Text style={styles.trackTitle}>{route.params[currentTrackInPlaylist].title}</Text>
+          <Text style={styles.trackTitle}>{playbackData.currentPlaylistData[currentTrackInPlaylist].title}</Text>
           {!expanded ? (
             <View style={styles.trackInfoControlContainer}>
               <TouchableOpacity>
