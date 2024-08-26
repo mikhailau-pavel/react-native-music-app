@@ -1,5 +1,5 @@
 import { PlayerScreenProps } from '@/types/types';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import Animated, {
   ReduceMotion,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -24,153 +25,162 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Audio } from 'expo-av';
 import { Sound } from 'expo-av/build/Audio';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 const PlayerScreen = ({ route }: PlayerScreenProps) => {
   const pan = useRef(new AnimatedRN.ValueXY()).current;
+  const active = useSharedValue(false);
   const panX = useSharedValue(0);
   const panY = useSharedValue(0);
-  const isOut = useRef(false); 
+  const isOut = useRef(false);
   const screenHeight = Dimensions.get('screen').height;
+  const panTest = useMemo(() => {
+    return Gesture.Pan()
+      .onStart(() => {
+        active.value = true;
+      })
+      .onUpdate(({ y, translationY }) => {
+        console.log('event', y);
+        panY.value = translationY;
+      })
+      .onEnd((e) => {
+        active.value = false;
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: (_, gestureState) => {
-        panY.value = gestureState.dy;
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        const threshold = screenHeight - (screenHeight / 6);
-        if (gestureState.moveY > threshold) {
+        const threshold = screenHeight - screenHeight / 6;
+        if (e.absoluteY > threshold) {
           panY.value = withTiming(screenHeight);
         } else {
           panY.value = withTiming(0);
         }
-      },
-    })
-  ).current;
+      });
+  }, [active, panY, screenHeight]);
 
   const animatedStyles = useAnimatedStyle(() => ({
-    transform: [{ translateX: withTiming(panX.value) }, { translateY: withTiming(panY.value) }],
+    flex: 1,
+    transform: [{ translateY: panY.value }],
   }));
-      const [sound, setSound] = useState<Sound | null>(null);
-      const [currentTrackInPlaylist, setCurrentTrackInPlaylist] = useState(0);
-      const [isPlaying, setIsPlaying] = useState(false);
-      const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
-      const [expanded, setExpanded] = useState(true);
-      const [progressBarWidth, setProgressBarWidth] = useState(0);
-      const progress = useSharedValue(0);
-      const playlistInfoArr = route.params;
-      const amountOfTracksInPlaylist = playlistInfoArr.length - 1;
+  const [sound, setSound] = useState<Sound | null>(null);
+  const [currentTrackInPlaylist, setCurrentTrackInPlaylist] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
+  const [expanded, setExpanded] = useState(true);
+  const [progressBarWidth, setProgressBarWidth] = useState(0);
+  const progress = useSharedValue(0);
+  const playlistInfoArr = route.params;
+  const amountOfTracksInPlaylist = playlistInfoArr.length - 1;
 
-    const createPlayback = async (url: string) => {
-      await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
-      const track = await Audio.Sound.createAsync({ uri: url });
-      setSound(track.sound);
-      return track.sound;
-    };
+  const createPlayback = async (url: string) => {
+    await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+    const track = await Audio.Sound.createAsync({ uri: url });
+    setSound(track.sound);
+    return track.sound;
+  };
 
-    const handlePress = () => {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-      setExpanded(!expanded);
-    };
+  const handlePress = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+    setExpanded(!expanded);
+  };
 
-    // useEffect(() => {
-    //   return sound
-    //     ? () => {
-    //         sound.unloadAsync();
-    //       }
-    //     : undefined;
-    // }, [sound]);
+  // useEffect(() => {
+  //   return sound
+  //     ? () => {
+  //         sound.unloadAsync();
+  //       }
+  //     : undefined;
+  // }, [sound]);
 
-    useEffect(() => {
-      if (sound) {
-        sound._onPlaybackStatusUpdate = (playbackStatus) => {
-          if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
-            const progressConfig = {
-              duration: playbackStatus.durationMillis,
-              dampingRatio: 1,
-              stiffness: 0.1,
-              overshootClamping: false,
-              restDisplacementThreshold: 0.01,
-              restSpeedThreshold: 2,
-              reduceMotion: ReduceMotion.System,
-            };
-            progress.value = withTiming(progressBarWidth, progressConfig);
-            setPlayTimeCurrent(playbackStatus.positionMillis);
-          }
-          if (
-            playbackStatus.isLoaded &&
-            playbackStatus.didJustFinish &&
-            !(currentTrackInPlaylist === amountOfTracksInPlaylist)
-          ) {
-            playNextTrack();
-          }
-        };
-      }
-    }, [sound]);
-
-    const playTrack = async () => {
-      if (sound) {
-        setIsPlaying(true);
-        await sound.playAsync();
-      }
-    };
-
-    const playNextTrack = async () => {
-      await stopTrack();
-      if (sound) {
-        await sound.unloadAsync();
-        setSound(null);
-      }
-      setCurrentTrackInPlaylist(currentTrackInPlaylist + 1);
-      const nextTrackUrl = route.params[currentTrackInPlaylist + 1].previewUrl;
-      const nextSound = await createPlayback(nextTrackUrl);
-      await nextSound.playAsync();
-      progress.value = 0;
-      setIsPlaying(true);
-    };
-
-    const playPreviousTrack = async () => {
-      await stopTrack();
-      if (sound) {
-        await sound.unloadAsync();
-        setSound(null);
-      }
-      setCurrentTrackInPlaylist(currentTrackInPlaylist - 1);
-      const prevTrackUrl = route.params[currentTrackInPlaylist - 1].previewUrl;
-      const prevSound = await createPlayback(prevTrackUrl);
-      await prevSound.playAsync();
-      setIsPlaying(true);
-      progress.value = 0;
-    };
-
-    const pauseTrack = async () => {
-      if (sound) await sound.pauseAsync();
-      setIsPlaying(false);
-    };
-
-    const stopTrack = async () => {
-      if (sound) await sound.stopAsync();
-    };
-
-    const handlePlayButtonPress = async () => {
-      if (!isPlaying) {
-        if (!sound) {
-          const url = route.params[currentTrackInPlaylist].previewUrl;
-          const newTrack = await createPlayback(url);
-          await newTrack.playAsync();
-        } else {
-          await playTrack();
+  useEffect(() => {
+    if (sound) {
+      sound._onPlaybackStatusUpdate = (playbackStatus) => {
+        if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
+          const progressConfig = {
+            duration: playbackStatus.durationMillis,
+            dampingRatio: 1,
+            stiffness: 0.1,
+            overshootClamping: false,
+            restDisplacementThreshold: 0.01,
+            restSpeedThreshold: 2,
+            reduceMotion: ReduceMotion.System,
+          };
+          progress.value = withTiming(progressBarWidth, progressConfig);
+          setPlayTimeCurrent(playbackStatus.positionMillis);
         }
-        setIsPlaying(true);
+        if (
+          playbackStatus.isLoaded &&
+          playbackStatus.didJustFinish &&
+          !(currentTrackInPlaylist === amountOfTracksInPlaylist)
+        ) {
+          playNextTrack();
+        }
+      };
+    }
+  }, [sound]);
+
+  const playTrack = async () => {
+    if (sound) {
+      setIsPlaying(true);
+      await sound.playAsync();
+    }
+  };
+
+  const playNextTrack = async () => {
+    await stopTrack();
+    if (sound) {
+      await sound.unloadAsync();
+      setSound(null);
+    }
+    setCurrentTrackInPlaylist(currentTrackInPlaylist + 1);
+    const nextTrackUrl = route.params[currentTrackInPlaylist + 1].previewUrl;
+    const nextSound = await createPlayback(nextTrackUrl);
+    await nextSound.playAsync();
+    progress.value = 0;
+    setIsPlaying(true);
+  };
+
+  const playPreviousTrack = async () => {
+    await stopTrack();
+    if (sound) {
+      await sound.unloadAsync();
+      setSound(null);
+    }
+    setCurrentTrackInPlaylist(currentTrackInPlaylist - 1);
+    const prevTrackUrl = route.params[currentTrackInPlaylist - 1].previewUrl;
+    const prevSound = await createPlayback(prevTrackUrl);
+    await prevSound.playAsync();
+    setIsPlaying(true);
+    progress.value = 0;
+  };
+
+  const pauseTrack = async () => {
+    if (sound) await sound.pauseAsync();
+    setIsPlaying(false);
+  };
+
+  const stopTrack = async () => {
+    if (sound) await sound.stopAsync();
+  };
+
+  const handlePlayButtonPress = async () => {
+    if (!isPlaying) {
+      if (!sound) {
+        const url = route.params[currentTrackInPlaylist].previewUrl;
+        const newTrack = await createPlayback(url);
+        await newTrack.playAsync();
       } else {
-        await pauseTrack();
-        setIsPlaying(false);
+        await playTrack();
       }
-    };
-    return (
-      //scale track cover on Android depending on controls availability?
-      <Animated.ScrollView style={animatedStyles} {...panResponder.panHandlers}>
+      setIsPlaying(true);
+    } else {
+      await pauseTrack();
+      setIsPlaying(false);
+    }
+  };
+  return (
+    //scale track cover on Android depending on controls availability?
+    <GestureDetector gesture={panTest}>
+      <Animated.View
+        style={[styles.background, animatedStyles]}
+      >
         <View style={styles.trackCoverContainer}>
           <Text style={styles.trackTitle}>{route.params[currentTrackInPlaylist].artist}</Text>
           <Image
@@ -280,8 +290,9 @@ const PlayerScreen = ({ route }: PlayerScreenProps) => {
             ></Image>
           )}
         </View>
-      </Animated.ScrollView>
-    );
+      </Animated.View>
+    </GestureDetector>
+  );
 };
 
 const styles = StyleSheet.create({

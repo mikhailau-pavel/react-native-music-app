@@ -11,10 +11,12 @@ import NotFoundScreen from './app/screens/notFound/notFound';
 import PlaylistScreen from './app/screens/playlist/playlist';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PlayerScreen from './app/screens/player/player';
 import { initialPlaybackData, PlaybackContext } from './scripts/playbackContext';
 import PlaybackBar from './app/components/playbackBar';
+import 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // if (__DEV__) {
 //   require('./ReactotronConfig');
@@ -69,39 +71,41 @@ export default function App() {
     <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
       <PlaybackContext.Provider value={playbackContextValue}>
         <QueryClientProvider client={queryClient}>
-          <Stack.Navigator initialRouteName="Home">
-            <Stack.Screen
-              name={PropsRoutes.HOME}
-              component={HomeScreen}
-              options={{ title: 'Home' }}
-            />
-            <Stack.Screen
-              name={PropsRoutes.LOGIN}
-              component={LoginScreen}
-              options={{ title: 'Login' }}
-            />
-            <Stack.Screen
-              name={PropsRoutes.PROFILE}
-              component={ProfileScreen}
-              options={{ title: 'Profile' }}
-            />
-            <Stack.Screen
-              name={PropsRoutes.PLAYLIST}
-              component={PlaylistScreen}
-              options={{ title: 'Playlist' }}
-            />
-            <Stack.Screen
-              name={PropsRoutes.PLAYER}
-              component={PlayerScreen}
-              options={{ title: 'Player' }}
-            />
-            <Stack.Screen
-              name={'NotFound'}
-              component={NotFoundScreen}
-              options={{ title: '404 Not Found' }}
-            />
-          </Stack.Navigator>
-          <PlaybackBar />
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <Stack.Navigator initialRouteName="Home">
+              <Stack.Screen
+                name={PropsRoutes.HOME}
+                component={HomeScreen}
+                options={{ title: 'Home' }}
+              />
+              <Stack.Screen
+                name={PropsRoutes.LOGIN}
+                component={LoginScreen}
+                options={{ title: 'Login' }}
+              />
+              <Stack.Screen
+                name={PropsRoutes.PROFILE}
+                component={ProfileScreen}
+                options={{ title: 'Profile' }}
+              />
+              <Stack.Screen
+                name={PropsRoutes.PLAYLIST}
+                component={PlaylistScreen}
+                options={{ title: 'Playlist' }}
+              />
+              <Stack.Screen
+                name={PropsRoutes.PLAYER}
+                component={PlayerScreen}
+                options={{ title: 'Player' }}
+              />
+              <Stack.Screen
+                name={'NotFound'}
+                component={NotFoundScreen}
+                options={{ title: '404 Not Found' }}
+              />
+            </Stack.Navigator>
+            <PlaybackBar />
+          </GestureHandlerRootView>
         </QueryClientProvider>
       </PlaybackContext.Provider>
     </NavigationContainer>
