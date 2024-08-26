@@ -25,7 +25,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const active = useSharedValue(false);
   const panY = useSharedValue(0);
   const screenHeight = Dimensions.get('screen').height;
-  const { playbackData } = useContext(PlaybackContext)
+  const { playbackData, setPlaybackData } = useContext(PlaybackContext);
 
   const pan = useMemo(() => {
     return Gesture.Pan()
@@ -41,7 +41,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
         const threshold = screenHeight - screenHeight / 6;
         if (e.absoluteY > threshold) {
           panY.value = withTiming(screenHeight);
-          runOnJS(navigation.goBack)()
+          runOnJS(navigation.goBack)();
         } else {
           panY.value = withTiming(0);
         }
@@ -53,13 +53,11 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     transform: [{ translateY: panY.value }],
   }));
   const [sound, setSound] = useState<Sound | null>(null);
-  const [currentTrackInPlaylist, setCurrentTrackInPlaylist] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
   const [expanded, setExpanded] = useState(true);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
   const progress = useSharedValue(0);
-  const playlistInfoArr = playbackData.currentPlaylistData;
   const amountOfTracksInPlaylist = playbackData.currentPlaylistData.length - 1;
 
   const createPlayback = async (url: string) => {
@@ -101,7 +99,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
         if (
           playbackStatus.isLoaded &&
           playbackStatus.didJustFinish &&
-          !(currentTrackInPlaylist === amountOfTracksInPlaylist)
+          !(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist)
         ) {
           playNextTrack();
         }
@@ -122,8 +120,11 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
       await sound.unloadAsync();
       setSound(null);
     }
-    setCurrentTrackInPlaylist(currentTrackInPlaylist + 1);
-    const nextTrackUrl = playbackData.currentPlaylistData[currentTrackInPlaylist + 1].previewUrl;
+    setPlaybackData({
+      ...playbackData,
+      currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist + 1,
+    });
+    const nextTrackUrl = playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist + 1].previewUrl;
     const nextSound = await createPlayback(nextTrackUrl);
     await nextSound.playAsync();
     progress.value = 0;
@@ -136,8 +137,11 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
       await sound.unloadAsync();
       setSound(null);
     }
-    setCurrentTrackInPlaylist(currentTrackInPlaylist - 1);
-    const prevTrackUrl = playbackData.currentPlaylistData[currentTrackInPlaylist - 1].previewUrl;
+    setPlaybackData({
+      ...playbackData,
+      currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist - 1,
+    });
+    const prevTrackUrl = playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist - 1].previewUrl;
     const prevSound = await createPlayback(prevTrackUrl);
     await prevSound.playAsync();
     setIsPlaying(true);
@@ -156,7 +160,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const handlePlayButtonPress = async () => {
     if (!isPlaying) {
       if (!sound) {
-        const url = playbackData.currentPlaylistData[currentTrackInPlaylist].previewUrl;
+        const url = playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist].previewUrl;
         const newTrack = await createPlayback(url);
         await newTrack.playAsync();
       } else {
@@ -173,12 +177,20 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     <GestureDetector gesture={pan}>
       <Animated.View style={[styles.background, animatedStyles]}>
         <View style={styles.trackCoverContainer}>
-          <Text style={styles.trackTitle}>{playbackData.currentPlaylistData[currentTrackInPlaylist].artist}</Text>
+          <Text style={styles.trackTitle}>
+            {playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist].artist}
+          </Text>
           <Image
             style={styles.trackCover}
-            source={{ height: 300, width: 300, uri: playbackData.currentPlaylistData[currentTrackInPlaylist].imageURL }}
+            source={{
+              height: 300,
+              width: 300,
+              uri: playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist].imageURL,
+            }}
           />
-          <Text style={styles.trackTitle}>{playbackData.currentPlaylistData[currentTrackInPlaylist].title}</Text>
+          <Text style={styles.trackTitle}>
+            {playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist].title}
+          </Text>
           {!expanded ? (
             <View style={styles.trackInfoControlContainer}>
               <TouchableOpacity>
@@ -229,10 +241,10 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
           </View>
         </View>
         <View style={styles.trackControlContainer}>
-          {!(currentTrackInPlaylist === 0) ? (
+          {!(playbackData.currentTrackNumberInPlaylist === 0) ? (
             <TouchableOpacity
               onPress={() => {
-                if (currentTrackInPlaylist > 0) {
+                if (playbackData.currentTrackNumberInPlaylist > 0) {
                   playPreviousTrack();
                 } else return;
               }}
@@ -261,10 +273,10 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
               ></Image>
             )}
           </TouchableOpacity>
-          {!(currentTrackInPlaylist === amountOfTracksInPlaylist) ? (
+          {!(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist) ? (
             <TouchableOpacity
               onPress={() => {
-                if (currentTrackInPlaylist < amountOfTracksInPlaylist) {
+                if (playbackData.currentTrackNumberInPlaylist < amountOfTracksInPlaylist) {
                   playNextTrack();
                 } else return;
               }}

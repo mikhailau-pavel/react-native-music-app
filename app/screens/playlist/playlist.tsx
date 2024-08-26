@@ -42,7 +42,8 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const [currentPlaylistsTracks, setCurrentPlaylistsTracks] = useState(tracksMockList);
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
 
-  const handleItemPress = async (item: TrackItemData) => {
+  const handleItemPress = async (item: TrackItemData, index: number) => {
+    console.log('index from touchable', index)
     setPlaybackData({
       ...playbackData,
       currentArtist: item.artist,
@@ -50,6 +51,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       currentAlbumImage: item.imageURL,
       isShowing: true,
       currentSound: await createPlayback(item.previewUrl),
+      currentTrackNumberInPlaylist: index,
     });
   };
 
@@ -63,9 +65,9 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   //   playback()
   // }, [playbackData.currentSound]);
 
-  const TrackItem = ({ item, onPress, backgroundColor, textColor }: TrackItemProps) => (
+  const TrackItem = ({ item, index, onPress, backgroundColor, textColor }: TrackItemProps) => (
     <TouchableOpacity
-      onPress={() => handleItemPress(item)}
+      onPress={() => handleItemPress(item, index)}
       style={[styles.trackItemContainer, { backgroundColor }]}
     >
       <View style={styles.item}>
@@ -94,7 +96,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
         return tracksInfoList;
       });
       setCurrentPlaylistsTracks(currentPlaylistTracks);
-      setPlaybackData({...playbackData, currentPlaylistData: currentPlaylistTracks})
+      setPlaybackData({ ...playbackData, currentPlaylistData: currentPlaylistTracks });
     } else {
       setCurrentPlaylistsTracks(tracksMockList);
     }
@@ -108,15 +110,16 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
     getTrackFromPlaylist();
   }, [createPlaylistsTrackList, route.params.playlistId]);
 
-  const renderTrackItem = ({ item }: { item: TrackItemData }) => {
+  const renderTrackItem = ({ item, index }: {item: TrackItemData, index: number}) => {
     const backgroundColor = '#017371';
     const color = 'black';
-
     return (
       <TrackItem
         item={item}
+        index={index}
         onPress={() => {
-          setSelectedTrackId(item.trackId);
+          console.log('index:', index)
+          setPlaybackData({...playbackData, currentTrackNumberInPlaylist: index})
         }}
         backgroundColor={backgroundColor}
         textColor={color}
@@ -132,7 +135,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
     >
       <TextInput style={styles.searchbar}> Search</TextInput>
       <FlatList
-        data={currentPlaylistsTracks}
+        data={playbackData.currentPlaylistData}
         renderItem={renderTrackItem}
         keyExtractor={(item) => item.trackId}
         extraData={selectedTrackId}

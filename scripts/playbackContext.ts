@@ -11,6 +11,7 @@ export type PlaybackData = {
   isShowing: boolean;
   currentSound: Audio.Sound | null;
   currentPlaylistData: TrackItemData[] | [];
+  currentTrackNumberInPlaylist: number;
 };
 
 export type PlaybackDataContext = {
@@ -27,6 +28,7 @@ export const initialPlaybackData: PlaybackData = {
   isShowing: false,
   currentSound: null,
   currentPlaylistData: [],
+  currentTrackNumberInPlaylist: 0,
 };
 
 export const initialPlaybackContext: PlaybackDataContext = {
