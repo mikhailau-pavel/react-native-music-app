@@ -21,23 +21,7 @@ export const pauseTrack = async (sound: Audio.Sound) => {
 };
 
 export const stopTrack = async (sound: Audio.Sound) => {
-  if (sound) await sound.stopAsync();
-};
-
-export const playNextTrack = async (sound: Audio.Sound) => {
-  await stopTrack(sound);
-  ///t
-  await sound.unloadAsync();
-  setPlaybackData({ ...playbackData, currentSound: null });
-
-  setPlaybackData({
-    ...playbackData,
-    currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist + 1,
-  });
-  const nextTrackUrl =
-    playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist + 1].previewUrl;
-  const nextSound = await createPlayback(nextTrackUrl);
-  await nextSound.playAsync();
-  progress.value = 0;
-  setPlaybackData({ ...playbackData, isPlaying: true });
+  if (sound){
+    await sound.stopAsync();
+  } 
 };

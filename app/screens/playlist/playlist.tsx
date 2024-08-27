@@ -117,7 +117,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
         item={item}
         index={index}
         onPress={() => {
-          console.log('index:', index);
           setPlaybackData({ ...playbackData, currentTrackNumberInPlaylist: index });
         }}
         backgroundColor={backgroundColor}
@@ -146,8 +145,18 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
               source={{ height: 300, width: 300, uri: route.params.playlistCover }}
             />
             <TouchableOpacity
-              onPress={() => {
-                setPlaybackData({ ...playbackData, isShowing: false });
+              onPress={async () => {
+                setPlaybackData({
+                  ...playbackData,
+                  isShowing: false,
+                  currentArtist: playbackData.currentPlaylistData[0].artist,
+                  currentSong: playbackData.currentPlaylistData[0].title,
+                  currentAlbumImage: playbackData.currentPlaylistData[0].imageURL,
+                  currentSound: await createPlayback(
+                    playbackData.currentPlaylistData[0].previewUrl
+                  ),
+                  currentTrackNumberInPlaylist: 0,
+                });
                 navigation.navigate('Player', currentPlaylistsTracks);
               }}
             >

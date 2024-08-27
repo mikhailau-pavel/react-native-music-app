@@ -19,7 +19,7 @@ import Animated, {
 import { Sound } from 'expo-av/build/Audio';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { PlaybackContext } from '@/scripts/playbackContext';
-import { createPlayback, playTrack } from '@/scripts/player';
+import { createPlayback, pauseTrack, playTrack, stopTrack } from '@/scripts/player';
 
 const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const active = useSharedValue(false);
@@ -91,10 +91,32 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     }
   }, [sound]);
 
-  
+  const playNextTrack = async () => {
+    if (playbackData.currentSound) {
+      await stopTrack(playbackData.currentSound);
+      await playbackData.currentSound.unloadAsync();
+      await setPlaybackData({ ...playbackData, currentSound: null });
+    }
+    setPlaybackData({
+      ...playbackData,
+      currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist + 1,
+    });
+    const nextTrackUrl =
+      playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist + 1].previewUrl;
+    const nextSound = await createPlayback(nextTrackUrl);
+    if (playbackData.currentSound) {
+      playTrack(playbackData.currentSound);
+    }
+    progress.value = 0;
+    setPlaybackData({ ...playbackData, isPlaying: true });
+    return { currentSound: null };
+  };
 
   const playPreviousTrack = async () => {
-    await stopTrack();
+    if (playbackData.currentSound) {
+      await stopTrack(playbackData.currentSound);
+      await playbackData.currentSound.unloadAsync();
+    }
     if (sound) {
       await sound.unloadAsync();
       setSound(null);
@@ -107,32 +129,18 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
       playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist - 1].previewUrl;
     const prevSound = await createPlayback(prevTrackUrl);
     await prevSound.playAsync();
-    setPlaybackData({...playbackData, isPlaying: true})
+    setPlaybackData({ ...playbackData, isPlaying: true });
     progress.value = 0;
   };
 
-  const pauseTrack = async () => {
-    if (sound) await sound.pauseAsync();
-    setPlaybackData({...playbackData, isPlaying: false})
-  };
-
-  const stopTrack = async () => {
-    if (sound) await sound.stopAsync();
-  };
-
   const handlePlayButtonPress = async () => {
-    if (!playbackData.isPlaying) {
-      if (!playbackData.currentSound) {
-        const url =
-          playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist].previewUrl;
-        const newTrack = await createPlayback(url);
-        await newTrack.playAsync();
-      } else {
-        await playTrack(playbackData.currentSound);
-      }
+    if (!playbackData.isPlaying && playbackData.currentSound) {
+      await playTrack(playbackData.currentSound);
       setPlaybackData({ ...playbackData, isPlaying: true });
     } else {
-      await pauseTrack();
+      if (playbackData.currentSound) {
+        await pauseTrack(playbackData.currentSound);
+      }
       setPlaybackData({ ...playbackData, isPlaying: false });
     }
   };
