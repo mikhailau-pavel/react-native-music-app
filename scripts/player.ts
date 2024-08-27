@@ -3,6 +3,7 @@ import { Audio } from 'expo-av';
 export const createPlayback = async (url: string) => {
   await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
   const track = await Audio.Sound.createAsync({ uri: url });
+  await track.sound._loaded;
   return track.sound;
 };
 
@@ -21,7 +22,13 @@ export const pauseTrack = async (sound: Audio.Sound) => {
 };
 
 export const stopTrack = async (sound: Audio.Sound) => {
-  if (sound){
+  if (sound) {
     await sound.stopAsync();
-  } 
+  }
 };
+
+export const unloadSound = async (sound: Audio.Sound) => {
+  if (sound) {
+    await sound.unloadAsync();
+  }
+}

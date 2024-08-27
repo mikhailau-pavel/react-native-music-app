@@ -19,7 +19,8 @@ import Animated, {
 import { Sound } from 'expo-av/build/Audio';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { PlaybackContext } from '@/scripts/playbackContext';
-import { createPlayback, pauseTrack, playTrack, stopTrack } from '@/scripts/player';
+import { createPlayback, pauseTrack, playTrack, stopTrack, unloadSound } from '@/scripts/player';
+import { Audio } from 'expo-av';
 
 const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const active = useSharedValue(false);
@@ -64,73 +65,69 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     setExpanded(!expanded);
   };
 
-  useEffect(() => {
-    if (sound) {
-      sound._onPlaybackStatusUpdate = (playbackStatus) => {
-        if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
-          const progressConfig = {
-            duration: playbackStatus.durationMillis,
-            dampingRatio: 1,
-            stiffness: 0.1,
-            overshootClamping: false,
-            restDisplacementThreshold: 0.01,
-            restSpeedThreshold: 2,
-            reduceMotion: ReduceMotion.System,
-          };
-          progress.value = withTiming(progressBarWidth, progressConfig);
-          setPlayTimeCurrent(playbackStatus.positionMillis);
-        }
-        if (
-          playbackStatus.isLoaded &&
-          playbackStatus.didJustFinish &&
-          !(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist)
-        ) {
-          playNextTrack();
-        }
-      };
-    }
-  }, [sound]);
+  // useEffect(() => {
+  //   if (sound) {
+  //     sound._onPlaybackStatusUpdate = (playbackStatus) => {
+  //       if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
+  //         const progressConfig = {
+  //           duration: playbackStatus.durationMillis,
+  //           dampingRatio: 1,
+  //           stiffness: 0.1,
+  //           overshootClamping: false,
+  //           restDisplacementThreshold: 0.01,
+  //           restSpeedThreshold: 2,
+  //           reduceMotion: ReduceMotion.System,
+  //         };
+  //         progress.value = withTiming(progressBarWidth, progressConfig);
+  //         setPlayTimeCurrent(playbackStatus.positionMillis);
+  //       }
+  //       if (
+  //         playbackStatus.isLoaded &&
+  //         playbackStatus.didJustFinish &&
+  //         !(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist)
+  //       ) {
+  //         playNextTrack();
+  //       }
+  //     };
+  //   }
+  // }, [sound]);
 
   const playNextTrack = async () => {
     if (playbackData.currentSound) {
       await stopTrack(playbackData.currentSound);
-      await playbackData.currentSound.unloadAsync();
+      await unloadSound(playbackData.currentSound);
       await setPlaybackData({ ...playbackData, currentSound: null });
+      const nextTrackUrl =
+        playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist + 1].previewUrl;
+      const newSound = await createPlayback(nextTrackUrl);
+      await setPlaybackData({
+        ...playbackData,
+        currentSound: newSound,
+        currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist + 1,
+        isPlaying: true
+      });
+      progress.value = 0;
+      playTrack(newSound);
     }
-    setPlaybackData({
-      ...playbackData,
-      currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist + 1,
-    });
-    const nextTrackUrl =
-      playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist + 1].previewUrl;
-    const nextSound = await createPlayback(nextTrackUrl);
-    if (playbackData.currentSound) {
-      playTrack(playbackData.currentSound);
-    }
-    progress.value = 0;
-    setPlaybackData({ ...playbackData, isPlaying: true });
-    return { currentSound: null };
   };
 
   const playPreviousTrack = async () => {
     if (playbackData.currentSound) {
       await stopTrack(playbackData.currentSound);
-      await playbackData.currentSound.unloadAsync();
+      await unloadSound(playbackData.currentSound);
+      await setPlaybackData({ ...playbackData, currentSound: null });
+      const nextTrackUrl =
+        playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist - 1].previewUrl;
+      const newSound = await createPlayback(nextTrackUrl);
+      await setPlaybackData({
+        ...playbackData,
+        currentSound: newSound,
+        currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist - 1,
+        isPlaying: true
+      });
+      progress.value = 0;
+      playTrack(newSound);
     }
-    if (sound) {
-      await sound.unloadAsync();
-      setSound(null);
-    }
-    setPlaybackData({
-      ...playbackData,
-      currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist - 1,
-    });
-    const prevTrackUrl =
-      playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist - 1].previewUrl;
-    const prevSound = await createPlayback(prevTrackUrl);
-    await prevSound.playAsync();
-    setPlaybackData({ ...playbackData, isPlaying: true });
-    progress.value = 0;
   };
 
   const handlePlayButtonPress = async () => {
@@ -144,11 +141,13 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
       setPlaybackData({ ...playbackData, isPlaying: false });
     }
   };
+
   return (
     //scale track cover on Android depending on controls availability?
     <GestureDetector gesture={pan}>
       <Animated.View style={[styles.background, animatedStyles]}>
         <View style={styles.trackCoverContainer}>
+          {/* <Text>{JSON.stringify(playbackData.currentSound)}</Text> */}
           <Text style={styles.trackTitle}>
             {playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist].artist}
           </Text>
@@ -249,7 +248,10 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
           {!(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist) ? (
             <TouchableOpacity
               onPress={() => {
-                if (playbackData.currentTrackNumberInPlaylist < amountOfTracksInPlaylist) {
+                if (
+                  playbackData.currentTrackNumberInPlaylist < amountOfTracksInPlaylist &&
+                  playbackData.currentSound
+                ) {
                   playNextTrack();
                 } else return;
               }}

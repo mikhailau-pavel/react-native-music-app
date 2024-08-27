@@ -22,7 +22,7 @@ export type PlaybackDataContext = {
 export const initialPlaybackData: PlaybackData = {
   currentArtist: '',
   currentSong: '',
-  currentAlbumImage: '',
+  currentAlbumImage: ' ',
   currentTrackUrl: '',
   isPlaying: false,
   isShowing: false,
