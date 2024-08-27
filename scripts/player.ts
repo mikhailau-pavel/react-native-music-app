@@ -31,4 +31,4 @@ export const unloadSound = async (sound: Audio.Sound) => {
   if (sound) {
     await sound.unloadAsync();
   }
-}
+};

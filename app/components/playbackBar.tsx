@@ -29,8 +29,11 @@ const PlaybackBar = () => {
       <TouchableOpacity onPress={handlePlaybackBarPress} style={styles.trackCreditsContainer}>
         <Image
           style={styles.playbackBarImage}
-          source={{ uri: playbackData.currentAlbumImage }}
+          source={{ uri: playbackData.currentAlbumImage}}
         ></Image>
+        <Text style={styles.playbackBarText}>
+          {playbackData.isPlaying}
+        </Text>
         <Text style={styles.playbackBarText}>
           {playbackData.currentSong} by {playbackData.currentArtist}
         </Text>

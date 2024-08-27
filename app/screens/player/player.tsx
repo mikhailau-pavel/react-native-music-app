@@ -16,17 +16,17 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { Sound } from 'expo-av/build/Audio';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { PlaybackContext } from '@/scripts/playbackContext';
 import { createPlayback, pauseTrack, playTrack, stopTrack, unloadSound } from '@/scripts/player';
-import { Audio } from 'expo-av';
+import { useTrackChange } from '@/hooks/useTrackChange';
 
 const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const active = useSharedValue(false);
   const panY = useSharedValue(0);
   const screenHeight = Dimensions.get('screen').height;
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
+  const setTrackIndex = useTrackChange(0);
 
   const pan = useMemo(() => {
     return Gesture.Pan()
@@ -43,6 +43,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
         if (e.absoluteY > threshold) {
           panY.value = withTiming(screenHeight);
           runOnJS(navigation.goBack)();
+          runOnJS(setPlaybackData)({ ...playbackData, isShowing: true });
         } else {
           panY.value = withTiming(0);
         }
@@ -53,7 +54,6 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     flex: 1,
     transform: [{ translateY: panY.value }],
   }));
-  const [sound, setSound] = useState<Sound | null>(null);
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
   const [expanded, setExpanded] = useState(true);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
@@ -65,70 +65,32 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     setExpanded(!expanded);
   };
 
-  // useEffect(() => {
-  //   if (sound) {
-  //     sound._onPlaybackStatusUpdate = (playbackStatus) => {
-  //       if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
-  //         const progressConfig = {
-  //           duration: playbackStatus.durationMillis,
-  //           dampingRatio: 1,
-  //           stiffness: 0.1,
-  //           overshootClamping: false,
-  //           restDisplacementThreshold: 0.01,
-  //           restSpeedThreshold: 2,
-  //           reduceMotion: ReduceMotion.System,
-  //         };
-  //         progress.value = withTiming(progressBarWidth, progressConfig);
-  //         setPlayTimeCurrent(playbackStatus.positionMillis);
-  //       }
-  //       if (
-  //         playbackStatus.isLoaded &&
-  //         playbackStatus.didJustFinish &&
-  //         !(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist)
-  //       ) {
-  //         playNextTrack();
-  //       }
-  //     };
-  //   }
-  // }, [sound]);
-
-  const playNextTrack = async () => {
+  useEffect(() => {
     if (playbackData.currentSound) {
-      await stopTrack(playbackData.currentSound);
-      await unloadSound(playbackData.currentSound);
-      await setPlaybackData({ ...playbackData, currentSound: null });
-      const nextTrackUrl =
-        playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist + 1].previewUrl;
-      const newSound = await createPlayback(nextTrackUrl);
-      await setPlaybackData({
-        ...playbackData,
-        currentSound: newSound,
-        currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist + 1,
-        isPlaying: true
-      });
-      progress.value = 0;
-      playTrack(newSound);
+      playbackData.currentSound._onPlaybackStatusUpdate = (playbackStatus) => {
+        if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
+          const progressConfig = {
+            duration: playbackStatus.durationMillis,
+            dampingRatio: 1,
+            stiffness: 0.1,
+            overshootClamping: false,
+            restDisplacementThreshold: 0.01,
+            restSpeedThreshold: 2,
+            reduceMotion: ReduceMotion.System,
+          };
+          progress.value = withTiming(progressBarWidth, progressConfig);
+          setPlayTimeCurrent(playbackStatus.positionMillis);
+        }
+        if (
+          playbackStatus.isLoaded &&
+          playbackStatus.didJustFinish &&
+          !(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist)
+        ) {
+          setTrackIndex(playbackData.currentTrackNumberInPlaylist + 1);
+        }
+      };
     }
-  };
-
-  const playPreviousTrack = async () => {
-    if (playbackData.currentSound) {
-      await stopTrack(playbackData.currentSound);
-      await unloadSound(playbackData.currentSound);
-      await setPlaybackData({ ...playbackData, currentSound: null });
-      const nextTrackUrl =
-        playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist - 1].previewUrl;
-      const newSound = await createPlayback(nextTrackUrl);
-      await setPlaybackData({
-        ...playbackData,
-        currentSound: newSound,
-        currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist - 1,
-        isPlaying: true
-      });
-      progress.value = 0;
-      playTrack(newSound);
-    }
-  };
+  }, [playbackData.currentSound]);
 
   const handlePlayButtonPress = async () => {
     if (!playbackData.isPlaying && playbackData.currentSound) {
@@ -217,7 +179,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
             <TouchableOpacity
               onPress={() => {
                 if (playbackData.currentTrackNumberInPlaylist > 0) {
-                  playPreviousTrack();
+                  setTrackIndex(playbackData.currentTrackNumberInPlaylist - 1)
                 } else return;
               }}
             >
@@ -252,7 +214,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
                   playbackData.currentTrackNumberInPlaylist < amountOfTracksInPlaylist &&
                   playbackData.currentSound
                 ) {
-                  playNextTrack();
+                  setTrackIndex(playbackData.currentTrackNumberInPlaylist + 1)
                 } else return;
               }}
             >

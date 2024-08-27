@@ -54,16 +54,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
     });
   };
 
-  // useEffect(() => {
-  //   const playback = async () =>{
-  //     if (playbackData.currentSound) {
-  //       const result = await playTrack(playbackData.currentSound);
-  //       setPlaybackData({ ...playbackData, isPlaying: result });
-  //     }
-  //   }
-  //   playback()
-  // }, [playbackData.currentSound]);
-
   const TrackItem = ({ item, index, onPress, backgroundColor, textColor }: TrackItemProps) => (
     <TouchableOpacity
       onPress={() => handleItemPress(item, index)}
