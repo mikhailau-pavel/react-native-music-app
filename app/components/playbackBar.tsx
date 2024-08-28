@@ -21,7 +21,7 @@ const PlaybackBar = () => {
 
   const handlePlaybackBarPress = () => {
     navigation.navigate('Player');
-    setPlaybackData({ ...playbackData, isShowing: false });
+    setPlaybackData({ ...playbackData, isShowing: true });
   };
 
   return (
@@ -29,11 +29,11 @@ const PlaybackBar = () => {
       <TouchableOpacity onPress={handlePlaybackBarPress} style={styles.trackCreditsContainer}>
         <Image
           style={styles.playbackBarImage}
-          source={{ uri: playbackData.currentAlbumImage}}
+          source={{ uri: playbackData.currentAlbumImage }}
         ></Image>
-        <Text style={styles.playbackBarText}>
-          {playbackData.isPlaying}
-        </Text>
+        <Text>{JSON.stringify(playbackData.currentSound)}</Text>
+        <Text>{JSON.stringify(playbackData.currentArtist)}</Text>
+        <Text style={styles.playbackBarText}>{playbackData.isPlaying}</Text>
         <Text style={styles.playbackBarText}>
           {playbackData.currentSong} by {playbackData.currentArtist}
         </Text>

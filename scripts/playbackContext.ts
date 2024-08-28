@@ -26,6 +26,7 @@ export const initialPlaybackData: PlaybackData = {
   currentTrackUrl: '',
   isPlaying: false,
   isShowing: false,
+  //back* false,
   currentSound: null,
   currentPlaylistData: [],
   currentTrackNumberInPlaylist: 0,
@@ -36,4 +37,4 @@ export const initialPlaybackContext: PlaybackDataContext = {
   setPlaybackData: (): void => {},
 };
 
-export const PlaybackContext = createContext(initialPlaybackContext);
+export const PlaybackContext = createContext<PlaybackDataContext>(initialPlaybackContext);

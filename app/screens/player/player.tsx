@@ -43,7 +43,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
         if (e.absoluteY > threshold) {
           panY.value = withTiming(screenHeight);
           runOnJS(navigation.goBack)();
-          runOnJS(setPlaybackData)({ ...playbackData, isShowing: true });
+          runOnJS(setPlaybackData)({ isShowing: true });
         } else {
           panY.value = withTiming(0);
         }
@@ -60,7 +60,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const progress = useSharedValue(0);
   const amountOfTracksInPlaylist = playbackData.currentPlaylistData.length - 1;
 
-  const handlePress = () => {
+  const handleInfoButtonPress = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
     setExpanded(!expanded);
   };
@@ -69,25 +69,25 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     if (playbackData.currentSound) {
       playbackData.currentSound._onPlaybackStatusUpdate = (playbackStatus) => {
         if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
-          const progressConfig = {
-            duration: playbackStatus.durationMillis,
-            dampingRatio: 1,
-            stiffness: 0.1,
-            overshootClamping: false,
-            restDisplacementThreshold: 0.01,
-            restSpeedThreshold: 2,
-            reduceMotion: ReduceMotion.System,
-          };
-          progress.value = withTiming(progressBarWidth, progressConfig);
+          //         const progressConfig = {
+          //           duration: playbackStatus.durationMillis,
+          //           dampingRatio: 1,
+          //           stiffness: 0.1,
+          //           overshootClamping: false,
+          //           restDisplacementThreshold: 0.01,
+          //           restSpeedThreshold: 2,
+          //           reduceMotion: ReduceMotion.System,
+          //         };
+          //         progress.value = withTiming(progressBarWidth, progressConfig);
           setPlayTimeCurrent(playbackStatus.positionMillis);
         }
-        if (
-          playbackStatus.isLoaded &&
-          playbackStatus.didJustFinish &&
-          !(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist)
-        ) {
-          setTrackIndex(playbackData.currentTrackNumberInPlaylist + 1);
-        }
+        //       if (
+        //         playbackStatus.isLoaded &&
+        //         playbackStatus.didJustFinish &&
+        //         !(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist)
+        //       ) {
+        //         setTrackIndex(playbackData.currentTrackNumberInPlaylist + 1);
+        //       }
       };
     }
   }, [playbackData.currentSound]);
@@ -105,7 +105,6 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   };
 
   return (
-    //scale track cover on Android depending on controls availability?
     <GestureDetector gesture={pan}>
       <Animated.View style={[styles.background, animatedStyles]}>
         <View style={styles.trackCoverContainer}>
@@ -144,7 +143,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
                   source={require('../../../assets/icons/muteButton.png')}
                 ></Image>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handlePress}>
+              <TouchableOpacity onPress={handleInfoButtonPress}>
                 <Image
                   style={styles.controlButton}
                   source={require('../../../assets/icons/closeButton.png')}
@@ -152,7 +151,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
               </TouchableOpacity>
             </View>
           ) : (
-            <TouchableOpacity onPress={handlePress}>
+            <TouchableOpacity onPress={handleInfoButtonPress}>
               <Image
                 style={styles.controlButton}
                 source={require('../../../assets/icons/infoButton.png')}
@@ -209,14 +208,12 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
           {!(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist) ? (
             <TouchableOpacity
               onPress={() => {
-                console.log('next');
                 if (
                   playbackData.currentTrackNumberInPlaylist < amountOfTracksInPlaylist &&
                   playbackData.currentSound
                 ) {
-            
+                  // setPlaybackData({...playbackData, currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist + 1})
                   setTrackIndex(playbackData.currentTrackNumberInPlaylist + 1);
-                  console.log('next true', playbackData.currentTrackNumberInPlaylist);
                 } else return;
               }}
             >

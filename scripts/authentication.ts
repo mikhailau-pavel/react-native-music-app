@@ -71,8 +71,6 @@ export const createLoginUrl = async () => {
 export const requestAccessToken = async () => {
   const codeVerifier = (await getData('code_verifier')) || '';
   const code = (await getData('responseCode')) || '';
-  // console.log('code-prev', codeVerifier)
-  // console.log('code', code)
   const params: Record<string, string> = {
     client_id: 'e6d38f8e338847f0a2909ea813ec79e4',
     //process.env.CLIENT_ID,

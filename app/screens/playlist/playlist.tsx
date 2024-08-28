@@ -17,7 +17,7 @@ import {
   TextInput,
 } from 'react-native';
 import { PlaybackContext } from '@/scripts/playbackContext';
-import { createPlayback } from '@/scripts/player';
+import { createPlayback, playTrack } from '@/scripts/player';
 
 const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
@@ -29,6 +29,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       currentSong: item.title,
       currentAlbumImage: item.imageURL,
       isShowing: true,
+      //back* false,
       currentSound: await createPlayback(item.previewUrl),
       currentTrackNumberInPlaylist: index,
     });
@@ -53,17 +54,17 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
 
   const createPlaylistsTrackList = useCallback(async (playlistId: string) => {
     const tracks = await fetchTracksFromPlaylist(playlistId);
-      const currentPlaylistTracks = tracks.map((elem: CurrentPlaylistTracksResponse) => {
-        const tracksInfoList = new Object({
-          title: elem.track.name,
-          artist: elem.track.artists[0].name,
-          imageURL: elem.track.album.images[0].url,
-          trackId: elem.track.id,
-          previewUrl: elem.track.preview_url,
-        });
-        return tracksInfoList;
+    const currentPlaylistTracks = tracks.map((elem: CurrentPlaylistTracksResponse) => {
+      const tracksInfoList = new Object({
+        title: elem.track.name,
+        artist: elem.track.artists[0].name,
+        imageURL: elem.track.album.images[0].url,
+        trackId: elem.track.id,
+        previewUrl: elem.track.preview_url,
       });
-      setPlaybackData({ ...playbackData, currentPlaylistData: currentPlaylistTracks });
+      return tracksInfoList;
+    });
+    setPlaybackData({ ...playbackData, currentPlaylistData: currentPlaylistTracks });
   }, []);
 
   useEffect(() => {
@@ -89,7 +90,17 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       />
     );
   };
-
+  // useEffect(()=> {
+  //   setPlaybackData({
+  //     ...playbackData,
+  //     currentArtist: playbackData.currentArtist,
+  //     currentSong: playbackData.currentSong,
+  //     currentAlbumImage: playbackData.currentAlbumImage,
+  //     isShowing: true,
+  //     currentSound: playbackData.currentSound,
+  //     currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist,
+  //   });
+  // }, [navigation])
   return (
     <ImageBackground
       source={require('../../../assets/images/main_background.png')}
@@ -112,7 +123,8 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
               onPress={async () => {
                 setPlaybackData({
                   ...playbackData,
-                  isShowing: false,
+                  isShowing: true,
+                  //back* false,
                   currentArtist: playbackData.currentPlaylistData[0].artist,
                   currentSong: playbackData.currentPlaylistData[0].title,
                   currentAlbumImage: playbackData.currentPlaylistData[0].imageURL,

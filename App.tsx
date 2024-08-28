@@ -13,7 +13,12 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
 import PlayerScreen from './app/screens/player/player';
-import { initialPlaybackData, PlaybackContext } from './scripts/playbackContext';
+import {
+  initialPlaybackData,
+  PlaybackContext,
+  PlaybackData,
+  PlaybackDataContext,
+} from './scripts/playbackContext';
 import PlaybackBar from './app/components/playbackBar';
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -39,7 +44,15 @@ export default function App() {
     AngemeRegular: require('./assets/fonts/Angeme-Regular.ttf'),
   });
   const [playbackData, setPlaybackData] = useState(initialPlaybackData);
-  const playbackContextValue = { playbackData, setPlaybackData };
+  const handleChangePBData = (input: PlaybackDataContext) => {
+    setPlaybackData((prevState) => {
+      return {
+        ...prevState,
+        ...input,
+      };
+    });
+  };
+  const playbackContextValue = { playbackData, setPlaybackData: handleChangePBData };
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();

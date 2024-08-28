@@ -23,7 +23,6 @@ export const pauseTrack = async (sound: Audio.Sound) => {
 
 export const stopTrack = async (sound: Audio.Sound) => {
   if (sound) {
-    console.log('sound from stop track', sound)
     await sound.stopAsync();
   }
 };
