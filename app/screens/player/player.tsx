@@ -18,7 +18,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { PlaybackContext } from '@/scripts/playbackContext';
-import { createPlayback, pauseTrack, playTrack, stopTrack, unloadSound } from '@/scripts/player';
+import { createPlayback, pauseTrack, playTrack } from '@/scripts/player';
 import { useTrackChange } from '@/hooks/useTrackChange';
 
 const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
@@ -26,7 +26,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const panY = useSharedValue(0);
   const screenHeight = Dimensions.get('screen').height;
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
-  const setTrackIndex = useTrackChange(0);
+  const setTrackIndex = useTrackChange(playbackData.currentTrackNumberInPlaylist);
 
   const pan = useMemo(() => {
     return Gesture.Pan()
@@ -48,7 +48,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
           panY.value = withTiming(0);
         }
       });
-  }, [active, navigation.goBack, panY, screenHeight]);
+  }, [active, panY, screenHeight, navigation.goBack, setPlaybackData, playbackData]);
 
   const animatedStyles = useAnimatedStyle(() => ({
     flex: 1,
@@ -109,7 +109,6 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     <GestureDetector gesture={pan}>
       <Animated.View style={[styles.background, animatedStyles]}>
         <View style={styles.trackCoverContainer}>
-          {/* <Text>{JSON.stringify(playbackData.currentSound)}</Text> */}
           <Text style={styles.trackTitle}>
             {playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist].artist}
           </Text>
@@ -179,7 +178,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
             <TouchableOpacity
               onPress={() => {
                 if (playbackData.currentTrackNumberInPlaylist > 0) {
-                  setTrackIndex(playbackData.currentTrackNumberInPlaylist - 1)
+                  setTrackIndex(playbackData.currentTrackNumberInPlaylist - 1);
                 } else return;
               }}
             >
@@ -210,11 +209,14 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
           {!(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist) ? (
             <TouchableOpacity
               onPress={() => {
+                console.log('next');
                 if (
                   playbackData.currentTrackNumberInPlaylist < amountOfTracksInPlaylist &&
                   playbackData.currentSound
                 ) {
-                  setTrackIndex(playbackData.currentTrackNumberInPlaylist + 1)
+            
+                  setTrackIndex(playbackData.currentTrackNumberInPlaylist + 1);
+                  console.log('next true', playbackData.currentTrackNumberInPlaylist);
                 } else return;
               }}
             >

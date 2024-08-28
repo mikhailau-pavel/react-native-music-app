@@ -5,7 +5,7 @@ import {
   TrackItemData,
   TrackItemProps,
 } from '@/types/types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import {
   FlatList,
   View,
@@ -19,27 +19,7 @@ import {
 import { PlaybackContext } from '@/scripts/playbackContext';
 import { createPlayback } from '@/scripts/player';
 
-const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
-const tracksMockList: TrackItemData[] = [
-  {
-    title: 'Track_item_1',
-    artist: 'track-1',
-    imageURL: mockImage,
-    trackId: '3cEYpjA9oz9GiPac4AsH4nsa',
-    previewUrl: '',
-  },
-  {
-    title: 'Track_item_2',
-    artist: 'track-2',
-    imageURL: mockImage,
-    trackId: '3cEYpjA9oz9GiPac4AsH4nur',
-    previewUrl: '',
-  },
-];
-
 const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
-  const [selectedTrackId, setSelectedTrackId] = useState<string>('');
-  const [currentPlaylistsTracks, setCurrentPlaylistsTracks] = useState(tracksMockList);
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
 
   const handleItemPress = async (item: TrackItemData, index: number) => {
@@ -73,7 +53,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
 
   const createPlaylistsTrackList = useCallback(async (playlistId: string) => {
     const tracks = await fetchTracksFromPlaylist(playlistId);
-    if (tracks) {
       const currentPlaylistTracks = tracks.map((elem: CurrentPlaylistTracksResponse) => {
         const tracksInfoList = new Object({
           title: elem.track.name,
@@ -84,11 +63,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
         });
         return tracksInfoList;
       });
-      setCurrentPlaylistsTracks(currentPlaylistTracks);
       setPlaybackData({ ...playbackData, currentPlaylistData: currentPlaylistTracks });
-    } else {
-      setCurrentPlaylistsTracks(tracksMockList);
-    }
   }, []);
 
   useEffect(() => {
@@ -126,7 +101,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
         data={playbackData.currentPlaylistData}
         renderItem={renderTrackItem}
         keyExtractor={(item) => item.trackId}
-        extraData={selectedTrackId}
         ListHeaderComponent={
           <View style={styles.playlistCoverContainer}>
             <Text style={styles.playlistTitle}>{route.params.playlistTitle}</Text>
@@ -147,7 +121,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
                   ),
                   currentTrackNumberInPlaylist: 0,
                 });
-                navigation.navigate('Player', currentPlaylistsTracks);
+                navigation.navigate('Player');
               }}
             >
               <Image
@@ -158,9 +132,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
           </View>
         }
       />
-      {/* <TouchableOpacity>
-        <Text>Add songs</Text>
-      </TouchableOpacity> */}
     </ImageBackground>
   );
 };

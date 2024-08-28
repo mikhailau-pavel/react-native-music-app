@@ -1,32 +1,35 @@
 import { PlaybackContext } from '@/scripts/playbackContext';
 import { createPlayback, playTrack, stopTrack, unloadSound } from '@/scripts/player';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 
 export const useTrackChange = (index: number) => {
-  const [trackIndex, setTrackIndex] = useState(0);
+  const [trackIndex, setTrackIndex] = useState(index);
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
+  
+  const playNextTrack = async (trackIndex: number) => {
+    if (playbackData.isPlaying)
+    if (playbackData.currentSound) {
+      await stopTrack(playbackData.currentSound);
+      await unloadSound(playbackData.currentSound);
+      setPlaybackData({ ...playbackData, currentSound: null });
+      const nextTrackUrl = playbackData.currentPlaylistData[trackIndex].previewUrl;
+      const newSound = await createPlayback(nextTrackUrl);
+      setPlaybackData({
+        ...playbackData,
+        currentArtist: playbackData.currentPlaylistData[trackIndex].artist,
+        currentSong: playbackData.currentPlaylistData[trackIndex].title,
+        currentSound: newSound,
+        currentAlbumImage: playbackData.currentPlaylistData[trackIndex].imageURL,
+        currentTrackNumberInPlaylist: trackIndex,
+        isPlaying: true,
+      });
+      // progress.value = 0;
+      playTrack(newSound);
+    }
+  }
+  
   useEffect(() => {
-    const playNextTrack = async (trackIndex: number) => {
-      console.log('happening')
-      if (playbackData.currentSound) {
-        await stopTrack(playbackData.currentSound);
-        await unloadSound(playbackData.currentSound);
-        setPlaybackData({ ...playbackData, currentSound: null });
-        const nextTrackUrl = playbackData.currentPlaylistData[trackIndex].previewUrl;
-        const newSound = await createPlayback(nextTrackUrl);
-        setPlaybackData({
-          ...playbackData,
-          currentArtist: 'test',
-          currentSound: newSound,
-          currentTrackNumberInPlaylist: trackIndex,
-          isPlaying: true,
-        });
-        console.log('playbackData', playbackData.currentArtist, playbackData.currentSong);
-        // progress.value = 0;
-        playTrack(newSound);
-      }
-    };
-      playNextTrack(trackIndex);
+    playNextTrack(trackIndex);
   }, [trackIndex]);
 
   return setTrackIndex;

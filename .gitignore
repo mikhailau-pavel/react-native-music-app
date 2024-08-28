@@ -16,4 +16,5 @@ app-example
 package-lock.json
 # macOS
 .DS_Store
+*.swp
 
