@@ -1,12 +1,5 @@
-import { fetchCurrentUserPlaylists, resetAccessToken } from '@/api/api';
-import { getData } from '@/scripts/asyncStorage';
-import {
-  CurrentUserPlaylist,
-  HomeScreenProps,
-  PlaylistItemData,
-  PlaylistItemProps,
-} from '@/types/types';
 import { useFocusEffect } from '@react-navigation/native';
+import React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Text,
@@ -17,6 +10,15 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
+
+import { fetchCurrentUserPlaylists, resetAccessToken } from '@/api/api';
+import { getData } from '@/scripts/asyncStorage';
+import {
+  CurrentUserPlaylist,
+  HomeScreenProps,
+  PlaylistItemData,
+  PlaylistItemProps,
+} from '@/types/types';
 
 const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
 
@@ -183,32 +185,32 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   background: {
     flex: 1,
     padding: 5,
   },
-  item: {
+  container: {
     flex: 1,
+  },
+  item: {
     backgroundColor: '#7bfdc7',
+    flex: 1,
     margin: 5,
   },
   title: {
-    gap: 5,
+    alignSelf: 'flex-end',
     fontFamily: 'AngemeBold',
     fontSize: 20,
-    alignSelf: 'flex-end',
+    gap: 5,
   },
   welcomeButton: {
-    flex: 1,
-    backgroundColor: 'white',
     alignItems: 'center',
-    justifyContent: 'center',
     alignSelf: 'center',
-    width: 200,
+    backgroundColor: 'white',
+    flex: 1,
     height: 'auto',
+    justifyContent: 'center',
+    width: 200,
   },
   welcomeText: {
     fontFamily: 'Beograd',

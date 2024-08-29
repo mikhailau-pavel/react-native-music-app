@@ -28,7 +28,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       currentArtist: item.artist,
       currentSong: item.title,
       currentAlbumImage: item.imageURL,
-      isShowing: false,
+      isShowing: true,
       currentSound: await createPlayback(item.previewUrl),
       currentTrackNumberInPlaylist: index,
     });

@@ -20,6 +20,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { PlaybackContext } from '@/scripts/playbackContext';
 import { createPlayback, pauseTrack, playTrack } from '@/scripts/player';
 import { useTrackChange } from '@/hooks/useTrackChange';
+import ProgressBar from '@/app/components/progressBar/progressBar';
 
 const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const active = useSharedValue(false);
@@ -54,9 +55,9 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     flex: 1,
     transform: [{ translateY: panY.value }],
   }));
-  const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
+  // const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
   const [expanded, setExpanded] = useState(true);
-  const [progressBarWidth, setProgressBarWidth] = useState(0);
+  // const [progressBarWidth, setProgressBarWidth] = useState(0);
   const progress = useSharedValue(0);
   const amountOfTracksInPlaylist = playbackData.currentPlaylistData
     ? playbackData.currentPlaylistData.length - 1
@@ -67,32 +68,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     setExpanded(!expanded);
   };
 
-  useEffect(() => {
-    if (playbackData.currentSound) {
-      playbackData.currentSound._onPlaybackStatusUpdate = (playbackStatus) => {
-        if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
-          //         const progressConfig = {
-          //           duration: playbackStatus.durationMillis,
-          //           dampingRatio: 1,
-          //           stiffness: 0.1,
-          //           overshootClamping: false,
-          //           restDisplacementThreshold: 0.01,
-          //           restSpeedThreshold: 2,
-          //           reduceMotion: ReduceMotion.System,
-          //         };
-          //         progress.value = withTiming(progressBarWidth, progressConfig);
-          setPlayTimeCurrent(playbackStatus.positionMillis);
-        }
-        //       if (
-        //         playbackStatus.isLoaded &&
-        //         playbackStatus.didJustFinish &&
-        //         !(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist)
-        //       ) {
-        //         setTrackIndex(playbackData.currentTrackNumberInPlaylist + 1);
-        //       }
-      };
-    }
-  }, [playbackData.currentSound]);
+  
 
   const handlePlayButtonPress = async () => {
     if (!playbackData.isPlaying && playbackData.currentSound) {
@@ -171,7 +147,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
               ></Image>
             </TouchableOpacity>
           )}
-          <View style={styles.timersContainer}>
+          {/* <View style={styles.timersContainer}>
             <Text>{`${Math.floor(playTimeCurrent / 1000 / 60)}:${Math.floor((playTimeCurrent / 1000) % 60) < 10 ? '0' : ''}${Math.floor((playTimeCurrent / 1000) % 60)}`}</Text>
             <Text>0:29</Text>
           </View>
@@ -181,9 +157,10 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
               const { width } = e.nativeEvent.layout;
               setProgressBarWidth(width);
             }}
-          >
-            <Animated.View style={[styles.bar, { width: progress }]} />
-          </View>
+          > */}
+            {/* <Animated.View style={[styles.bar, { width: progress }]} />
+          </View> */}
+          <ProgressBar/>
         </View>
         <View style={styles.trackControlContainer}>
           {!(playbackData.currentTrackNumberInPlaylist === 0) ? (
@@ -229,7 +206,6 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
                   playbackData.currentTrackNumberInPlaylist < amountOfTracksInPlaylist &&
                   playbackData.currentSound
                 ) {
-                  // setPlaybackData({...playbackData, currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist + 1})
                   setTrackIndex(playbackData.currentTrackNumberInPlaylist + 1);
                 } else return;
               }}
@@ -268,11 +244,11 @@ const styles = StyleSheet.create({
     fontFamily: 'AngemeBold',
     margin: 5,
   },
-  timersContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 5,
-  },
+  // timersContainer: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   padding: 5,
+  // },
   trackInfoControlContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -290,18 +266,18 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     margin: 15,
   },
-  barContainer: {
-    height: 20,
-    backgroundColor: 'grey',
-    borderRadius: 10,
-    margin: 10,
-    overflow: 'hidden',
-  },
-  bar: {
-    height: 20,
-    backgroundColor: 'black',
-    borderRadius: 10,
-  },
+  // barContainer: {
+  //   height: 20,
+  //   backgroundColor: 'grey',
+  //   borderRadius: 10,
+  //   margin: 10,
+  //   overflow: 'hidden',
+  // },
+  // bar: {
+  //   height: 20,
+  //   backgroundColor: 'black',
+  //   borderRadius: 10,
+  // },
 });
 
 export default PlayerScreen;
