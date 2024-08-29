@@ -44,7 +44,7 @@ export default function App() {
     AngemeRegular: require('./assets/fonts/Angeme-Regular.ttf'),
   });
   const [playbackData, setPlaybackData] = useState(initialPlaybackData);
-  const handleChangePBData = (input: PlaybackDataContext) => {
+  const handleChangePBData = (input: PlaybackData) => {
     setPlaybackData((prevState) => {
       return {
         ...prevState,

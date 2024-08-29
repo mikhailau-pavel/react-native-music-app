@@ -26,7 +26,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const panY = useSharedValue(0);
   const screenHeight = Dimensions.get('screen').height;
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
-  const setTrackIndex = useTrackChange(playbackData.currentTrackNumberInPlaylist);
+  const setTrackIndex = useTrackChange(playbackData.currentTrackNumberInPlaylist || 0);
 
   const pan = useMemo(() => {
     return Gesture.Pan()
@@ -58,7 +58,9 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const [expanded, setExpanded] = useState(true);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
   const progress = useSharedValue(0);
-  const amountOfTracksInPlaylist = playbackData.currentPlaylistData.length - 1;
+  const amountOfTracksInPlaylist = playbackData.currentPlaylistData
+    ? playbackData.currentPlaylistData.length - 1
+    : 0;
 
   const handleInfoButtonPress = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
@@ -108,21 +110,32 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     <GestureDetector gesture={pan}>
       <Animated.View style={[styles.background, animatedStyles]}>
         <View style={styles.trackCoverContainer}>
-          <Text style={styles.trackTitle}>
-            {playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist].artist}
-          </Text>
-          <Image
-            style={styles.trackCover}
-            source={{
-              height: 300,
-              width: 300,
-              uri: playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist]
-                .imageURL,
-            }}
-          />
-          <Text style={styles.trackTitle}>
-            {playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist].title}
-          </Text>
+          {playbackData.currentPlaylistData && (
+            <>
+              <Text style={styles.trackTitle}>
+                {
+                  playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist || 0]
+                    .artist
+                }
+              </Text>
+              <Image
+                style={styles.trackCover}
+                source={{
+                  height: 300,
+                  width: 300,
+                  uri: playbackData.currentPlaylistData[
+                    playbackData.currentTrackNumberInPlaylist || 0
+                  ].imageURL,
+                }}
+              />
+              <Text style={styles.trackTitle}>
+                {
+                  playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist || 0]
+                    .title
+                }
+              </Text>
+            </>
+          )}
           {!expanded ? (
             <View style={styles.trackInfoControlContainer}>
               <TouchableOpacity>
@@ -176,7 +189,10 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
           {!(playbackData.currentTrackNumberInPlaylist === 0) ? (
             <TouchableOpacity
               onPress={() => {
-                if (playbackData.currentTrackNumberInPlaylist > 0) {
+                if (
+                  playbackData.currentTrackNumberInPlaylist &&
+                  playbackData.currentTrackNumberInPlaylist > 0
+                ) {
                   setTrackIndex(playbackData.currentTrackNumberInPlaylist - 1);
                 } else return;
               }}
@@ -209,6 +225,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
             <TouchableOpacity
               onPress={() => {
                 if (
+                  playbackData.currentTrackNumberInPlaylist &&
                   playbackData.currentTrackNumberInPlaylist < amountOfTracksInPlaylist &&
                   playbackData.currentSound
                 ) {

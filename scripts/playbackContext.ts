@@ -3,20 +3,20 @@ import { Audio } from 'expo-av';
 import { createContext } from 'react';
 
 export type PlaybackData = {
-  currentArtist: string;
-  currentSong: string;
-  currentAlbumImage: string;
-  currentTrackUrl: string;
-  isPlaying: boolean;
-  isShowing: boolean;
-  currentSound: Audio.Sound | null;
-  currentPlaylistData: TrackItemData[] | [];
-  currentTrackNumberInPlaylist: number;
+  currentArtist?: string;
+  currentSong?: string;
+  currentAlbumImage?: string;
+  currentTrackUrl?: string;
+  isPlaying?: boolean;
+  isShowing?: boolean;
+  currentSound?: Audio.Sound | null;
+  currentPlaylistData?: TrackItemData[] | [];
+  currentTrackNumberInPlaylist?: number;
 };
 
 export type PlaybackDataContext = {
   playbackData: PlaybackData;
-  setPlaybackData: React.Dispatch<React.SetStateAction<PlaybackData>>;
+  setPlaybackData: (input: PlaybackData) => void;
 };
 
 export const initialPlaybackData: PlaybackData = {
@@ -26,7 +26,6 @@ export const initialPlaybackData: PlaybackData = {
   currentTrackUrl: '',
   isPlaying: false,
   isShowing: false,
-  //back* false,
   currentSound: null,
   currentPlaylistData: [],
   currentTrackNumberInPlaylist: 0,

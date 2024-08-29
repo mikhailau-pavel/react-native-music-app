@@ -31,8 +31,6 @@ const PlaybackBar = () => {
           style={styles.playbackBarImage}
           source={{ uri: playbackData.currentAlbumImage }}
         ></Image>
-        <Text>{JSON.stringify(playbackData.currentSound)}</Text>
-        <Text>{JSON.stringify(playbackData.currentArtist)}</Text>
         <Text style={styles.playbackBarText}>{playbackData.isPlaying}</Text>
         <Text style={styles.playbackBarText}>
           {playbackData.currentSong} by {playbackData.currentArtist}

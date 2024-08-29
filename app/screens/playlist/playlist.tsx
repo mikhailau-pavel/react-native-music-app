@@ -28,8 +28,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       currentArtist: item.artist,
       currentSong: item.title,
       currentAlbumImage: item.imageURL,
-      isShowing: true,
-      //back* false,
+      isShowing: false,
       currentSound: await createPlayback(item.previewUrl),
       currentTrackNumberInPlaylist: index,
     });
@@ -90,17 +89,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       />
     );
   };
-  // useEffect(()=> {
-  //   setPlaybackData({
-  //     ...playbackData,
-  //     currentArtist: playbackData.currentArtist,
-  //     currentSong: playbackData.currentSong,
-  //     currentAlbumImage: playbackData.currentAlbumImage,
-  //     isShowing: true,
-  //     currentSound: playbackData.currentSound,
-  //     currentTrackNumberInPlaylist: playbackData.currentTrackNumberInPlaylist,
-  //   });
-  // }, [navigation])
+
   return (
     <ImageBackground
       source={require('../../../assets/images/main_background.png')}
@@ -119,28 +108,30 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
               style={styles.playlistCover}
               source={{ height: 300, width: 300, uri: route.params.playlistCover }}
             />
-            <TouchableOpacity
-              onPress={async () => {
-                setPlaybackData({
-                  ...playbackData,
-                  isShowing: true,
-                  //back* false,
-                  currentArtist: playbackData.currentPlaylistData[0].artist,
-                  currentSong: playbackData.currentPlaylistData[0].title,
-                  currentAlbumImage: playbackData.currentPlaylistData[0].imageURL,
-                  currentSound: await createPlayback(
-                    playbackData.currentPlaylistData[0].previewUrl
-                  ),
-                  currentTrackNumberInPlaylist: 0,
-                });
-                navigation.navigate('Player');
-              }}
-            >
-              <Image
-                style={styles.playButton}
-                source={require('../../../assets/icons/playButton.png')}
-              ></Image>
-            </TouchableOpacity>
+            {playbackData && (
+              <TouchableOpacity
+                onPress={async () => {
+                  playbackData.currentPlaylistData &&
+                    setPlaybackData({
+                      ...playbackData,
+                      isShowing: false,
+                      currentArtist: playbackData.currentPlaylistData[0].artist,
+                      currentSong: playbackData.currentPlaylistData[0].title,
+                      currentAlbumImage: playbackData.currentPlaylistData[0].imageURL,
+                      currentSound: await createPlayback(
+                        playbackData.currentPlaylistData[0].previewUrl
+                      ),
+                      currentTrackNumberInPlaylist: 0,
+                    });
+                  navigation.navigate('Player');
+                }}
+              >
+                <Image
+                  style={styles.playButton}
+                  source={require('../../../assets/icons/playButton.png')}
+                ></Image>
+              </TouchableOpacity>
+            )}
           </View>
         }
       />
