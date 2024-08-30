@@ -1,9 +1,12 @@
+import usePlayPosition from '@/hooks/usePlayPosition';
 import { PlaybackContext } from '@/scripts/playbackContext';
+import { calculateNewPlayPosition, playFromNewPosition } from '@/scripts/player';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, Text, Touchable } from 'react-native';
 import { Gesture, GestureDetector, TouchableOpacity } from 'react-native-gesture-handler';
 import {
   ReduceMotion,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -17,6 +20,7 @@ const ProgressBar = () => {
   const isMoving = useSharedValue(false);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
   const { playbackData } = useContext(PlaybackContext);
+  const { setPlayPosition, setElementWidth } = usePlayPosition();
 
   const pan = useMemo(() => {
     return Gesture.Pan()
@@ -29,6 +33,9 @@ const ProgressBar = () => {
       })
       .onEnd(() => {
         isMoving.value = false;
+        // if (playbackData.currentSound){}
+        runOnJS(setPlayPosition)(panX.value);
+        runOnJS(setElementWidth)(progressBarWidth);
       });
   }, [isMoving, panX, progressBarWidth]);
 
@@ -37,7 +44,8 @@ const ProgressBar = () => {
   });
 
   const progressFiller = useAnimatedStyle(() => {
-    return { width: panX.value };
+    //change magic
+    return { width: panX.value + 10 };
   });
   useEffect(() => {
     if (playbackData.currentSound) {

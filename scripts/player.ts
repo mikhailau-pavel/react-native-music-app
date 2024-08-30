@@ -32,3 +32,14 @@ export const unloadSound = async (sound: Audio.Sound) => {
     await sound.unloadAsync();
   }
 };
+
+export const calculateNewPlayPosition = (progress: number, elementWidth: number): number => {
+  return Math.abs(Math.floor((progress * 100) / elementWidth)) * 290;
+};
+
+export const playFromNewPosition = async (sound: Audio.Sound, position: number) => {
+  console.log('position:', position)
+  if (sound) {
+    await sound.playFromPositionAsync(position)
+  }
+};
