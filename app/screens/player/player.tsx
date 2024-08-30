@@ -1,5 +1,5 @@
 import { PlayerScreenProps } from '@/types/types';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -10,7 +10,6 @@ import {
   Dimensions,
 } from 'react-native';
 import Animated, {
-  ReduceMotion,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -18,7 +17,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { PlaybackContext } from '@/scripts/playbackContext';
-import { createPlayback, pauseTrack, playTrack } from '@/scripts/player';
+import { pauseTrack, playTrack } from '@/scripts/player';
 import { useTrackChange } from '@/hooks/useTrackChange';
 import ProgressBar from '@/app/components/progressBar/progressBar';
 
@@ -55,10 +54,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     flex: 1,
     transform: [{ translateY: panY.value }],
   }));
-  // const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
   const [expanded, setExpanded] = useState(true);
-  // const [progressBarWidth, setProgressBarWidth] = useState(0);
-  const progress = useSharedValue(0);
   const amountOfTracksInPlaylist = playbackData.currentPlaylistData
     ? playbackData.currentPlaylistData.length - 1
     : 0;
@@ -67,8 +63,6 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
     setExpanded(!expanded);
   };
-
-  
 
   const handlePlayButtonPress = async () => {
     if (!playbackData.isPlaying && playbackData.currentSound) {
@@ -147,20 +141,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
               ></Image>
             </TouchableOpacity>
           )}
-          {/* <View style={styles.timersContainer}>
-            <Text>{`${Math.floor(playTimeCurrent / 1000 / 60)}:${Math.floor((playTimeCurrent / 1000) % 60) < 10 ? '0' : ''}${Math.floor((playTimeCurrent / 1000) % 60)}`}</Text>
-            <Text>0:29</Text>
-          </View>
-          <View
-            style={styles.barContainer}
-            onLayout={(e) => {
-              const { width } = e.nativeEvent.layout;
-              setProgressBarWidth(width);
-            }}
-          > */}
-            {/* <Animated.View style={[styles.bar, { width: progress }]} />
-          </View> */}
-          <ProgressBar/>
+          <ProgressBar />
         </View>
         <View style={styles.trackControlContainer}>
           {!(playbackData.currentTrackNumberInPlaylist === 0) ? (
@@ -244,11 +225,6 @@ const styles = StyleSheet.create({
     fontFamily: 'AngemeBold',
     margin: 5,
   },
-  // timersContainer: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   padding: 5,
-  // },
   trackInfoControlContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -266,18 +242,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     margin: 15,
   },
-  // barContainer: {
-  //   height: 20,
-  //   backgroundColor: 'grey',
-  //   borderRadius: 10,
-  //   margin: 10,
-  //   overflow: 'hidden',
-  // },
-  // bar: {
-  //   height: 20,
-  //   backgroundColor: 'black',
-  //   borderRadius: 10,
-  // },
 });
 
 export default PlayerScreen;

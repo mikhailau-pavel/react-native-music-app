@@ -6,7 +6,6 @@ import {
   ReduceMotion,
   useAnimatedStyle,
   useSharedValue,
-  withClamp,
   withTiming,
 } from 'react-native-reanimated';
 import Animated from 'react-native-reanimated';
@@ -14,30 +13,20 @@ import Animated from 'react-native-reanimated';
 const ProgressBar = () => {
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
   const panX = useSharedValue(0);
+  const offset = useSharedValue(0);
   const isMoving = useSharedValue(false);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
-  const playbackProgress = useSharedValue(0);
   const { playbackData } = useContext(PlaybackContext);
 
   const pan = useMemo(() => {
     return Gesture.Pan()
       .onStart(() => {
         isMoving.value = true;
+        offset.value = panX.value;
       })
       .onChange((e) => {
-        const withinBounds = (min: number, current: number, max: number) => {
-          return Math.min(Math.max(min, current), max);
-        };
-        panX.value = withinBounds(0, e.translationX, progressBarWidth);
-        console.log(
-          'pan x and stuff:',
-          panX.value,
-          e.translationX,
-          progressBarWidth,
-          withinBounds(0, e.translationX, progressBarWidth)
-        );
+        panX.value = offset.value + e.translationX;
       })
-      .onUpdate(() => {})
       .onEnd(() => {
         isMoving.value = false;
       });
@@ -48,13 +37,12 @@ const ProgressBar = () => {
   });
 
   const progressFiller = useAnimatedStyle(() => {
-    return { width: panX.value + 50 };
+    return { width: panX.value };
   });
   useEffect(() => {
     if (playbackData.currentSound) {
       playbackData.currentSound._onPlaybackStatusUpdate = (playbackStatus) => {
         if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
-          
           const progressConfig = {
             duration: playbackStatus.durationMillis,
             dampingRatio: 1,
@@ -64,9 +52,7 @@ const ProgressBar = () => {
             restSpeedThreshold: 2,
             reduceMotion: ReduceMotion.System,
           };
-          //progressBarWidth calculated on layout later (400 mock)
-          panX.value = withTiming(400, progressConfig);
-          console.log('happens panx', panX.value, progressBarWidth, progressConfig)
+          panX.value = withTiming(progressBarWidth, progressConfig);
           setPlayTimeCurrent(playbackStatus.positionMillis);
         }
         //       if (
@@ -78,7 +64,7 @@ const ProgressBar = () => {
         //       }
       };
     }
-  }, [playbackData.currentSound]);
+  }, [panX, playbackData.currentSound, progressBarWidth]);
 
   return (
     <View style={styles.progressBarContainer}>
@@ -93,14 +79,14 @@ const ProgressBar = () => {
           setProgressBarWidth(width);
         }}
       >
-        <GestureDetector gesture={pan}>
-          <TouchableOpacity style={styles.knobContainer}>
+        <TouchableOpacity style={styles.knobContainer}>
+          <GestureDetector gesture={pan}>
             <Animated.View style={[styles.knob, progressFiller]}>
-              <Text>Test</Text>
+              <Text>Pull</Text>
             </Animated.View>
-            <Animated.View style={[styles.bar, knobProgressStyle]} />
-          </TouchableOpacity>
-        </GestureDetector>
+          </GestureDetector>
+          <Animated.View style={[styles.bar, knobProgressStyle]} />
+        </TouchableOpacity>
       </View>
     </View>
   );
