@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, Text, Touchable } from 'react-native';
 import { Gesture, GestureDetector, TouchableOpacity } from 'react-native-gesture-handler';
 import {
+  cancelAnimation,
   ReduceMotion,
   runOnJS,
   useAnimatedStyle,
@@ -18,6 +19,7 @@ const ProgressBar = () => {
   const offset = useSharedValue(0);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
   const { playbackData } = useContext(PlaybackContext);
+  const [isTrackPaused, setIsTrackPaused] = useState(false);
   const { setPlayPosition, setElementWidth, setIsMoving } = usePlayPosition();
 
   const pan = useMemo(() => {
@@ -57,17 +59,23 @@ const ProgressBar = () => {
             restSpeedThreshold: 2,
             reduceMotion: ReduceMotion.System,
           };
-          panX.value = withTiming(progressBarWidth, progressConfig);
+          if (playbackStatus.shouldPlay === true) {
+            panX.value = withTiming(progressBarWidth, progressConfig);
+          }
           setPlayTimeCurrent(playbackStatus.positionMillis);
+          console.log('first load should play status:', panX.value);
         }
-        //       if (
-        //         playbackStatus.isLoaded &&
-        //         playbackStatus.didJustFinish &&
-        //         !(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist)
-        //       ) {
-        //         setTrackIndex(playbackData.currentTrackNumberInPlaylist + 1);
-        //       }
+        if (playbackStatus.isLoaded && playbackStatus.shouldPlay === false) {
+          cancelAnimation(panX);
+        }
       };
+      // if (
+      //   playbackStatus.isLoaded &&
+      //   playbackStatus.didJustFinish &&
+      //   !(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist)
+      // ) {
+      //   setTrackIndex(playbackData.currentTrackNumberInPlaylist + 1);
+      // }
     }
   }, [panX, playbackData.currentSound, progressBarWidth]);
 

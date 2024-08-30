@@ -13,11 +13,7 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
 import PlayerScreen from './app/screens/player/player';
-import {
-  initialPlaybackData,
-  PlaybackContext,
-  PlaybackData,
-} from './scripts/playbackContext';
+import { initialPlaybackData, PlaybackContext, PlaybackData } from './scripts/playbackContext';
 import PlaybackBar from './app/components/playbackBar/playbackBar';
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';

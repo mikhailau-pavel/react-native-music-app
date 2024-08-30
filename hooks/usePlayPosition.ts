@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 const usePlayPosition = () => {
   const [playPosition, setPlayPosition] = useState(0);
   const [elementWidth, setElementWidth] = useState(1);
-  const [isMoving, setIsMoving] = useState(false)
+  const [isMoving, setIsMoving] = useState(false);
   const { playbackData } = useContext(PlaybackContext);
 
   useEffect(() => {
