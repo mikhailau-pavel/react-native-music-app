@@ -38,8 +38,7 @@ export const calculateNewPlayPosition = (progress: number, elementWidth: number)
 };
 
 export const playFromNewPosition = async (sound: Audio.Sound, position: number) => {
-  console.log('position:', position)
   if (sound) {
-    await sound.playFromPositionAsync(position)
+    await sound.playFromPositionAsync(position);
   }
 };

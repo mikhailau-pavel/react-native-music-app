@@ -41,8 +41,8 @@ const PlaybackBar = () => {
           style={styles.playbackBarButtonImage}
           source={
             playbackData.isPlaying
-              ? require('../../assets/icons/pauseTrackButton.png')
-              : require('../../assets/icons/playButton.png')
+              ? require('../../../assets/icons/pauseTrackButton.png')
+              : require('../../../assets/icons/playButton.png')
           }
         ></Image>
       </TouchableOpacity>

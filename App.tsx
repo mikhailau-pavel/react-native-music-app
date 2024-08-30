@@ -17,9 +17,8 @@ import {
   initialPlaybackData,
   PlaybackContext,
   PlaybackData,
-  PlaybackDataContext,
 } from './scripts/playbackContext';
-import PlaybackBar from './app/components/playbackBar';
+import PlaybackBar from './app/components/playbackBar/playbackBar';
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 

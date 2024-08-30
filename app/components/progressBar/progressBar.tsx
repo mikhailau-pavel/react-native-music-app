@@ -1,6 +1,5 @@
 import usePlayPosition from '@/hooks/usePlayPosition';
 import { PlaybackContext } from '@/scripts/playbackContext';
-import { calculateNewPlayPosition, playFromNewPosition } from '@/scripts/player';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, Text, Touchable } from 'react-native';
 import { Gesture, GestureDetector, TouchableOpacity } from 'react-native-gesture-handler';
@@ -17,27 +16,25 @@ const ProgressBar = () => {
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
   const panX = useSharedValue(0);
   const offset = useSharedValue(0);
-  const isMoving = useSharedValue(false);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
   const { playbackData } = useContext(PlaybackContext);
-  const { setPlayPosition, setElementWidth } = usePlayPosition();
+  const { setPlayPosition, setElementWidth, setIsMoving } = usePlayPosition();
 
   const pan = useMemo(() => {
     return Gesture.Pan()
       .onStart(() => {
-        isMoving.value = true;
+        runOnJS(setIsMoving)(true);
         offset.value = panX.value;
       })
       .onChange((e) => {
         panX.value = offset.value + e.translationX;
       })
       .onEnd(() => {
-        isMoving.value = false;
-        // if (playbackData.currentSound){}
         runOnJS(setPlayPosition)(panX.value);
         runOnJS(setElementWidth)(progressBarWidth);
+        runOnJS(setIsMoving)(false);
       });
-  }, [isMoving, panX, progressBarWidth]);
+  }, [offset, panX, progressBarWidth, setElementWidth, setIsMoving, setPlayPosition]);
 
   const knobProgressStyle = useAnimatedStyle(() => {
     return { transform: [{ translateX: panX.value }] };

@@ -48,7 +48,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
           panY.value = withTiming(0);
         }
       });
-  }, [active, panY, screenHeight, navigation.goBack, setPlaybackData, playbackData]);
+  }, [active, panY, screenHeight, navigation.goBack, setPlaybackData]);
 
   const animatedStyles = useAnimatedStyle(() => ({
     flex: 1,
