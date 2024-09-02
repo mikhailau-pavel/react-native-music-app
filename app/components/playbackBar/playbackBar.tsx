@@ -21,7 +21,7 @@ const PlaybackBar = () => {
 
   const handlePlaybackBarPress = () => {
     navigation.navigate('Player');
-    setPlaybackData({ ...playbackData, isShowing: true });
+    setPlaybackData({ ...playbackData, isShowing: false });
   };
 
   return (
@@ -31,7 +31,6 @@ const PlaybackBar = () => {
           style={styles.playbackBarImage}
           source={{ uri: playbackData.currentAlbumImage }}
         ></Image>
-        <Text style={styles.playbackBarText}>{playbackData.isPlaying}</Text>
         <Text style={styles.playbackBarText}>
           {playbackData.currentSong} by {playbackData.currentArtist}
         </Text>
@@ -59,7 +58,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 40,
     margin: 10,
-    //picker?
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 15,
