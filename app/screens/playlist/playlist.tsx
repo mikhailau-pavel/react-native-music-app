@@ -17,7 +17,7 @@ import {
   TextInput,
 } from 'react-native';
 import { PlaybackContext } from '@/scripts/playbackContext';
-import { createPlayback, playTrack } from '@/scripts/player';
+import { createPlayback } from '@/scripts/player';
 
 const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
@@ -96,7 +96,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       resizeMode="cover"
       style={styles.background}
     >
-      <TextInput style={styles.searchbar}> Search</TextInput>
+      <TextInput style={styles.searchBar}> Search</TextInput>
       <FlatList
         data={playbackData.currentPlaylistData}
         renderItem={renderTrackItem}
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#7bfdc7',
     margin: 5,
   },
-  searchbar: {
+  searchBar: {
     borderWidth: 3,
     backgroundColor: 'white',
     fontFamily: 'AngemeBold',

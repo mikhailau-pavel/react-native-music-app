@@ -6,14 +6,15 @@ const usePlayPosition = () => {
   const [playPosition, setPlayPosition] = useState(0);
   const [elementWidth, setElementWidth] = useState(1);
   const [isMoving, setIsMoving] = useState(false);
-  const { playbackData } = useContext(PlaybackContext);
+  const { playbackData, setPlaybackData } = useContext(PlaybackContext);
 
   useEffect(() => {
     if (playbackData.currentSound && isMoving) {
       const position = calculateNewPlayPosition(playPosition, elementWidth);
       playFromNewPosition(playbackData.currentSound, position);
+      setPlaybackData({ ...playbackData, isPlaying: true });
     }
-  }, [elementWidth, playPosition, playbackData.currentSound]);
+  }, [elementWidth, playPosition, playbackData.currentSound, isMoving]);
 
   return { setPlayPosition, setElementWidth, setIsMoving };
 };
