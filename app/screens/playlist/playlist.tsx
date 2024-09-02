@@ -24,7 +24,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
 
   const handlePlayPlaylistButtonPress = async () => {
     if (playbackData.currentPlaylistData) {
-      const item = playbackData.currentPlaylistData[0]
+      const item = playbackData.currentPlaylistData[0];
       if (playbackData.currentSound) {
         stopTrack(playbackData.currentSound);
         unloadSound(playbackData.currentSound);
@@ -42,7 +42,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       if (newSound) {
         playTrack(newSound);
       }
-
       setPlaybackData({ isShowing: false });
     }
     navigation.navigate('Player');

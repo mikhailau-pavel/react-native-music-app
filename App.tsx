@@ -62,7 +62,7 @@ export default function App() {
   if (!loaded && !error) {
     return null;
   }
-  
+
   const queryClient = new QueryClient();
   const Stack = createNativeStackNavigator<RootStackParamList>();
   const config = {
