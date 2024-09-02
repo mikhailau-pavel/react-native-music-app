@@ -2,10 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Platform, Text, UIManager } from 'react-native';
 import LoginScreen from './app/screens/login/login';
 import {
-  EventMapCore,
   NavigationContainer,
-  ParamListBase,
-  StackNavigationState,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProfileScreen from './app/screens/profile/profile';

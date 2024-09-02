@@ -16,6 +16,8 @@ import Animated from 'react-native-reanimated';
 const ProgressBar = () => {
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
   const progress = useSharedValue(0);
+  const [animationPaused, setAnimationPaused] = useState(false);
+  const [animationTemp, setAnimationTemp] = useState<number>();
   const [progressBarWidth, setProgressBarWidth] = useState(0);
   const { playbackData } = useContext(PlaybackContext);
   const { setPlayPosition, setElementWidth, setIsMoving } = usePlayPosition();
@@ -49,6 +51,7 @@ const ProgressBar = () => {
     if (playbackData.currentSound) {
       playbackData.currentSound._onPlaybackStatusUpdate = (playbackStatus) => {
         if (playbackStatus.isLoaded && playbackStatus.isPlaying && playbackStatus.durationMillis) {
+         
           const progressConfig = {
             duration: playbackStatus.durationMillis,
             dampingRatio: 1,
@@ -58,13 +61,29 @@ const ProgressBar = () => {
             restSpeedThreshold: 2,
             reduceMotion: ReduceMotion.System,
           };
+          const testConfig = {
+            duration: playbackStatus.durationMillis - playbackStatus.positionMillis,
+            dampingRatio: 1,
+            stiffness: 0.1,
+            overshootClamping: false,
+            restDisplacementThreshold: 0.01,
+            restSpeedThreshold: 2,
+            reduceMotion: ReduceMotion.System,
+          };
           if (playbackStatus.shouldPlay === true) {
-            progress.value = withTiming(progressBarWidth, progressConfig);
+            console.log('anim', animationPaused)
+            if (animationPaused) {
+              console.log('happens')
+              progress.value = withTiming(progressBarWidth, testConfig);
+              setAnimationPaused(false);
+            } else progress.value = withTiming(progressBarWidth, progressConfig);
           }
           setPlayTimeCurrent(playbackStatus.positionMillis);
           setTrackDuration(playbackStatus.durationMillis || 0);
         }
         if (playbackStatus.isLoaded && playbackStatus.shouldPlay === false) {
+          setAnimationPaused(true);
+          setAnimationTemp(progress.value);
           cancelAnimation(progress);
         }
       };

@@ -86,14 +86,15 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   }, [navigation, playbackData, setPlaybackData]);
 
   const handleNextTrackButtonPress = (direction: 'next' | 'previous') => {
-    const currentNumber = playbackData.currentTrackNumberInPlaylist
+    const currentNumber = playbackData.currentTrackNumberInPlaylist;
     if (currentNumber === 0 || currentNumber) {
       if (currentNumber < amountOfTracksInPlaylist && direction === 'next') {
-        setTrackIndex(currentNumber + 1)
+        setTrackIndex(currentNumber + 1);
       } else if (currentNumber > 0 && direction === 'previous') {
-        setTrackIndex(currentNumber - 1)
-        } else return
-  }}
+        setTrackIndex(currentNumber - 1);
+      } else return;
+    }
+  };
 
   return (
     <GestureDetector gesture={pan}>
@@ -164,9 +165,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
         </View>
         <View style={styles.trackControlContainer}>
           {!(playbackData.currentTrackNumberInPlaylist === 0) ? (
-            <TouchableOpacity
-              onPress={() => handleNextTrackButtonPress('previous')}
-            >
+            <TouchableOpacity onPress={() => handleNextTrackButtonPress('previous')}>
               <Image
                 style={[styles.controlButton]}
                 source={require('../../../assets/icons/prevTrackButton.png')}
@@ -192,9 +191,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
             )}
           </TouchableOpacity>
           {!(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist) ? (
-            <TouchableOpacity
-              onPress={() => handleNextTrackButtonPress('next')}
-            >
+            <TouchableOpacity onPress={() => handleNextTrackButtonPress('next')}>
               <Image
                 style={styles.controlButton}
                 source={require('../../../assets/icons/nextTrackButton.png')}
