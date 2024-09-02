@@ -1,5 +1,5 @@
 import { PlayerScreenProps } from '@/types/types';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -75,6 +75,15 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
       setPlaybackData({ ...playbackData, isPlaying: false });
     }
   };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', () => {
+      if (playbackData.currentArtist) {
+        setPlaybackData({ ...playbackData, isShowing: true });
+      }
+    });
+    return unsubscribe;
+  }, [navigation, playbackData, setPlaybackData]);
 
   return (
     <GestureDetector gesture={pan}>

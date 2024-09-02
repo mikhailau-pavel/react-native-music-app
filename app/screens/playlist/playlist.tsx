@@ -26,7 +26,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
     if (!playbackData.isPlaying && playbackData.currentPlaylistData) {
       setPlaybackData({
         ...playbackData,
-        isShowing: false,
         currentArtist: playbackData.currentPlaylistData[0].artist,
         currentSong: playbackData.currentPlaylistData[0].title,
         currentAlbumImage: playbackData.currentPlaylistData[0].imageURL,
@@ -34,6 +33,10 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
         currentTrackNumberInPlaylist: 0,
       });
     }
+    setPlaybackData({
+      ...playbackData,
+      isShowing: false,
+    });
     navigation.navigate('Player');
   };
 
@@ -42,7 +45,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       stopTrack(playbackData.currentSound);
       unloadSound(playbackData.currentSound);
     }
-    const newSound = await createPlayback(item.previewUrl)
+    const newSound = await createPlayback(item.previewUrl);
     setPlaybackData({
       ...playbackData,
       currentArtist: item.artist,

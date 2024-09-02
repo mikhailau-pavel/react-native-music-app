@@ -42,7 +42,7 @@ const ProgressBar = () => {
   }));
 
   const knobStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: progress.value - 10 }], 
+    transform: [{ translateX: progress.value - 10 }],
   }));
 
   useEffect(() => {
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   },
   knob: {
     position: 'absolute',
-    top: -8, 
+    top: -8,
     width: 20,
     height: 20,
     borderRadius: 10,
