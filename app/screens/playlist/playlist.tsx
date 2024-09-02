@@ -17,21 +17,45 @@ import {
   TextInput,
 } from 'react-native';
 import { PlaybackContext } from '@/scripts/playbackContext';
-import { createPlayback } from '@/scripts/player';
+import { createPlayback, playTrack, stopTrack, unloadSound } from '@/scripts/player';
 
 const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
 
+  const handlePlayPlaylistButtonPress = async () => {
+    if (!playbackData.isPlaying && playbackData.currentPlaylistData) {
+      setPlaybackData({
+        ...playbackData,
+        isShowing: false,
+        currentArtist: playbackData.currentPlaylistData[0].artist,
+        currentSong: playbackData.currentPlaylistData[0].title,
+        currentAlbumImage: playbackData.currentPlaylistData[0].imageURL,
+        currentSound: await createPlayback(playbackData.currentPlaylistData[0].previewUrl),
+        currentTrackNumberInPlaylist: 0,
+      });
+    }
+    navigation.navigate('Player');
+  };
+
   const handleItemPress = async (item: TrackItemData, index: number) => {
+    if (playbackData.currentSound) {
+      stopTrack(playbackData.currentSound);
+      unloadSound(playbackData.currentSound);
+    }
+    const newSound = await createPlayback(item.previewUrl)
     setPlaybackData({
       ...playbackData,
       currentArtist: item.artist,
       currentSong: item.title,
       currentAlbumImage: item.imageURL,
+      isPlaying: true,
       isShowing: true,
-      currentSound: await createPlayback(item.previewUrl),
+      currentSound: newSound,
       currentTrackNumberInPlaylist: index,
     });
+    if (newSound) {
+      playTrack(newSound);
+    }
   };
 
   const TrackItem = ({ item, index, onPress, backgroundColor, textColor }: TrackItemProps) => (
@@ -109,23 +133,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
               source={{ height: 300, width: 300, uri: route.params.playlistCover }}
             />
             {playbackData && (
-              <TouchableOpacity
-                onPress={async () => {
-                  playbackData.currentPlaylistData &&
-                    setPlaybackData({
-                      ...playbackData,
-                      isShowing: false,
-                      currentArtist: playbackData.currentPlaylistData[0].artist,
-                      currentSong: playbackData.currentPlaylistData[0].title,
-                      currentAlbumImage: playbackData.currentPlaylistData[0].imageURL,
-                      currentSound: await createPlayback(
-                        playbackData.currentPlaylistData[0].previewUrl
-                      ),
-                      currentTrackNumberInPlaylist: 0,
-                    });
-                  navigation.navigate('Player');
-                }}
-              >
+              <TouchableOpacity onPress={handlePlayPlaylistButtonPress}>
                 <Image
                   style={styles.playButton}
                   source={require('../../../assets/icons/playButton.png')}
