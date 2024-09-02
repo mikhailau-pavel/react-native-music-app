@@ -79,7 +79,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', () => {
       if (playbackData.currentArtist) {
-        setPlaybackData({ ...playbackData, isShowing: true });
+        setPlaybackData({ isShowing: true });
       }
     });
     return unsubscribe;

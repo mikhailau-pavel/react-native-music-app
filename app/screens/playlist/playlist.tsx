@@ -23,24 +23,32 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
 
   const handlePlayPlaylistButtonPress = async () => {
-    if (!playbackData.isPlaying && playbackData.currentPlaylistData) {
+    if (playbackData.currentPlaylistData) {
+      const item = playbackData.currentPlaylistData[0]
+      if (playbackData.currentSound) {
+        stopTrack(playbackData.currentSound);
+        unloadSound(playbackData.currentSound);
+      }
+      const newSound = await createPlayback(item.previewUrl);
       setPlaybackData({
         ...playbackData,
-        currentArtist: playbackData.currentPlaylistData[0].artist,
-        currentSong: playbackData.currentPlaylistData[0].title,
-        currentAlbumImage: playbackData.currentPlaylistData[0].imageURL,
-        currentSound: await createPlayback(playbackData.currentPlaylistData[0].previewUrl),
+        currentArtist: item.artist,
+        currentSong: item.title,
+        currentAlbumImage: item.imageURL,
+        isPlaying: true,
+        currentSound: newSound,
         currentTrackNumberInPlaylist: 0,
       });
+      if (newSound) {
+        playTrack(newSound);
+      }
+
+      setPlaybackData({ isShowing: false });
     }
-    setPlaybackData({
-      ...playbackData,
-      isShowing: false,
-    });
     navigation.navigate('Player');
   };
 
-  const handleItemPress = async (item: TrackItemData, index: number) => {
+  const setTrackInPlayer = async (item: TrackItemData, index: number) => {
     if (playbackData.currentSound) {
       stopTrack(playbackData.currentSound);
       unloadSound(playbackData.currentSound);
@@ -63,7 +71,9 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
 
   const TrackItem = ({ item, index, onPress, backgroundColor, textColor }: TrackItemProps) => (
     <TouchableOpacity
-      onPress={() => handleItemPress(item, index)}
+      onPress={() => {
+        setTrackInPlayer(item, index);
+      }}
       style={[styles.trackItemContainer, { backgroundColor }]}
     >
       <View style={styles.item}>
@@ -109,7 +119,9 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
         item={item}
         index={index}
         onPress={() => {
-          setPlaybackData({ ...playbackData, currentTrackNumberInPlaylist: index });
+          setPlaybackData({
+            currentTrackNumberInPlaylist: index,
+          });
         }}
         backgroundColor={backgroundColor}
         textColor={color}
