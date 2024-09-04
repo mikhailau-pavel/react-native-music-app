@@ -90,16 +90,17 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const createPlaylistsTrackList = useCallback(async (playlistId: string) => {
     const tracks = await fetchTracksFromPlaylist(playlistId);
     const currentPlaylistTracks = tracks.map((elem: CurrentPlaylistTracksResponse) => {
-      const tracksInfoList = new Object({
+      const tracksInfoList = {
         title: elem.track.name,
         artist: elem.track.artists[0].name,
         imageURL: elem.track.album.images[0].url,
         trackId: elem.track.id,
         previewUrl: elem.track.preview_url,
-      });
+      };
       return tracksInfoList;
     });
-    setPlaybackData({ ...playbackData, currentPlaylistData: currentPlaylistTracks });
+    //cause rerender >
+    setPlaybackData({ currentPlaylistData: currentPlaylistTracks });
   }, []);
 
   useEffect(() => {

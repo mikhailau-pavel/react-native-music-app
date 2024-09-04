@@ -8,6 +8,10 @@ export enum PropsRoutes {
   PLAYER = 'Player',
 }
 
+export enum TopsPropsRoutes {
+  TOPS = 'Tops',
+}
+
 export type AuthParams = {
   response_type: 'code';
   client_id: string;
@@ -26,12 +30,19 @@ export type RootStackParamList = {
   NotFound: undefined;
 };
 
+export type RootTopsStackParamList = {
+  Tops: undefined;
+}
+
 export type HomeScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.HOME>;
 export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.LOGIN>;
 export type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PROFILE>;
 export type PlaylistScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PLAYLIST>;
 export type PlayerScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PLAYER>;
 export type NotFoundScreenProps = NativeStackScreenProps<RootStackParamList>;
+
+export type TopsMainScreenProps = NativeStackScreenProps<RootTopsStackParamList, TopsPropsRoutes.TOPS>;
+
 
 export type PlaylistItemData = {
   title: string;
