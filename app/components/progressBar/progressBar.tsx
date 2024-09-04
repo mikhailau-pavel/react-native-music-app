@@ -1,31 +1,27 @@
 import usePlayPosition from '@/hooks/usePlayPosition';
+import { useTrackChange } from '@/hooks/useTrackChange';
 import { PlaybackContext } from '@/scripts/playbackContext';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import {
   cancelAnimation,
-  ReduceMotion,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
   Easing,
-  runOnUI,
-  measure,
-  useAnimatedRef,
 } from 'react-native-reanimated';
 import Animated from 'react-native-reanimated';
 
 const ProgressBar = () => {
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
   const progress = useSharedValue(0);
-  const [animationPaused, setAnimationPaused] = useState(false);
   const [progressBarWidth, setProgressBarWidth] = useState(0);
-  const { playbackData } = useContext(PlaybackContext);
+  const { playbackData, setPlaybackData } = useContext(PlaybackContext);
   const { setPlayPosition, setElementWidth, setIsMoving } = usePlayPosition();
   const [trackDuration, setTrackDuration] = useState(0);
-  const animatedRef = useAnimatedRef();
+  const setTrackIndex = useTrackChange(playbackData.currentTrackNumberInPlaylist || 0);
 
   const pan = useMemo(() => {
     return Gesture.Pan()
@@ -43,15 +39,7 @@ const ProgressBar = () => {
       });
   }, [progress, progressBarWidth, setElementWidth, setIsMoving, setPlayPosition]);
 
-  const progressStyle = useAnimatedStyle(() => {
-    if (_WORKLET) {
-      const measurement = measure(animatedRef);
-      console.log('measurement:', measurement?.width);
-    }
-    return {
-      width: progress.value,
-    };
-  });
+  const progressStyle = useAnimatedStyle(() => ({ width: progress.value }));
 
   const knobStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: progress.value - 10 }],
@@ -68,8 +56,9 @@ const ProgressBar = () => {
           };
 
           const startAnimation = () => {
-            const progressPercent = playbackStatus.durationMillis ?
-              playbackStatus.positionMillis / playbackStatus.durationMillis : 0;
+            const progressPercent = playbackStatus.durationMillis
+              ? playbackStatus.positionMillis / playbackStatus.durationMillis
+              : 0;
             progress.value = progressPercent * progressBarWidth;
             progress.value = withTiming(progressBarWidth, progressConfig);
           };
@@ -78,26 +67,30 @@ const ProgressBar = () => {
             startAnimation();
           } else {
             cancelAnimation(progress);
-            setAnimationPaused(true);
           }
           setPlayTimeCurrent(playbackStatus.positionMillis);
           setTrackDuration(playbackStatus.durationMillis || 0);
         }
+        if (
+          playbackStatus.isLoaded &&
+          playbackStatus.didJustFinish &&
+          playbackData.currentPlaylistData &&
+          playbackData.currentTrackNumberInPlaylist
+        ) {
+          if (
+            playbackData.currentTrackNumberInPlaylist ===
+            playbackData.currentPlaylistData?.length - 1
+          ) {
+            setPlaybackData({ isPlaying: false });
+          } else setTrackIndex(playbackData.currentTrackNumberInPlaylist + 1);
+        }
       };
-      // if (
-      //   playbackStatus.isLoaded &&
-      //   playbackStatus.didJustFinish &&
-      //   !(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist)
-      // ) {
-      //   setTrackIndex(playbackData.currentTrackNumberInPlaylist + 1);
-      // }
     }
   }, [progress, playbackData.currentSound, progressBarWidth]);
 
   return (
     <View style={styles.progressBarContainer}>
       <View style={styles.timersContainer}>
-        <Text>{String(animationPaused)}</Text>
         <Text>{`${Math.floor(playTimeCurrent / 1000 / 60)}:${Math.floor((playTimeCurrent / 1000) % 60) < 10 ? '0' : ''}${Math.floor((playTimeCurrent / 1000) % 60)}`}</Text>
         <Text>{`${Math.floor(trackDuration / 1000 / 60)}:${Math.floor((trackDuration / 1000) % 60) < 10 ? '0' : ''}${Math.floor((trackDuration / 1000) % 60)}`}</Text>
       </View>
@@ -109,7 +102,7 @@ const ProgressBar = () => {
             setProgressBarWidth(width);
           }}
         >
-          <Animated.View style={[styles.progressFiller, progressStyle]} ref={animatedRef} />
+          <Animated.View style={[styles.progressFiller, progressStyle]} />
           <Animated.View style={[styles.knob, knobStyle]} />
         </View>
       </GestureDetector>
