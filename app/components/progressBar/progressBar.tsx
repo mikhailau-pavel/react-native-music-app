@@ -21,7 +21,6 @@ const ProgressBar = () => {
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
   const progress = useSharedValue(0);
   const [animationPaused, setAnimationPaused] = useState(false);
-  const [animationTemp, setAnimationTemp] = useState<number>();
   const [progressBarWidth, setProgressBarWidth] = useState(0);
   const { playbackData } = useContext(PlaybackContext);
   const { setPlayPosition, setElementWidth, setIsMoving } = usePlayPosition();
@@ -46,12 +45,11 @@ const ProgressBar = () => {
 
   const progressStyle = useAnimatedStyle(() => {
     if (_WORKLET) {
-    const measurement = measure(animatedRef)
-    console.log('measurement:', measurement?.width)
+      const measurement = measure(animatedRef);
+      console.log('measurement:', measurement?.width);
     }
     return {
       width: progress.value,
-      //could be in 100%
     };
   });
 
@@ -63,31 +61,27 @@ const ProgressBar = () => {
     if (playbackData.currentSound) {
       playbackData.currentSound._onPlaybackStatusUpdate = (playbackStatus) => {
         if (playbackStatus.isLoaded && playbackStatus.durationMillis) {
-          // const elapsedTime = playbackStatus.positionMillis
-          // const duration = playbackStatus.durationMillis
-          // const timeLeft = duration - elapsedTime
-          const startAnimation = () => {
-            progress.value = withTiming(progressBarWidth, progressConfig);
-            console.log('test', progress.value / 1, progressBarWidth, progressConfig.duration);
-          };
-
           const progressConfig = {
-            duration: playbackStatus.durationMillis,
+            duration: (progress.value =
+              playbackStatus.durationMillis - playbackStatus.positionMillis),
             easing: Easing.linear,
           };
-          // setAnimationPaused(false);
+
+          const startAnimation = () => {
+            const progressPercent = playbackStatus.durationMillis ?
+              playbackStatus.positionMillis / playbackStatus.durationMillis : 0;
+            progress.value = progressPercent * progressBarWidth;
+            progress.value = withTiming(progressBarWidth, progressConfig);
+          };
 
           if (playbackStatus.shouldPlay) {
             startAnimation();
+          } else {
+            cancelAnimation(progress);
+            setAnimationPaused(true);
           }
           setPlayTimeCurrent(playbackStatus.positionMillis);
           setTrackDuration(playbackStatus.durationMillis || 0);
-        }
-
-        // console.log('animation temp', animationTemp)
-        if (playbackStatus.isLoaded && !playbackStatus.shouldPlay) {
-          // setAnimationPaused(true);
-          cancelAnimation(progress);
         }
       };
       // if (
