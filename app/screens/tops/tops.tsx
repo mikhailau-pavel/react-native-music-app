@@ -43,7 +43,7 @@ const TopsMainScreen = () => {
         <View style={styles.topsTopBarContainer}>
           <View style={styles.topsTopBarPeriodContainer}>
             <Pressable
-              style={styles.topsTopBarTypeButton}
+              style={[styles.topsTopBarTypeButton, type ==='artists' ? styles.activeTypeButton : null]}
               onPressIn={() => {
                 setType('artists');
               }}
@@ -51,7 +51,7 @@ const TopsMainScreen = () => {
               <Text>Artists</Text>
             </Pressable>
             <Pressable
-              style={styles.topsTopBarTypeButton}
+              style={[styles.topsTopBarTypeButton, type ==='tracks' ? styles.activeTypeButton : null]}
               onPressIn={() => {
                 setType('tracks');
               }}
@@ -61,7 +61,7 @@ const TopsMainScreen = () => {
           </View>
           <View style={styles.topsTopBarPeriodContainer}>
             <Pressable
-              style={styles.topsTopBarPeriodButton}
+              style={[styles.topsTopBarPeriodButton, period === 'short_term' ? styles.activePeriodButton : null]}
               onPressIn={() => {
                 setPeriod('short_term');
               }}
@@ -69,7 +69,7 @@ const TopsMainScreen = () => {
               <Text>Last 4 weeks</Text>
             </Pressable>
             <Pressable
-              style={styles.topsTopBarPeriodButton}
+              style={[styles.topsTopBarPeriodButton, period === 'medium_term' ? styles.activePeriodButton : null]}
               onPressIn={() => {
                 setPeriod('medium_term');
               }}
@@ -77,7 +77,7 @@ const TopsMainScreen = () => {
               <Text>Last 6 months</Text>
             </Pressable>
             <Pressable
-              style={styles.topsTopBarPeriodButton}
+              style={[styles.topsTopBarPeriodButton, period === 'long_term' ? styles.activePeriodButton : null]}
               onPressIn={() => {
                 setPeriod('long_term');
               }}
@@ -115,6 +115,8 @@ const styles = StyleSheet.create({
   },
   topsTopBarTypeButton: {
     flex: 1,
+    borderBottomWidth: 5,
+    alignSelf: 'center',
   },
   topsTopBarPeriodContainer: {
     flex: 1,
@@ -123,10 +125,16 @@ const styles = StyleSheet.create({
   },
   topsTopBarPeriodButton: {
     flex: 1,
-    borderBottomWidth: 1,
     alignSelf: 'center',
-    borderBottomColor: 'yellow',
+
+    borderBottomWidth: 5,
   },
+  activeTypeButton: {
+    borderBottomColor: 'red',
+  },
+  activePeriodButton: {
+    borderBottomColor: 'yellow',
+  }
 });
 
 export default TopsMainScreen;
