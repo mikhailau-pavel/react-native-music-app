@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 enum RequestUrls {
   //TOKEN = 'https://accounts.spotify.com/api/token',
   CURRENT_USER_PLAYlISTS = 'https://api.spotify.com/v1/me/playlists',
+  CURRENT_USER_TOPS = 'https://api.spotify.com/v1/me/top/',
 }
 
 const requestRefreshToken = async () => {
@@ -72,6 +73,25 @@ const resetAccessToken = async () => {
     'responseCode',
     'playlists',
   ]);
+};
+
+export const fetchUserTops = async (type: string, timeRange: string) => {
+  const token = await getData('access_token');
+  try {
+    const response = await fetch(
+      `${RequestUrls.CURRENT_USER_TOPS + type}?time_range=${timeRange}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      }
+    );
+    const data = await response.json();
+    return data.items;
+  } catch (err) {
+    throw new Error(`Error message: ${err}`);
+  }
 };
 
 export {

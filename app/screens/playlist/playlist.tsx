@@ -99,7 +99,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       };
       return tracksInfoList;
     });
-    //cause rerender >
     setPlaybackData({ currentPlaylistData: currentPlaylistTracks });
   }, []);
 

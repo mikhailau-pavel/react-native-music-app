@@ -55,7 +55,7 @@ export const createLoginUrl = async () => {
     response_type: 'code',
     client_id: 'e6d38f8e338847f0a2909ea813ec79e4',
     //process.env.CLIENT_ID,
-    scope: 'user-read-private user-read-email',
+    scope: 'user-read-private user-read-email user-top-read',
     //process.env.SCOPE_LOGIN,
     code_challenge_method: 'S256',
     //process.env.CHALLENGE_METHOD,

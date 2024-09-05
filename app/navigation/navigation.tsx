@@ -42,7 +42,6 @@ export const linking = {
 };
 
 const HomeStackScreen = () => {
-  
   return (
     <HomeStack.Navigator initialRouteName="Home">
       <HomeStack.Screen
@@ -99,4 +98,3 @@ export const Tabs = () => {
     </Tab.Navigator>
   );
 };
-
