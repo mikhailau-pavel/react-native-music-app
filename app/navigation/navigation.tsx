@@ -14,6 +14,8 @@ const prefix = Linking.createURL('/');
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator<RootStackParamList>();
 const TopsStack = createNativeStackNavigator();
+const ProfileStack = createNativeStackNavigator();
+
 const config = {
   screens: {
     HomeStackScreen: {
@@ -55,11 +57,6 @@ const HomeStackScreen = () => {
         options={{ title: 'Login' }}
       />
       <HomeStack.Screen
-        name={PropsRoutes.PROFILE}
-        component={ProfileScreen}
-        options={{ title: 'Profile' }}
-      />
-      <HomeStack.Screen
         name={PropsRoutes.PLAYLIST}
         component={PlaylistScreen}
         options={{ title: 'Playlist' }}
@@ -90,11 +87,24 @@ export const TopsStackScreen = () => {
   );
 };
 
+export const ProfileStackScreen = () => {
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen
+        name="profileMain"
+        component={ProfileScreen}
+        options={{ title: 'TopsMain' }}
+      />
+    </ProfileStack.Navigator>
+  );
+};
+
 export const Tabs = () => {
   return (
     <Tab.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-      <Tab.Screen name="HomeStack" component={HomeStackScreen} />
-      <Tab.Screen name="TopsStack" component={TopsStackScreen} />
+      <Tab.Screen name="Main" component={HomeStackScreen} />
+      <Tab.Screen name="Tops" component={TopsStackScreen} />
+      <Tab.Screen name="Profile" component={ProfileStackScreen} />
     </Tab.Navigator>
   );
 };

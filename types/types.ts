@@ -3,13 +3,16 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 export enum PropsRoutes {
   HOME = 'Home',
   LOGIN = 'Login',
-  PROFILE = 'Profile',
   PLAYLIST = 'Playlist',
   PLAYER = 'Player',
 }
 
 export enum TopsPropsRoutes {
   TOPS = 'Tops',
+}
+
+export enum ProfilePropsRoutes {
+  PROFILE = 'Profile',
 }
 
 export type AuthParams = {
@@ -36,7 +39,6 @@ export type RootTopsStackParamList = {
 
 export type HomeScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.HOME>;
 export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.LOGIN>;
-export type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PROFILE>;
 export type PlaylistScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PLAYLIST>;
 export type PlayerScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PLAYER>;
 export type NotFoundScreenProps = NativeStackScreenProps<RootStackParamList>;

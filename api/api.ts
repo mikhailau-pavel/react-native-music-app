@@ -5,6 +5,7 @@ enum RequestUrls {
   //TOKEN = 'https://accounts.spotify.com/api/token',
   CURRENT_USER_PLAYlISTS = 'https://api.spotify.com/v1/me/playlists',
   CURRENT_USER_TOPS = 'https://api.spotify.com/v1/me/top/',
+  CURRENT_USER_PROFILE = 'https://api.spotify.com/v1/me',
 }
 
 const requestRefreshToken = async () => {
@@ -80,6 +81,24 @@ export const fetchUserTops = async (type: string, timeRange: string) => {
   try {
     const response = await fetch(
       `${RequestUrls.CURRENT_USER_TOPS + type}?time_range=${timeRange}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      }
+    );
+    const data = await response.json();
+    return data.items;
+  } catch (err) {
+    throw new Error(`Error message: ${err}`);
+  }
+};
+
+const fetchUserProfile = async () => {
+  const token = await getData('access_token');
+  try {
+    const response = await fetch(RequestUrls.CURRENT_USER_PROFILE,
       {
         method: 'GET',
         headers: {
