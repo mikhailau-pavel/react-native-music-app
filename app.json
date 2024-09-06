@@ -8,9 +8,9 @@
     "scheme": "musicapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/images/splash-dark.png",
+      "backgroundColor": "#FFFFFF",
+      "resizeMode": "contain"
     },
     "ios": {
       "supportsTablet": true,

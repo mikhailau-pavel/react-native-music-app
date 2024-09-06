@@ -1,8 +1,18 @@
 import { fetchUserTops } from '@/api/api';
 import { TopsListItem, TopsResponseDataItem } from '@/types/types';
 import { useEffect, useState } from 'react';
-import { Text, View, Image, StyleSheet, Pressable } from 'react-native';
+import { Text, View, Image, StyleSheet, Pressable, LayoutAnimation } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
+
+const ItemOfTop = ({ item, index }: { item: TopsListItem; index: number }) => {
+  return (
+    <View style={styles.topItemContainer}>
+      <Text>{index + 1}</Text>
+      <Image style={styles.topItemImage} source={{ uri: item.imageUrl }} />
+      <Text style={styles.topItemText}>{item.title}</Text>
+    </View>
+  );
+};
 
 const TopsMainScreen = () => {
   //TODO temp state, memoize it because tops update
@@ -24,20 +34,10 @@ const TopsMainScreen = () => {
     fetchTop();
   }, [type, period]);
 
-  const itemOfTop = ({ item, index }: { item: TopsListItem; index: number }) => {
-    return (
-      <Animated.View entering={FadeIn.duration(1000)} style={styles.topItemContainer}>
-        <Text>{index + 1}</Text>
-        <Image style={styles.topItemImage} source={{ uri: item.imageUrl }} />
-        <Text style={styles.topItemText}>{item.title}</Text>
-      </Animated.View>
-    );
-  };
-
   return (
     <Animated.FlatList
       data={topsData}
-      renderItem={itemOfTop}
+      renderItem={ItemOfTop}
       entering={FadeIn.duration(2000)}
       ListHeaderComponent={
         <View style={styles.topsTopBarContainer}>

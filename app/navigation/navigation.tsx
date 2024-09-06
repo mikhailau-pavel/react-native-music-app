@@ -1,4 +1,9 @@
-import { ProfilePropsRoutes, PropsRoutes, RootStackParamList, TopsPropsRoutes } from '@/types/types';
+import {
+  ProfilePropsRoutes,
+  PropsRoutes,
+  RootStackParamList,
+  TopsPropsRoutes,
+} from '@/types/types';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';

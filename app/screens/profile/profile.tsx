@@ -9,7 +9,6 @@ const ProfileScreen = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       const fetchProfileResponse = await fetchUserProfile();
-      console.log('fetched profile response:', fetchProfileResponse);
       const data = {
         name: fetchProfileResponse.display_name,
         followersCount: fetchProfileResponse.followers.total,
@@ -32,8 +31,9 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   profileContainer: {
     flex: 1,
+    flexDirection: 'row',
   },
-  profileName: { flex: 1},
+  profileName: { flex: 1 },
   followersCount: { flex: 1 },
   profilePicture: { flex: 1, width: 50, height: 50 },
 });

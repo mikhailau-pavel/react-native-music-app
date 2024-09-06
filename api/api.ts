@@ -105,7 +105,6 @@ export const fetchUserProfile = async () => {
       },
     });
     const data = await response.json();
-    console.log('profile data from fetch:', data)
     return data;
   } catch (err) {
     throw new Error(`Error message: ${err}`);

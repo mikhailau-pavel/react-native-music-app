@@ -41,7 +41,6 @@ export type RootProfileStackParamList = {
   Profile: undefined;
 };
 
-
 export type HomeScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.HOME>;
 export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.LOGIN>;
 export type PlaylistScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PLAYLIST>;
@@ -51,9 +50,12 @@ export type NotFoundScreenProps = NativeStackScreenProps<RootStackParamList>;
 export type TopsMainScreenProps = NativeStackScreenProps<
   RootTopsStackParamList,
   TopsPropsRoutes.TOPS
->
+>;
 
-export type ProfileScreenProps = NativeStackScreenProps<RootProfileStackParamList, ProfilePropsRoutes.PROFILE>;
+export type ProfileScreenProps = NativeStackScreenProps<
+  RootProfileStackParamList,
+  ProfilePropsRoutes.PROFILE
+>;
 
 export type PlaylistItemData = {
   title: string;
@@ -135,7 +137,7 @@ export type TopsListItem = {
 };
 
 export type ProfileScreenUserData = {
-  name: string,
-  followersCount: number,
-  imageUrl: string,
-}
+  name: string;
+  followersCount: number;
+  imageUrl: string;
+};
