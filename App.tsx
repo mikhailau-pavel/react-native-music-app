@@ -30,7 +30,7 @@ export default function App() {
     AngemeBold: require('./assets/fonts/Angeme-Bold.ttf'),
     AngemeRegular: require('./assets/fonts/Angeme-Regular.ttf'),
   });
-  
+
   const [playbackData, setPlaybackData] = useState(initialPlaybackData);
   const handleChangePBData = (input: PlaybackData) => {
     setPlaybackData((prevState) => {
