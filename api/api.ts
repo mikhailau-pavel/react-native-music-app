@@ -8,7 +8,7 @@ enum RequestUrls {
   CURRENT_USER_PROFILE = 'https://api.spotify.com/v1/me',
 }
 
-const requestRefreshToken = async () => {
+export const requestRefreshToken = async () => {
   const refreshToken = (await getData('refresh_token')) || '';
   const params: Record<string, string> = {
     grant_type: 'refresh_token',
@@ -29,7 +29,7 @@ const requestRefreshToken = async () => {
   };
 };
 
-const fetchCurrentUserPlaylists = async () => {
+export const fetchCurrentUserPlaylists = async () => {
   const token = await getData('access_token');
   const response = await fetch(RequestUrls.CURRENT_USER_PLAYlISTS, {
     headers: {
@@ -44,7 +44,7 @@ const fetchCurrentUserPlaylists = async () => {
   return data.items;
 };
 
-const fetchTracksFromPlaylist = async (playlistId: string) => {
+export const fetchTracksFromPlaylist = async (playlistId: string) => {
   const token = await getData('access_token');
   const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks/`;
   try {
@@ -66,7 +66,7 @@ const fetchTracksFromPlaylist = async (playlistId: string) => {
   }
 };
 
-const resetAccessToken = async () => {
+export const resetAccessToken = async () => {
   await AsyncStorage.multiRemove([
     'access_token',
     'refresh_token',
@@ -95,27 +95,19 @@ export const fetchUserTops = async (type: string, timeRange: string) => {
   }
 };
 
-const fetchUserProfile = async () => {
+export const fetchUserProfile = async () => {
   const token = await getData('access_token');
   try {
-    const response = await fetch(RequestUrls.CURRENT_USER_PROFILE,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      }
-    );
+    const response = await fetch(RequestUrls.CURRENT_USER_PROFILE, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    });
     const data = await response.json();
-    return data.items;
+    console.log('profile data from fetch:', data)
+    return data;
   } catch (err) {
     throw new Error(`Error message: ${err}`);
   }
-};
-
-export {
-  fetchCurrentUserPlaylists,
-  fetchTracksFromPlaylist,
-  requestRefreshToken,
-  resetAccessToken,
 };

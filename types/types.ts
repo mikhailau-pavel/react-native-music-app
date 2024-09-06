@@ -8,7 +8,7 @@ export enum PropsRoutes {
 }
 
 export enum TopsPropsRoutes {
-  TOPS = 'Tops',
+  TOPS = 'TopsMain',
 }
 
 export enum ProfilePropsRoutes {
@@ -34,8 +34,13 @@ export type RootStackParamList = {
 };
 
 export type RootTopsStackParamList = {
-  Tops: undefined;
+  TopsMain: undefined;
 };
+
+export type RootProfileStackParamList = {
+  Profile: undefined;
+};
+
 
 export type HomeScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.HOME>;
 export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.LOGIN>;
@@ -46,7 +51,9 @@ export type NotFoundScreenProps = NativeStackScreenProps<RootStackParamList>;
 export type TopsMainScreenProps = NativeStackScreenProps<
   RootTopsStackParamList,
   TopsPropsRoutes.TOPS
->;
+>
+
+export type ProfileScreenProps = NativeStackScreenProps<RootProfileStackParamList, ProfilePropsRoutes.PROFILE>;
 
 export type PlaylistItemData = {
   title: string;
@@ -114,7 +121,7 @@ export type CurrentPlaylistTracksResponse = {
   };
 };
 
-export type topsResponseDataItem = {
+export type TopsResponseDataItem = {
   name: string;
   images: { url: string }[];
   album: {
@@ -122,7 +129,13 @@ export type topsResponseDataItem = {
   };
 };
 
-export type topsListItem = {
+export type TopsListItem = {
   title: string;
   imageUrl: string;
 };
+
+export type ProfileScreenUserData = {
+  name: string,
+  followersCount: number,
+  imageUrl: string,
+}

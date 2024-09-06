@@ -1,13 +1,40 @@
-import { ProfileScreenProps } from '@/types/types';
-import { Button, Text, View } from 'react-native';
+import { fetchUserProfile } from '@/api/api';
+import { ProfileScreenUserData } from '@/types/types';
+import { useEffect, useState } from 'react';
+import { Text, View, StyleSheet, Image } from 'react-native';
 
-const ProfileScreen = ({ route, navigation }: ProfileScreenProps) => {
+const ProfileScreen = () => {
+  const [profileData, setProfileData] = useState<ProfileScreenUserData>();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const fetchProfileResponse = await fetchUserProfile();
+      console.log('fetched profile response:', fetchProfileResponse);
+      const data = {
+        name: fetchProfileResponse.display_name,
+        followersCount: fetchProfileResponse.followers.total,
+        imageUrl: fetchProfileResponse.images[0].url,
+      };
+      setProfileData(data);
+    };
+    fetchProfile();
+  }, []);
+
   return (
-    <View>
-      <Text>This is Profile Page text placeholder. Only authorized users allowed here.</Text>
-      <Button title="to home" onPress={() => navigation.navigate('Home')}></Button>
+    <View style={styles.profileContainer}>
+      <Text style={styles.profileName}>{profileData?.name}</Text>
+      <Text style={styles.followersCount}>Followers: {profileData?.followersCount}</Text>
+      <Image style={styles.profilePicture} source={{ uri: profileData?.imageUrl }} />
     </View>
   );
 };
 
+const styles = StyleSheet.create({
+  profileContainer: {
+    flex: 1,
+  },
+  profileName: { flex: 1},
+  followersCount: { flex: 1 },
+  profilePicture: { flex: 1, width: 50, height: 50 },
+});
 export default ProfileScreen;
