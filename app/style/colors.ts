@@ -3,10 +3,10 @@ enum Colors {
   WHITE = '#FFFFFF',
   DARK_WASHED_RED = '#FF3366',
   LIGHT_WASHED_CYAN = '#33FFCC',
-  TOMATO = '#FF6347'
+  TOMATO = '#FF6347',
 }
 
-export enum LightSchemeColors  {
+export enum LightSchemeColors {
   PRIMARY = Colors.DARK_WASHED_RED,
   TEXT = Colors.BLACK,
   BACKGROUND = Colors.WHITE,
@@ -20,6 +20,6 @@ export enum DarkSchemeColors {
   TEXT = Colors.TOMATO,
   BACKGROUND = Colors.BLACK,
   CARD = Colors.BLACK,
-  BORDER = Colors.BLACK,
+  BORDER = Colors.WHITE,
   NOTIFICATION = Colors.BLACK,
 }

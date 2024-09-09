@@ -1,14 +1,13 @@
 import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { DarkSchemeColors, LightSchemeColors } from './colors';
 
-
 export const CustomLightTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
     primary: LightSchemeColors.PRIMARY,
     text: LightSchemeColors.TEXT,
-  }
+  },
 };
 
 export const CustomDarkTheme = {

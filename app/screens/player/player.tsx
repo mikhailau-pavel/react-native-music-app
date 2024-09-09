@@ -20,6 +20,7 @@ import { PlaybackContext } from '@/scripts/playbackContext';
 import { pauseTrack, playTrack } from '@/scripts/player';
 import { useTrackChange } from '@/hooks/useTrackChange';
 import ProgressBar from '@/app/components/progressBar/progressBar';
+import { useTheme } from '@react-navigation/native';
 
 const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const active = useSharedValue(false);
@@ -27,6 +28,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const screenHeight = Dimensions.get('screen').height;
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
   const setTrackIndex = useTrackChange(playbackData.currentTrackNumberInPlaylist || 0);
+  const { colors } = useTheme()
 
   const pan = useMemo(() => {
     return Gesture.Pan()
@@ -95,6 +97,41 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
       } else return;
     }
   };
+
+  const styles = StyleSheet.create({
+    background: {
+      flex: 1,
+    },
+    trackCoverContainer: {
+      margin: 5,
+    },
+    trackCover: {
+      alignSelf: 'center',
+    },
+    trackTitle: {
+      fontSize: 40,
+      alignSelf: 'center',
+      fontFamily: 'AngemeBold',
+      margin: 5,
+      color: colors.text,
+    },
+    trackInfoControlContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignContent: 'center',
+    },
+    trackControlContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    controlButton: {
+      width: 60,
+      height: 60,
+      alignSelf: 'flex-end',
+      margin: 15,
+    },
+  });
 
   return (
     <GestureDetector gesture={pan}>
@@ -208,39 +245,5 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     </GestureDetector>
   );
 };
-
-const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
-  trackCoverContainer: {
-    margin: 5,
-  },
-  trackCover: {
-    alignSelf: 'center',
-  },
-  trackTitle: {
-    fontSize: 40,
-    alignSelf: 'center',
-    fontFamily: 'AngemeBold',
-    margin: 5,
-  },
-  trackInfoControlContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignContent: 'center',
-  },
-  trackControlContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  controlButton: {
-    width: 60,
-    height: 60,
-    alignSelf: 'flex-end',
-    margin: 15,
-  },
-});
 
 export default PlayerScreen;
