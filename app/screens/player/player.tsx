@@ -214,7 +214,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   trackCoverContainer: {
-    backgroundColor: 'white',
     margin: 5,
   },
   trackCover: {
@@ -232,7 +231,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   trackControlContainer: {
-    backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

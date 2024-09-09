@@ -31,7 +31,7 @@ export default function App() {
     AngemeBold: require('./assets/fonts/Angeme-Bold.ttf'),
     AngemeRegular: require('./assets/fonts/Angeme-Regular.ttf'),
   });
-  const colorScheme = useColorScheme()
+  const colorScheme = useColorScheme();
   const [playbackData, setPlaybackData] = useState(initialPlaybackData);
   const handleChangePBData = (input: PlaybackData) => {
     setPlaybackData((prevState) => {
@@ -43,7 +43,7 @@ export default function App() {
   };
 
   const playbackContextValue = { playbackData, setPlaybackData: handleChangePBData };
-  
+
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
@@ -57,7 +57,11 @@ export default function App() {
   const queryClient = new QueryClient();
 
   return (
-    <NavigationContainer linking={linking} theme={colorScheme === 'light' ? CustomLightTheme : CustomDarkTheme} fallback={<Text>Loading...</Text>}>
+    <NavigationContainer
+      linking={linking}
+      theme={colorScheme === 'light' ? CustomLightTheme : CustomDarkTheme}
+      fallback={<Text>Loading...</Text>}
+    >
       <PlaybackContext.Provider value={playbackContextValue}>
         <QueryClientProvider client={queryClient}>
           <GestureHandlerRootView style={{ flex: 1 }}>

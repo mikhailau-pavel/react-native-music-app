@@ -1,5 +1,6 @@
 import { fetchUserProfile } from '@/api/api';
 import { ProfileScreenUserData } from '@/types/types';
+import { useTheme } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Image, Switch, useColorScheme, Appearance } from 'react-native';
 
@@ -7,7 +8,7 @@ const ProfileScreen = () => {
   const [profileData, setProfileData] = useState<ProfileScreenUserData>();
   const [isEnabled, setIsEnabled] = useState(false);
   const colorScheme = useColorScheme();
-
+  const { colors } = useTheme()
 
   const toggleSwitch = () => {
     if (colorScheme === 'dark') {
@@ -36,7 +37,7 @@ const ProfileScreen = () => {
       <Text style={styles.profileName}>{profileData?.name}</Text>
       <Text style={styles.followersCount}>Followers: {profileData?.followersCount}</Text>
       <Image style={styles.profilePicture} source={{ uri: profileData?.imageUrl }} />
-      <Text style={styles.followersCount}>Change app's theme:</Text>
+      <Text style={{color: colors.text}}>Change app's theme:</Text>
       <Switch
         trackColor={{ false: '#767577', true: '#81b0ff' }}
         thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
@@ -44,8 +45,8 @@ const ProfileScreen = () => {
         onValueChange={toggleSwitch}
         value={isEnabled}
       />
-
       <Text style={styles.followersCount}>Color scheme: {colorScheme}</Text>
+    
     </View>
   );
 };
