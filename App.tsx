@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Platform, Text, UIManager } from 'react-native';
+import { Platform, Text, UIManager, useColorScheme } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -9,6 +9,7 @@ import PlaybackBar from './app/components/playbackBar/playbackBar';
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { linking, Tabs } from './app/navigation/navigation';
+import { CustomLightTheme, CustomDarkTheme } from './app/style/themes';
 
 // if (__DEV__) {
 //   require('./ReactotronConfig');
@@ -30,7 +31,7 @@ export default function App() {
     AngemeBold: require('./assets/fonts/Angeme-Bold.ttf'),
     AngemeRegular: require('./assets/fonts/Angeme-Regular.ttf'),
   });
-
+  const colorScheme = useColorScheme()
   const [playbackData, setPlaybackData] = useState(initialPlaybackData);
   const handleChangePBData = (input: PlaybackData) => {
     setPlaybackData((prevState) => {
@@ -42,7 +43,7 @@ export default function App() {
   };
 
   const playbackContextValue = { playbackData, setPlaybackData: handleChangePBData };
-
+  
   useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync();
@@ -56,7 +57,7 @@ export default function App() {
   const queryClient = new QueryClient();
 
   return (
-    <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+    <NavigationContainer linking={linking} theme={colorScheme === 'light' ? CustomLightTheme : CustomDarkTheme} fallback={<Text>Loading...</Text>}>
       <PlaybackContext.Provider value={playbackContextValue}>
         <QueryClientProvider client={queryClient}>
           <GestureHandlerRootView style={{ flex: 1 }}>

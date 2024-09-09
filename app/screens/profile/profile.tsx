@@ -1,11 +1,22 @@
 import { fetchUserProfile } from '@/api/api';
 import { ProfileScreenUserData } from '@/types/types';
 import { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Image } from 'react-native';
+import { Text, View, StyleSheet, Image, Switch, useColorScheme, Appearance } from 'react-native';
 
 const ProfileScreen = () => {
   const [profileData, setProfileData] = useState<ProfileScreenUserData>();
+  const [isEnabled, setIsEnabled] = useState(false);
+  const colorScheme = useColorScheme();
 
+
+  const toggleSwitch = () => {
+    if (colorScheme === 'dark') {
+      Appearance.setColorScheme('light');
+    } else {
+      Appearance.setColorScheme('dark');
+    }
+    setIsEnabled((previousState) => !previousState);
+  };
   useEffect(() => {
     const fetchProfile = async () => {
       const fetchProfileResponse = await fetchUserProfile();
@@ -17,6 +28,7 @@ const ProfileScreen = () => {
       setProfileData(data);
     };
     fetchProfile();
+    setIsEnabled(colorScheme === 'dark');
   }, []);
 
   return (
@@ -24,6 +36,16 @@ const ProfileScreen = () => {
       <Text style={styles.profileName}>{profileData?.name}</Text>
       <Text style={styles.followersCount}>Followers: {profileData?.followersCount}</Text>
       <Image style={styles.profilePicture} source={{ uri: profileData?.imageUrl }} />
+      <Text style={styles.followersCount}>Change app's theme:</Text>
+      <Switch
+        trackColor={{ false: '#767577', true: '#81b0ff' }}
+        thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={toggleSwitch}
+        value={isEnabled}
+      />
+
+      <Text style={styles.followersCount}>Color scheme: {colorScheme}</Text>
     </View>
   );
 };
