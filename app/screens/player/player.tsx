@@ -28,7 +28,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const screenHeight = Dimensions.get('screen').height;
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
   const setTrackIndex = useTrackChange(playbackData.currentTrackNumberInPlaylist || 0);
-  const { colors } = useTheme()
+  const { colors } = useTheme();
 
   const pan = useMemo(() => {
     return Gesture.Pan()
