@@ -28,7 +28,7 @@ export type RootStackParamList = {
   Home: { loginAttempt: boolean } | undefined;
   Login: undefined;
   Profile: undefined;
-  Playlist: { playlistId: string; playlistCover: string; playlistTitle: string, type: string };
+  Playlist: { playlistId: string; playlistCover: string; playlistTitle: string; type: string };
   Player: TrackItemData[] | undefined;
   NotFound: undefined;
 };

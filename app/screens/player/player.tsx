@@ -72,11 +72,16 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     if (playbackData.currentPlaylistData) {
       const trackId =
         playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist || 0].trackId;
-      const trackInfo = await getTrackInfo(trackId)
-      const albumId = trackInfo.album.id
-      const albumImage = trackInfo.album.images[0].url
-      const albumName = trackInfo.album.name
-      navigation.navigate('Playlist', {playlistId: albumId, playlistCover: albumImage, playlistTitle: albumName, type: 'album'})
+      const trackInfo = await getTrackInfo(trackId);
+      const albumId = trackInfo.album.id;
+      const albumImage = trackInfo.album.images[0].url;
+      const albumName = trackInfo.album.name;
+      navigation.navigate('Playlist', {
+        playlistId: albumId,
+        playlistCover: albumImage,
+        playlistTitle: albumName,
+        type: 'album',
+      });
     }
   };
 
@@ -111,6 +116,25 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
       } else return;
     }
   };
+
+  const handleMuteButtonPress = async ()=> {
+    if (playbackData.currentSound) {
+      const playbackStatus = await playbackData.currentSound.getStatusAsync()
+      if (playbackStatus.isLoaded) {
+          playbackData.currentSound?.setIsMutedAsync(!playbackStatus.isMuted)
+      }
+    }
+  }
+
+  const handleLoopButtonPress = async ()=> {
+    if (playbackData.currentSound) {
+      const playbackStatus = await playbackData.currentSound.getStatusAsync()
+      if (playbackStatus.isLoaded) {
+          playbackData.currentSound?.setIsLoopingAsync(!playbackStatus.isLooping)
+      }
+    }
+    
+  }
 
   const styles = StyleSheet.create({
     background: {
@@ -187,13 +211,13 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
                   source={require('../../../assets/icons/favButton.png')}
                 ></Image>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={handleLoopButtonPress}>
                 <Image
                   style={styles.controlButton}
                   source={require('../../../assets/icons/loopButton.png')}
                 ></Image>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={handleMuteButtonPress}>
                 <Image
                   style={styles.controlButton}
                   source={require('../../../assets/icons/muteButton.png')}

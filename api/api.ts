@@ -110,4 +110,3 @@ export const fetchUserProfile = async () => {
     throw new Error(`Error message: ${err}`);
   }
 };
-
