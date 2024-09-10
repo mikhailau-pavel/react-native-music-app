@@ -46,27 +46,37 @@ const ProfileScreen = () => {
 
   return (
     <View style={styles.profileContainer}>
-      <Text style={styles.profileName}>{profileData?.name}</Text>
-      <Text style={styles.followersCount}>Followers: {profileData?.followersCount}</Text>
-      <Text style={styles.followersCount}>{t('test')}</Text>
-      <Text style={{ fontFamily: 'AngemeBold' }}>ą, ć, ę</Text>
-      <Image style={styles.profilePicture} source={{ uri: profileData?.imageUrl }} />
-      <Text style={{ color: colors.text }}>Change app's theme:</Text>
-      <Switch
-        trackColor={{ false: '#767577', true: '#81b0ff' }}
-        thumbColor={isThemeSwitchEnabled ? '#f5dd4b' : '#f4f3f4'}
-        ios_backgroundColor="#3e3e3e"
-        onValueChange={toggleTheme}
-        value={isThemeSwitchEnabled}
-      />
-      <Switch
-        trackColor={{ false: '#767577', true: '#81b0ff' }}
-        thumbColor={isLanguageSwitchEnabled ? '#f5dd4b' : '#f4f3f4'}
-        ios_backgroundColor="#3e3e3e"
-        onValueChange={toggleLanguage}
-        value={isLanguageSwitchEnabled}
-      />
-      <Text style={styles.followersCount}>Color scheme: {colorScheme}</Text>
+      <View style={styles.profileHeader}>
+        <Image style={styles.profilePicture} source={{ uri: profileData?.imageUrl }} />
+        <View style={styles.headerInfo}>
+          <Text style={styles.profileName}>{profileData?.name}</Text>
+          <Text style={styles.followersCount}>{profileData?.followersCount}{t('followers')}</Text>
+        </View>
+      </View>
+      
+      <View style={styles.settingsContainer}>
+        <View style={styles.settingItem}>
+          <Text style={styles.settingLabel}>{t('darkTheme')}</Text>
+          <Switch
+            trackColor={{ false: '#767577', true: '#1DB954' }}
+            thumbColor={isThemeSwitchEnabled ? '#ffffff' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleTheme}
+            value={isThemeSwitchEnabled}
+          />
+        </View>
+        
+        <View style={styles.settingItem}>
+          <Text style={styles.settingLabel}>{t('language')}</Text>
+          <Switch
+            trackColor={{ false: '#767577', true: '#1DB954' }}
+            thumbColor={isLanguageSwitchEnabled ? '#ffffff' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleLanguage}
+            value={isLanguageSwitchEnabled}
+          />
+        </View>
+      </View>
     </View>
   );
 };
@@ -74,10 +84,48 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   profileContainer: {
     flex: 1,
-    flexDirection: 'row',
+    backgroundColor: '#121212',
+    padding: 20,
   },
-  profileName: { flex: 1 },
-  followersCount: { flex: 1 },
-  profilePicture: { flex: 1, width: 50, height: 50 },
+  profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  profilePicture: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginRight: 20,
+  },
+  headerInfo: {
+    flex: 1,
+  },
+  profileName: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  followersCount: {
+    color: '#b3b3b3',
+    fontSize: 16,
+  },
+  settingsContainer: {
+    marginBottom: 30,
+  },
+  settingItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#282828',
+  },
+  settingLabel: {
+    color: '#ffffff',
+    fontSize: 18,
+  },
 });
+
 export default ProfileScreen;
