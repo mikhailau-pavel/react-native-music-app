@@ -28,7 +28,7 @@ export type RootStackParamList = {
   Home: { loginAttempt: boolean } | undefined;
   Login: undefined;
   Profile: undefined;
-  Playlist: { playlistId: string; playlistCover: string; playlistTitle: string };
+  Playlist: { playlistId: string; playlistCover: string; playlistTitle: string, type: string };
   Player: TrackItemData[] | undefined;
   NotFound: undefined;
 };
@@ -121,6 +121,12 @@ export type CurrentPlaylistTracksResponse = {
     id: string;
     preview_url: string;
   };
+};
+
+export type CurrentAlbumTracksResponse = {
+  name: string;
+  id: string;
+  preview_url: string;
 };
 
 export type TopsResponseDataItem = {

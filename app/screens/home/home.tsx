@@ -126,6 +126,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
               playlistId: item.playlistId,
               playlistCover: item.imageURL,
               playlistTitle: item.title,
+              type: 'playlist',
             });
           }
         }}

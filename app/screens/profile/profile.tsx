@@ -24,7 +24,6 @@ const ProfileScreen = () => {
   };
 
   const toggleLanguage = () => {
-    console.log('i18n props:', i18n);
     const currentLanguage = i18n.language;
     i18n.changeLanguage(currentLanguage === Languages.EN ? Languages.PL : Languages.EN, () =>
       setIsLanguageSwitchEnabled((previousState) => !previousState)

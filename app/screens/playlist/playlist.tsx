@@ -1,5 +1,6 @@
 import { fetchTracksFromPlaylist } from '@/api/api';
 import {
+  CurrentAlbumTracksResponse,
   CurrentPlaylistTracksResponse,
   PlaylistScreenProps,
   TrackItemData,
@@ -18,6 +19,7 @@ import {
 } from 'react-native';
 import { PlaybackContext } from '@/scripts/playbackContext';
 import { createPlayback, playTrack, stopTrack, unloadSound } from '@/scripts/player';
+import { getAlbum } from '@/api/albums';
 
 const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
@@ -102,13 +104,35 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
     setPlaybackData({ currentPlaylistData: currentPlaylistTracks });
   }, []);
 
+  const createAlbumTrackList = useCallback(async (playlistId: string) => {
+    const albumInfo = await getAlbum(playlistId);
+    const tracks = albumInfo.tracks.items;
+    const currentPlaylistTracks = tracks.map((elem: CurrentAlbumTracksResponse) => {
+      const tracksInfoList = {
+        title: elem.name,
+        artist: albumInfo.artists[0].name,
+        imageURL: albumInfo.images[0].url,
+        trackId: elem.id,
+        previewUrl: elem.preview_url,
+      };
+      return tracksInfoList;
+    });
+    setPlaybackData({ currentPlaylistData: currentPlaylistTracks });
+  }, []);
+
   useEffect(() => {
-    const getTrackFromPlaylist = async () => {
+    const getTracksFromPlaylist = async () => {
       const playlistIdProp = route.params.playlistId;
       await createPlaylistsTrackList(playlistIdProp);
     };
-    getTrackFromPlaylist();
-  }, [createPlaylistsTrackList, route.params.playlistId]);
+    const getTracksFromAlbum = async () => {
+      const albumIdProp = route.params.playlistId;
+      await createAlbumTrackList(albumIdProp);
+    };
+    if (route.params.type === 'playlist') {
+      getTracksFromPlaylist();
+    } else getTracksFromAlbum();
+  }, [createAlbumTrackList, createPlaylistsTrackList, route.params.playlistId, route.params.type]);
 
   const renderTrackItem = ({ item, index }: { item: TrackItemData; index: number }) => {
     const backgroundColor = '#017371';

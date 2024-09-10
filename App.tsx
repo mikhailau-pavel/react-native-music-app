@@ -10,7 +10,7 @@ import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { linking, Tabs } from './app/navigation/navigation';
 import { CustomLightTheme, CustomDarkTheme } from './app/style/themes';
-import './utils/language/i18NextConfig'
+import './utils/language/i18NextConfig';
 
 // if (__DEV__) {
 //   require('./ReactotronConfig');

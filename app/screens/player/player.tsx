@@ -21,6 +21,8 @@ import { pauseTrack, playTrack } from '@/scripts/player';
 import { useTrackChange } from '@/hooks/useTrackChange';
 import ProgressBar from '@/app/components/progressBar/progressBar';
 import { useTheme } from '@react-navigation/native';
+import { getTrackInfo } from '@/api/tracks';
+import { getAlbum } from '@/api/albums';
 
 const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const active = useSharedValue(false);
@@ -64,6 +66,18 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const handleInfoButtonPress = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
     setExpanded(!expanded);
+  };
+
+  const handleSongTitlePress = async () => {
+    if (playbackData.currentPlaylistData) {
+      const trackId =
+        playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist || 0].trackId;
+      const trackInfo = await getTrackInfo(trackId)
+      const albumId = trackInfo.album.id
+      const albumImage = trackInfo.album.images[0].url
+      const albumName = trackInfo.album.name
+      navigation.navigate('Playlist', {playlistId: albumId, playlistCover: albumImage, playlistTitle: albumName, type: 'album'})
+    }
   };
 
   const handlePlayButtonPress = async () => {
@@ -155,12 +169,14 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
                   ].imageURL,
                 }}
               />
-              <Text style={styles.trackTitle}>
-                {
-                  playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist || 0]
-                    .title
-                }
-              </Text>
+              <TouchableOpacity onPress={handleSongTitlePress}>
+                <Text style={styles.trackTitle}>
+                  {
+                    playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist || 0]
+                      .title
+                  }
+                </Text>
+              </TouchableOpacity>
             </>
           )}
           {!expanded ? (
