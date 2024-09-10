@@ -30,6 +30,8 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const screenHeight = Dimensions.get('screen').height;
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
   const setTrackIndex = useTrackChange(playbackData.currentTrackNumberInPlaylist || 0);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isLooping, setIsLooping] = useState(false);
   const { colors } = useTheme();
 
   const pan = useMemo(() => {
@@ -117,24 +119,25 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     }
   };
 
-  const handleMuteButtonPress = async ()=> {
+  const handleMuteButtonPress = async () => {
     if (playbackData.currentSound) {
-      const playbackStatus = await playbackData.currentSound.getStatusAsync()
+      const playbackStatus = await playbackData.currentSound.getStatusAsync();
       if (playbackStatus.isLoaded) {
-          playbackData.currentSound?.setIsMutedAsync(!playbackStatus.isMuted)
+        playbackData.currentSound?.setIsMutedAsync(!playbackStatus.isMuted);
+        setIsMuted(!isMuted);
       }
     }
-  }
+  };
 
-  const handleLoopButtonPress = async ()=> {
+  const handleLoopButtonPress = async () => {
     if (playbackData.currentSound) {
-      const playbackStatus = await playbackData.currentSound.getStatusAsync()
+      const playbackStatus = await playbackData.currentSound.getStatusAsync();
       if (playbackStatus.isLoaded) {
-          playbackData.currentSound?.setIsLoopingAsync(!playbackStatus.isLooping)
+        playbackData.currentSound?.setIsLoopingAsync(!playbackStatus.isLooping);
+        setIsLooping(!isLooping);
       }
     }
-    
-  }
+  };
 
   const styles = StyleSheet.create({
     background: {
@@ -212,16 +215,30 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
                 ></Image>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleLoopButtonPress}>
-                <Image
-                  style={styles.controlButton}
-                  source={require('../../../assets/icons/loopButton.png')}
-                ></Image>
+                {isLooping ? (
+                  <Image
+                    style={styles.controlButton}
+                    source={require('../../../assets/icons/loopingButton.png')}
+                  ></Image>
+                ) : (
+                  <Image
+                    style={styles.controlButton}
+                    source={require('../../../assets/icons/loopButton.png')}
+                  ></Image>
+                )}
               </TouchableOpacity>
               <TouchableOpacity onPress={handleMuteButtonPress}>
-                <Image
-                  style={styles.controlButton}
-                  source={require('../../../assets/icons/muteButton.png')}
-                ></Image>
+                {isMuted ? (
+                  <Image
+                    style={styles.controlButton}
+                    source={require('../../../assets/icons/mutedButton.png')}
+                  ></Image>
+                ) : (
+                  <Image
+                    style={styles.controlButton}
+                    source={require('../../../assets/icons/muteButton.png')}
+                  ></Image>
+                )}
               </TouchableOpacity>
               <TouchableOpacity onPress={handleInfoButtonPress}>
                 <Image
