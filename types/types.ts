@@ -135,6 +135,7 @@ export type TopsResponseDataItem = {
   album: {
     images: { url: string }[];
   };
+  uri?: string;
 };
 
 export type TopsListItem = {
