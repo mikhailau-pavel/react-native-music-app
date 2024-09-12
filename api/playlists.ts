@@ -29,10 +29,29 @@ export const createPlaylist = async (
   }
 };
 
-export const addTracksToPlaylist = async (uris: string, playlistId: string) => {
+export const addTracksToPlaylist = async (uris: string[], playlistId: string) => {
   const token = await getData('access_token');
   const playlistUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
-  //modify
-  const payloadBody = new URLSearchParams(uris);
-  console.log('payload body', payloadBody)
+  console.log('playlist url', playlistUrl);
+  const payloadBody = JSON.stringify({
+    uris: uris,
+    position: 0,
+  });
+
+  const payload = {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
+    body: payloadBody,
+  };
+
+  console.log('payload body', payload);
+  try {
+    const response = await fetch(playlistUrl, payload);
+    const data = await response.json();
+    console.log('response on adding tracks:', data);
+  } catch (err) {
+    throw new Error(`Error message: ${err}`);
+  }
 };

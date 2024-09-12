@@ -50,10 +50,13 @@ const ProfileScreen = () => {
         <Image style={styles.profilePicture} source={{ uri: profileData?.imageUrl }} />
         <View style={styles.headerInfo}>
           <Text style={styles.profileName}>{profileData?.name}</Text>
-          <Text style={styles.followersCount}>{profileData?.followersCount}{t('followers')}</Text>
+          <Text style={styles.followersCount}>
+            {profileData?.followersCount}
+            {t('followers')}
+          </Text>
         </View>
       </View>
-      
+
       <View style={styles.settingsContainer}>
         <View style={styles.settingItem}>
           <Text style={styles.settingLabel}>{t('darkTheme')}</Text>
@@ -65,7 +68,7 @@ const ProfileScreen = () => {
             value={isThemeSwitchEnabled}
           />
         </View>
-        
+
         <View style={styles.settingItem}>
           <Text style={styles.settingLabel}>{t('language')}</Text>
           <Switch

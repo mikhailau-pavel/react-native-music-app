@@ -37,7 +37,7 @@ const TopsMainScreen = () => {
       }
     };
 
-    return `Top ${type} of ${playlistTitlePeriod()}`;
+    return `Top tracks of ${playlistTitlePeriod()}`;
   };
 
   useEffect(() => {
@@ -209,14 +209,13 @@ const TopsMainScreen = () => {
               const userID = await getUserData();
               const title = createPlaylistTitle();
               const topsResponseData = await fetchUserTops(type, period);
-              const currentTopTracksUris = topsResponseData.reduce(
-                (acc: string, cur: TopsResponseDataItem) => {
-                  return acc + cur.uri + ', ';
-                },
-                'uris='
-              );
-              const playlistId = await createPlaylist(title, title, userID);
-              addTracksToPlaylist(currentTopTracksUris, playlistId);
+              const trackUrisArray: string[] = [];
+              topsResponseData.forEach((elem: TopsResponseDataItem) => {
+                if (elem.uri) {
+                  trackUrisArray.push(elem.uri);
+                }
+              });
+              addTracksToPlaylist(trackUrisArray, title);
             }}
           >
             <Text style={styles.buttonText}>{t('createPlaylist')}</Text>

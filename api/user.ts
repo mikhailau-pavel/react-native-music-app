@@ -1,22 +1,21 @@
-import { getData } from "@/scripts/asyncStorage"
+import { getData } from '@/scripts/asyncStorage';
 
 enum UserRequestUrls {
-  CURRENT_USER = 'https://api.spotify.com/v1/me'
+  CURRENT_USER = 'https://api.spotify.com/v1/me',
 }
 
-export const getUserData = async() => {
+export const getUserData = async () => {
   const token = await getData('access_token');
   const payload = {
     headers: {
       Authorization: 'Bearer ' + token,
-    }
-  }
+    },
+  };
   try {
-    const response = await fetch(UserRequestUrls.CURRENT_USER, payload)
-    const data = await response.json()
-    return data.id
+    const response = await fetch(UserRequestUrls.CURRENT_USER, payload);
+    const data = await response.json();
+    return data.id;
+  } catch (err) {
+    throw new Error(`Error message: ${err}`);
   }
-  catch(err) {
-    throw new Error(`Error message: ${err}`)
-  }
-}
+};
