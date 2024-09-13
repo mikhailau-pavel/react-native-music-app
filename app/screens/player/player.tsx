@@ -22,7 +22,18 @@ import { useTrackChange } from '@/hooks/useTrackChange';
 import ProgressBar from '@/app/components/progressBar/progressBar';
 import { useTheme } from '@react-navigation/native';
 import { getTrackInfo } from '@/api/tracks';
-import { getAlbum } from '@/api/albums';
+// import { useImageColors } from '@/hooks/useImageColors';
+import { LinearGradient } from 'expo-linear-gradient';
+import { getColors } from 'react-native-image-colors'
+
+const initialColorsFromImageState = {
+  colorOne: { value: '', name: '' },
+  colorTwo: { value: '', name: '' },
+  colorThree: { value: '', name: '' },
+  colorFour: { value: '', name: '' },
+  rawResult: '',
+}
+
 
 const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const active = useSharedValue(false);
@@ -33,6 +44,56 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
   const { colors } = useTheme();
+  const [imageColors, setImageColors] = useState(initialColorsFromImageState)
+  const [loading, setLoading] = useState(true)
+
+  const initialState = {
+  colorOne: { value: '', name: '' },
+  colorTwo: { value: '', name: '' },
+  colorThree: { value: '', name: '' },
+  colorFour: { value: '', name: '' },
+  rawResult: '',
+}
+
+useEffect(() => {
+  const fetchColors = async () => {
+    const url = playbackData.currentAlbumImage || ''
+    const result = await getColors(url, {
+      fallback: '#000000',
+      pixelSpacing: 5,
+    })
+
+    switch (result.platform) {
+      case 'android':
+      case 'web':
+        setImageColors({
+          colorOne: { value: result.lightVibrant, name: 'lightVibrant' },
+          colorTwo: { value: result.dominant, name: 'dominant' },
+          colorThree: { value: result.vibrant, name: 'vibrant' },
+          colorFour: { value: result.darkVibrant, name: 'darkVibrant' },
+          rawResult: JSON.stringify(result),
+        })
+        break
+      case 'ios':
+        setImageColors({
+          colorOne: { value: result.background, name: 'background' },
+          colorTwo: { value: result.detail, name: 'detail' },
+          colorThree: { value: result.primary, name: 'primary' },
+          colorFour: { value: result.secondary, name: 'secondary' },
+          rawResult: JSON.stringify(result),
+        })
+        break
+      default:
+        throw new Error('Unexpected platform')
+    }
+    console.log('fetched primary color: ', imageColors.colorOne.value)
+    setLoading(false)
+  }
+
+  fetchColors()
+}, [playbackData.currentAlbumImage])
+
+  // const { imageColors, setUrl } = useImageColors();
 
   const pan = useMemo(() => {
     return Gesture.Pan()
@@ -99,6 +160,17 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     }
   };
 
+  // const handleFavButtonPress = async () => {
+  //   console.log('colors: ', imageColors);
+  // };
+
+  // useEffect(() => {
+  //   console.log('current album image:', playbackData.currentAlbumImage);
+  //   if (playbackData.currentAlbumImage) {
+  //     setUrl(playbackData.currentAlbumImage);
+  //   }
+  // }, [playbackData.currentAlbumImage, setUrl]);
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', () => {
       if (playbackData.currentArtist) {
@@ -143,6 +215,13 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     background: {
       flex: 1,
     },
+    trackCoverGradient: {
+      position: 'absolute',
+      height: 600,
+      left: 0,
+      right: 0,
+      top: 0,
+    },
     trackCoverContainer: {
       margin: 5,
     },
@@ -178,6 +257,10 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     <GestureDetector gesture={pan}>
       <Animated.View style={[styles.background, animatedStyles]}>
         <View style={styles.trackCoverContainer}>
+          <LinearGradient
+            colors={[imageColors.colorOne.value, colors.background]}
+            style={styles.trackCoverGradient}
+          ></LinearGradient>
           {playbackData.currentPlaylistData && (
             <>
               <Text style={styles.trackTitle}>
@@ -208,7 +291,9 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
           )}
           {!expanded ? (
             <View style={styles.trackInfoControlContainer}>
-              <TouchableOpacity>
+              <TouchableOpacity 
+              // onPress={handleFavButtonPress}
+              >
                 <Image
                   style={styles.controlButton}
                   source={require('../../../assets/icons/favButton.png')}

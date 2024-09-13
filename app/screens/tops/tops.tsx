@@ -197,30 +197,33 @@ const TopsMainScreen = () => {
             </View>
           </View>
         }
-        ListFooterComponent=
-          {type === 'tracks' ? <Pressable
-            style={({ pressed }) => [
-              styles.topsCreatePlaylistButton,
-              pressed
-                ? { borderColor: '#FFFFFF', borderBottomWidth: 1, backgroundColor: '#767577' }
-                : null,
-            ]}
-            onPressIn={async () => {
-              const userId = await getUserData()
-              const title = createPlaylistTitle();
-              const topsResponseData = await fetchUserTops('tracks', period);
-              const trackUrisArray: string[] = [];
-              topsResponseData.forEach((elem: TopsResponseDataItem) => {
-                if (elem.uri) {
-                  trackUrisArray.push(elem.uri);
-                }
-              });
-              const playlistId = await createPlaylist(title, title, userId )
-              addTracksToPlaylist(trackUrisArray, playlistId);
-            }}
-          >
-            <Text style={styles.buttonText}>{t('createPlaylist')}</Text>
-          </Pressable> : null}
+        ListFooterComponent={
+          type === 'tracks' ? (
+            <Pressable
+              style={({ pressed }) => [
+                styles.topsCreatePlaylistButton,
+                pressed
+                  ? { borderColor: '#FFFFFF', borderBottomWidth: 1, backgroundColor: '#767577' }
+                  : null,
+              ]}
+              onPressIn={async () => {
+                const userId = await getUserData();
+                const title = createPlaylistTitle();
+                const topsResponseData = await fetchUserTops('tracks', period);
+                const trackUrisArray: string[] = [];
+                topsResponseData.forEach((elem: TopsResponseDataItem) => {
+                  if (elem.uri) {
+                    trackUrisArray.push(elem.uri);
+                  }
+                });
+                const playlistId = await createPlaylist(title, title, userId);
+                addTracksToPlaylist(trackUrisArray, playlistId);
+              }}
+            >
+              <Text style={styles.buttonText}>{t('createPlaylist')}</Text>
+            </Pressable>
+          ) : null
+        }
       />
     </View>
   );
