@@ -25,6 +25,32 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
     }
   }, [loginUrlQuery.data]);
 
+  const handleNavigationStateChange = async ({ url }: { url: string }) => {
+    if (url.startsWith('musicapp://')) {
+      const responseCode = parseResponseCode(url);
+      await storeData('responseCode', responseCode);
+      await accessTokenQuery.refetch();
+
+      if (accessTokenQuery.data) {
+        console.log('accessTokenQuery', accessTokenQuery.data)
+        await storeData('access_token', accessTokenQuery.data.access_token);
+        await storeData('refresh_token', accessTokenQuery.data.refresh_token);
+      }
+
+      navigation.replace('Home', { loginAttempt: true });
+      return false;
+    }
+    return true;
+  };
+
+  const onShouldStartLoadWithRequest = (request: { url: string }) => {
+    if (request.url.startsWith('musicapp://')) {
+      handleNavigationStateChange({ url: request.url });
+      return false;
+    }
+    return true;
+  };
+
   if (Platform.OS === 'ios' || Platform.OS === 'android') {
     return (
       <View style={{ flex: 1 }}>
@@ -32,18 +58,7 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
           <WebView
             style={{ flex: 1 }}
             source={{ uri: loginUrl }}
-            onNavigationStateChange={async ({ url }) => {
-              if (url.includes('localhost:8081/profile?code=')) {
-                await storeData('responseCode', parseResponseCode(url));
-                await accessTokenQuery.refetch();
-                if (accessTokenQuery.data) {
-                  await storeData('access_token', accessTokenQuery.data.access_token);
-                  await storeData('refresh_token', accessTokenQuery.data.refresh_token);
-                }
-                //goBack after
-                navigation.navigate('Home', { loginAttempt: true });
-              }
-            }}
+            onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
             javaScriptEnabled
             domStorageEnabled
             originWhitelist={['*']}
