@@ -6,7 +6,7 @@ import {
   TrackItemData,
   TrackItemProps,
 } from '@/types/types';
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
   FlatList,
   View,
@@ -16,6 +16,7 @@ import {
   StyleSheet,
   ImageBackground,
   TextInput,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { PlaybackContext } from '@/scripts/playbackContext';
 import { createPlayback, playTrack, stopTrack, unloadSound } from '@/scripts/player';
@@ -23,6 +24,8 @@ import { getAlbum } from '@/api/albums';
 
 const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const handlePlayPlaylistButtonPress = async () => {
     if (playbackData.currentPlaylistData) {
@@ -75,15 +78,18 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       onPress={() => {
         setTrackInPlayer(item, index);
       }}
-      style={[styles.trackItemContainer, { backgroundColor }]}
+      style={styles.trackItemContainer}
     >
-      <View style={styles.item}>
-        <Image
-          style={styles.trackAlbumImage}
-          source={{ height: 70, width: 70, uri: item.imageURL }}
-        />
-        <Text style={[styles.title, { color: textColor }]}>
-          {item.title} by {item.artist}
+      <Image
+        style={styles.trackAlbumImage}
+        source={{ uri: item.imageURL }}
+      />
+      <View style={styles.trackInfo}>
+        <Text style={styles.trackTitle} numberOfLines={1}>
+          {item.title}
+        </Text>
+        <Text style={styles.trackArtist} numberOfLines={1}>
+          {item.artist}
         </Text>
       </View>
     </TouchableOpacity>
@@ -134,6 +140,33 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
     } else getTracksFromAlbum();
   }, [createAlbumTrackList, createPlaylistsTrackList, route.params.playlistId, route.params.type]);
 
+  const filteredTracks = playbackData.currentPlaylistData
+    ? playbackData.currentPlaylistData.filter(
+        (track) =>
+          track.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          track.artist.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
+
+  const renderHeader = () => {
+    if (isSearchFocused) return null;
+    return (
+      <View style={styles.playlistHeader}>
+        <Image
+          style={styles.playlistCover}
+          source={{ uri: route.params.playlistCover }}
+        />
+        <Text style={styles.playlistTitle}>{route.params.playlistTitle}</Text>
+        <TouchableOpacity
+          style={styles.playButton}
+          onPress={handlePlayPlaylistButtonPress}
+        >
+          <Text style={styles.playButtonText}>PLAY</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   const renderTrackItem = ({ item, index }: { item: TrackItemData; index: number }) => {
     const backgroundColor = '#017371';
     const color = 'black';
@@ -153,85 +186,101 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   };
 
   return (
-    <ImageBackground
-      source={require('../../../assets/images/main_background.png')}
-      resizeMode="cover"
-      style={styles.background}
+    <KeyboardAvoidingView 
+      //"behavior" on ios?
+      style={styles.container}
     >
-      <TextInput style={styles.searchBar}> Search</TextInput>
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search"
+          placeholderTextColor="#B3B3B3"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          onFocus={() => setIsSearchFocused(true)}
+          onBlur={() => setIsSearchFocused(false)}
+        />
+      </View>
       <FlatList
-        data={playbackData.currentPlaylistData}
+        data={filteredTracks}
         renderItem={renderTrackItem}
         keyExtractor={(item) => item.trackId}
-        ListHeaderComponent={
-          <View style={styles.playlistCoverContainer}>
-            <Text style={styles.playlistTitle}>{route.params.playlistTitle}</Text>
-            <Image
-              style={styles.playlistCover}
-              source={{ height: 300, width: 300, uri: route.params.playlistCover }}
-            />
-            {playbackData && (
-              <TouchableOpacity onPress={handlePlayPlaylistButtonPress}>
-                <Image
-                  style={styles.playButton}
-                  source={require('../../../assets/icons/playButton.png')}
-                ></Image>
-              </TouchableOpacity>
-            )}
-          </View>
-        }
+        ListHeaderComponent={renderHeader}
       />
-    </ImageBackground>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
+  container: {
     flex: 1,
+    backgroundColor: '#121212',
   },
-  playlistCoverContainer: {
+  searchContainer: {
+    padding: 10,
+    backgroundColor: '#282828', 
+  },
+  searchInput: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 10,
+    color: '#121212',
+    fontFamily: 'AngemeRegular',
+  },
+  playlistHeader: {
+    alignItems: 'center',
+    padding: 20,
     backgroundColor: '#017371',
-    margin: 5,
-  },
-  playlistTitle: {
-    fontSize: 50,
-    alignSelf: 'center',
-    fontFamily: 'AngemeBold',
-    margin: 5,
   },
   playlistCover: {
-    alignSelf: 'center',
+    width: 200,
+    height: 200,
+    marginBottom: 20,
+    borderRadius: 10,
   },
-  trackItemContainer: {
-    flex: 1,
-  },
-  trackAlbumImage: {},
-  pauseButtonContainer: {
-    flex: 1,
-    alignSelf: 'baseline',
-    margin: 3,
-  },
-  item: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: '#7bfdc7',
-    margin: 5,
-  },
-  searchBar: {
-    borderWidth: 3,
-    backgroundColor: 'white',
+  playlistTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 10,
     fontFamily: 'AngemeBold',
-  },
-  title: {
-    fontFamily: 'AngemeBold',
-    fontSize: 20,
-    alignSelf: 'flex-end',
   },
   playButton: {
-    width: 60,
-    height: 60,
-    alignSelf: 'flex-end',
-    margin: 15,
+    backgroundColor: '#1DB954',
+    paddingVertical: 10,
+    paddingHorizontal: 40,
+    borderRadius: 25,
+  },
+  playButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  trackItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#333',
+  },
+  trackAlbumImage: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
+    borderRadius: 5,
+  },
+  trackInfo: {
+    flex: 1,
+  },
+  trackTitle: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'AngemeBold',
+  },
+  trackArtist: {
+    color: '#B3B3B3',
+    fontSize: 14,
+    fontFamily: 'AngemeRegular',
   },
 });
 
