@@ -37,7 +37,7 @@ export const codeChallenge = async () => {
 };
 
 export const parseResponseCode = (string: string) => {
-  return string.split('code=')[1]
+  return string.split('code=')[1];
 };
 
 export const createLoginUrl = async () => {

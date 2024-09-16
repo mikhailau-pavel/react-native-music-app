@@ -38,19 +38,24 @@ const NowPlayingHeader = () => {
       borderBottomColor: colors.border,
     },
     nowPlayingIcon: {
-      alignSelf: 'center'
-    }
+      alignSelf: 'center',
+    },
   });
 
   return (
     <View style={styles.container}>
       <Text style={styles.sectionHeaderText}>Now playing:</Text>
       <View style={styles.trackInfoContainer}>
-      <View style={styles.trackInfoContainer}>
-        <Image style={styles.trackAlbumImage} source={{ uri: mockImage }} />
-        <PlaylistItem item={mockNowPlayingItem} />
+        <View style={styles.trackInfoContainer}>
+          <Image style={styles.trackAlbumImage} source={{ uri: mockImage }} />
+          <PlaylistItem item={mockNowPlayingItem} />
         </View>
-        <Entypo name="dots-three-vertical" size={18} color={colors.text} style={styles.nowPlayingIcon}/>
+        <Entypo
+          name="dots-three-vertical"
+          size={18}
+          color={colors.text}
+          style={styles.nowPlayingIcon}
+        />
       </View>
     </View>
   );

@@ -32,8 +32,7 @@ const initialColorsFromImageState = {
   colorThree: { value: '', name: '' },
   colorFour: { value: '', name: '' },
   rawResult: '',
-}
-
+};
 
 const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const active = useSharedValue(false);
@@ -48,50 +47,50 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   // const [loading, setLoading] = useState(true)
 
   const initialState = {
-  colorOne: { value: '', name: '' },
-  colorTwo: { value: '', name: '' },
-  colorThree: { value: '', name: '' },
-  colorFour: { value: '', name: '' },
-  rawResult: '',
-}
+    colorOne: { value: '', name: '' },
+    colorTwo: { value: '', name: '' },
+    colorThree: { value: '', name: '' },
+    colorFour: { value: '', name: '' },
+    rawResult: '',
+  };
 
-// useEffect(() => {
-//   const fetchColors = async () => {
-//     const url = playbackData.currentAlbumImage || ''
-//     const result = await getColors(url, {
-//       fallback: '#000000',
-//       pixelSpacing: 5,
-//     })
+  // useEffect(() => {
+  //   const fetchColors = async () => {
+  //     const url = playbackData.currentAlbumImage || ''
+  //     const result = await getColors(url, {
+  //       fallback: '#000000',
+  //       pixelSpacing: 5,
+  //     })
 
-//     switch (result.platform) {
-//       case 'android':
-//       case 'web':
-//         setImageColors({
-//           colorOne: { value: result.lightVibrant, name: 'lightVibrant' },
-//           colorTwo: { value: result.dominant, name: 'dominant' },
-//           colorThree: { value: result.vibrant, name: 'vibrant' },
-//           colorFour: { value: result.darkVibrant, name: 'darkVibrant' },
-//           rawResult: JSON.stringify(result),
-//         })
-//         break
-//       case 'ios':
-//         setImageColors({
-//           colorOne: { value: result.background, name: 'background' },
-//           colorTwo: { value: result.detail, name: 'detail' },
-//           colorThree: { value: result.primary, name: 'primary' },
-//           colorFour: { value: result.secondary, name: 'secondary' },
-//           rawResult: JSON.stringify(result),
-//         })
-//         break
-//       default:
-//         throw new Error('Unexpected platform')
-//     }
-//     console.log('fetched primary color: ', imageColors.colorOne.value)
-//     setLoading(false)
-//   }
+  //     switch (result.platform) {
+  //       case 'android':
+  //       case 'web':
+  //         setImageColors({
+  //           colorOne: { value: result.lightVibrant, name: 'lightVibrant' },
+  //           colorTwo: { value: result.dominant, name: 'dominant' },
+  //           colorThree: { value: result.vibrant, name: 'vibrant' },
+  //           colorFour: { value: result.darkVibrant, name: 'darkVibrant' },
+  //           rawResult: JSON.stringify(result),
+  //         })
+  //         break
+  //       case 'ios':
+  //         setImageColors({
+  //           colorOne: { value: result.background, name: 'background' },
+  //           colorTwo: { value: result.detail, name: 'detail' },
+  //           colorThree: { value: result.primary, name: 'primary' },
+  //           colorFour: { value: result.secondary, name: 'secondary' },
+  //           rawResult: JSON.stringify(result),
+  //         })
+  //         break
+  //       default:
+  //         throw new Error('Unexpected platform')
+  //     }
+  //     console.log('fetched primary color: ', imageColors.colorOne.value)
+  //     setLoading(false)
+  //   }
 
-//   fetchColors()
-// }, [playbackData.currentAlbumImage])
+  //   fetchColors()
+  // }, [playbackData.currentAlbumImage])
 
   // const { imageColors, setUrl } = useImageColors();
 
@@ -291,7 +290,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
           )}
           {!expanded ? (
             <View style={styles.trackInfoControlContainer}>
-              <TouchableOpacity 
+              <TouchableOpacity
               // onPress={handleFavButtonPress}
               >
                 <Image
