@@ -49,11 +49,18 @@ const playlistsMockList: PlaylistItemData[] = [
   },
 ];
 
-const PlaylistItem = ({ item, onPress, backgroundColor, textColor }: PlaylistItemProps) => (
-  <TouchableOpacity onPress={onPress} style={[styles.item, { backgroundColor }]}>
-    <View style={styles.item}>
-      <Image source={{ height: 120, width: 120, uri: item.imageURL }} />
-      <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
+const PlaylistItem = ({
+  item,
+  onPress,
+  isSelected,
+}: PlaylistItemProps & { isSelected: boolean }) => (
+  <TouchableOpacity
+    onPress={onPress}
+    style={[styles.item, isSelected && { backgroundColor: '#017371' }]}
+  >
+    <View style={styles.itemContent}>
+      <Image source={{ uri: item.imageURL }} style={styles.itemImage} />
+      <Text style={[styles.title, isSelected && { color: '#FFFFFF' }]}>{item.title}</Text>
     </View>
   </TouchableOpacity>
 );
@@ -75,12 +82,12 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
     const playlists = await readPlaylistsFromStorage();
     if (playlists) {
       const currentPlaylistsList = playlists.map((elem: CurrentUserPlaylist, index: number) => {
-        return new Object({
+        return {
           title: elem.name,
           id: `${elem.name}-${index}`,
           imageURL: `${elem.images[0].url}`,
           playlistId: `${elem.id}`,
-        });
+        };
       });
       setCurrentPlaylistsList(currentPlaylistsList);
     } else {
@@ -89,16 +96,15 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   }, []);
 
   useFocusEffect(() => {
-      const tokenCheck = async () => {
-        const token = await getData('access_token');
-        if (token) {
-          setIsLogined(true);
-          await createPlaylistsList();
-        }
-      };
-      tokenCheck();
-    }
-  );
+    const tokenCheck = async () => {
+      const token = await getData('access_token');
+      if (token) {
+        setIsLogined(true);
+        await createPlaylistsList();
+      }
+    };
+    tokenCheck();
+  });
 
   useEffect(() => {
     const getPlaylists = async () => {
@@ -129,11 +135,11 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
             });
           }
         }}
+        isSelected={item.id === selectedPlaylistId}
         backgroundColor={backgroundColor}
         textColor={color}
       />
     );
-    
   };
   if (!isLogined) {
     return (
@@ -162,19 +168,33 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
         >
           <FlatList
             data={currentPlaylistsList}
-            renderItem={renderItem}
+            renderItem={({ item }) => (
+              <PlaylistItem
+                item={item}
+                isSelected={item.id === selectedPlaylistId}
+                onPress={() => {
+                  setSelectedPlaylistId(item.id);
+                  navigation.navigate('Playlist', {
+                    playlistId: item.playlistId,
+                    playlistCover: item.imageURL,
+                    playlistTitle: item.title,
+                    type: 'playlist',
+                  });
+                }}
+              />
+            )}
             keyExtractor={(item) => item.id}
-            extraData={selectedPlaylistId}
             numColumns={2}
+            contentContainerStyle={{ padding: 8 }}
             ListFooterComponent={
               <TouchableOpacity
                 onPress={() => {
                   resetAccessToken();
                   setIsLogined(false);
                 }}
-                style={styles.welcomeButton}
+                style={styles.logoutButton}
               >
-                <Text style={styles.welcomeText}>Log out</Text>
+                <Text style={styles.logoutText}>Log out</Text>
               </TouchableOpacity>
             }
           />
@@ -187,34 +207,57 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    padding: 5,
+    backgroundColor: '#121212',
   },
   container: {
     flex: 1,
   },
   item: {
-    backgroundColor: '#7bfdc7',
     flex: 1,
-    margin: 5,
+    margin: 8,
+    borderRadius: 8,
+    overflow: 'hidden',
+    backgroundColor: '#7bfdc7',
+  },
+  itemContent: {
+    padding: 10,
+  },
+  itemImage: {
+    width: '100%',
+    aspectRatio: 1,
+    borderRadius: 4,
   },
   title: {
-    alignSelf: 'flex-end',
     fontFamily: 'AngemeBold',
-    fontSize: 20,
-    gap: 5,
+    fontSize: 14,
+    color: '#121212',
+    marginTop: 8,
   },
   welcomeButton: {
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: 'white',
-    flex: 1,
-    height: 'auto',
-    justifyContent: 'center',
-    width: 200,
+    backgroundColor: '#1DB954',
+    padding: 15,
+    borderRadius: 25,
+    marginVertical: 20,
   },
   welcomeText: {
     fontFamily: 'Beograd',
-    fontSize: 20,
+    fontSize: 18,
+    color: '#FFFFFF',
+  },
+  logoutButton: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: '#017371',
+    padding: 15,
+    borderRadius: 25,
+    marginVertical: 20,
+  },
+  logoutText: {
+    fontFamily: 'Beograd',
+    fontSize: 18,
+    color: '#FFFFFF',
   },
 });
 export default HomeScreen;

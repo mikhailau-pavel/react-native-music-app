@@ -75,8 +75,8 @@ export type TrackItemData = {
 export type PlaylistItemProps = {
   item: PlaylistItemData;
   onPress: () => void;
-  backgroundColor: string;
-  textColor: string;
+  backgroundColor?: string;
+  textColor?: string;
 };
 
 export type TrackItemProps = {
