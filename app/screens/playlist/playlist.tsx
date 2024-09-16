@@ -21,8 +21,9 @@ import {
 import { PlaybackContext } from '@/scripts/playbackContext';
 import { createPlayback, playTrack, stopTrack, unloadSound } from '@/scripts/player';
 import { getAlbum } from '@/api/albums';
-import { useTheme } from '@react-navigation/native';
+
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@react-navigation/native';
 
 const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);

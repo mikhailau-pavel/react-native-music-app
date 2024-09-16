@@ -5,6 +5,7 @@ import { useTheme } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { Translation, useTranslation } from 'react-i18next';
 import { Text, View, StyleSheet, Image, Switch, useColorScheme, Appearance } from 'react-native';
+import QueueScreen from '../queue/queue';
 
 const ProfileScreen = () => {
   const [profileData, setProfileData] = useState<ProfileScreenUserData>();
@@ -79,6 +80,7 @@ const ProfileScreen = () => {
             value={isLanguageSwitchEnabled}
           />
         </View>
+        <QueueScreen />
       </View>
     </View>
   );
