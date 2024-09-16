@@ -20,7 +20,7 @@ const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8
 
 const NowPlayingHeader = () => {
   const { colors } = useTheme();
-  const { playbackData } = useContext(PlaybackContext)
+  const { playbackData } = useContext(PlaybackContext);
 
   const styles = StyleSheet.create({
     container: {
@@ -65,7 +65,10 @@ const NowPlayingHeader = () => {
       <Text style={styles.sectionHeaderText}>Now playing:</Text>
       <View style={styles.nowPlayingContainer}>
         <View style={styles.nowPlayingInfo}>
-          <Image style={styles.trackAlbumImage} source={{ uri: playbackData.currentAlbumImage ?? mockImage }} />
+          <Image
+            style={styles.trackAlbumImage}
+            source={{ uri: playbackData.currentAlbumImage ?? mockImage }}
+          />
           <View>
             <Text style={styles.trackTitle} numberOfLines={1}>
               {playbackData.currentSong ?? mockNowPlayingItem.song}
@@ -103,8 +106,10 @@ const QueueScreen = () => {
   useEffect(() => {
     const data: QueueItem[] = [];
     if (playbackData.currentPlaylistData) {
-      const temp = playbackData.currentPlaylistData.slice(playbackData.currentTrackNumberInPlaylist)
-      console.log('test', temp.length)
+      const temp = playbackData.currentPlaylistData.slice(
+        playbackData.currentTrackNumberInPlaylist
+      );
+      console.log('test', temp.length);
       temp.forEach((item) => {
         return data.push({ song: item.title, artist: item.artist });
       });
