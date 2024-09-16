@@ -143,20 +143,22 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   };
   if (!isLogined) {
     return (
-      <ImageBackground
-        source={require('../../../assets/images/main_background.png')}
-        resizeMode="cover"
-        style={styles.background}
-      >
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('Login');
-          }}
-          style={styles.welcomeButton}
-        >
-          <Text style={styles.welcomeText}>Hello, tap to login!</Text>
-        </TouchableOpacity>
-      </ImageBackground>
+        <View style={styles.loginContainer}>
+          <Image
+            source={require('../../../assets/images/splash-dark.png')}
+            style={styles.logo}
+          />
+          <Text style={styles.welcomeTitle}>Login</Text>
+          <Text style={styles.welcomeTitle}>And Listen</Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('Login');
+            }}
+            style={styles.loginButton}
+          >
+            <Text style={styles.loginButtonText}>Log in with Spotify</Text>
+          </TouchableOpacity>
+        </View>
     );
   } else {
     return (
@@ -207,17 +209,17 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#16171b',
   },
   container: {
     flex: 1,
   },
   item: {
+    backgroundColor: '#282828',
     flex: 1,
-    margin: 8,
+    margin: 5,
     borderRadius: 8,
     overflow: 'hidden',
-    backgroundColor: '#7bfdc7',
   },
   itemContent: {
     padding: 10,
@@ -229,14 +231,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'AngemeBold',
-    fontSize: 14,
-    color: '#121212',
-    marginTop: 8,
+    fontSize: 16,
+    color: '#FFFFFF',
+    padding: 10,
   },
   welcomeButton: {
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: '#1DB954',
+    backgroundColor: '#7bfdc7',
     padding: 15,
     borderRadius: 25,
     marginVertical: 20,
@@ -258,6 +260,37 @@ const styles = StyleSheet.create({
     fontFamily: 'Beograd',
     fontSize: 18,
     color: '#FFFFFF',
+  },
+  loginContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  logo: {
+    width: 280,
+    height: 280,
+    marginBottom: 30,
+  },
+  welcomeTitle: {
+    fontFamily: 'AngemeBold',
+    fontSize: 32,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  loginButton: {
+    backgroundColor: '#7bfdc7',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 30,
+    marginTop: 30,
+  },
+  loginButtonText: {
+    fontFamily: 'AngemeBold',
+    fontSize: 18,
+    color: '#FFFFFF',
+    textAlign: 'center',
   },
 });
 export default HomeScreen;
