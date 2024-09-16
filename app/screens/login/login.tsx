@@ -32,12 +32,13 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
       await accessTokenQuery.refetch();
 
       if (accessTokenQuery.data) {
-        console.log('accessTokenQuery', accessTokenQuery.data)
         await storeData('access_token', accessTokenQuery.data.access_token);
         await storeData('refresh_token', accessTokenQuery.data.refresh_token);
       }
-
-      navigation.replace('Home', { loginAttempt: true });
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
       return false;
     }
     return true;

@@ -63,19 +63,6 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const [currentPlaylistsList, setCurrentPlaylistsList] = useState(playlistsMockList);
   const [isLogined, setIsLogined] = useState(false);
 
-  useFocusEffect(
-    useCallback(() => {
-      const tokenCheck = async () => {
-        const token = await getData('access_token');
-        if (token) {
-          setIsLogined(true);
-          await createPlaylistsList();
-        }
-      };
-      tokenCheck();
-    }, [])
-  );
-
   const readPlaylistsFromStorage = async () => {
     const currentUserPlaylists = await getData('playlists');
     if (currentUserPlaylists) {
@@ -100,6 +87,18 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
       setCurrentPlaylistsList(playlistsMockList);
     }
   }, []);
+
+  useFocusEffect(() => {
+      const tokenCheck = async () => {
+        const token = await getData('access_token');
+        if (token) {
+          setIsLogined(true);
+          await createPlaylistsList();
+        }
+      };
+      tokenCheck();
+    }
+  );
 
   useEffect(() => {
     const getPlaylists = async () => {
@@ -134,7 +133,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
         textColor={color}
       />
     );
-    // }
+    
   };
   if (!isLogined) {
     return (
