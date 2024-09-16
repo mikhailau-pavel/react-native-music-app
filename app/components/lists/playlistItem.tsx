@@ -1,15 +1,49 @@
 import { useTheme } from '@react-navigation/native';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Checkbox from 'expo-checkbox';
+import { useMemo, useState } from 'react';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 const PlaylistItem = ({ item }) => {
+  const [isChecked, setChecked] = useState(false);
   const { colors } = useTheme();
+  const panY = useSharedValue(0);
+  const active = useSharedValue(false);
+
+  const pan = useMemo(() => {
+    return Gesture.Pan()
+      .onStart(() => {
+        active.value = true;
+      })
+      .onUpdate(({ translationY }) => {
+        panY.value = translationY;
+      })
+      .onEnd((e) => {
+        active.value = false;
+
+        // const threshold = screenHeight - screenHeight / 6;
+        // if (e.absoluteY > threshold) {
+        //   panY.value = withTiming(screenHeight);
+        //   // runOnJS(navigation.goBack)();
+        //   // runOnJS(setPlaybackData)({ isShowing: true });
+        // } else {
+        //   panY.value = withTiming(0);
+        // }
+      });
+  }, [active, panY]);
+
+  const animatedStyles = useAnimatedStyle(() => ({
+    transform: [{ translateY: panY.value }],
+  }));
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
-      padding: 10,
+      justifyContent: 'space-between',
       borderBottomWidth: 0.5,
       borderBottomColor: colors.border,
     },
@@ -19,7 +53,9 @@ const PlaylistItem = ({ item }) => {
       marginRight: 10,
       borderRadius: 5,
     },
-    trackInfo: {},
+    trackInfo: {
+      flexDirection: 'row',
+    },
     trackTitle: {
       color: colors.text,
       fontSize: 16,
@@ -30,11 +66,15 @@ const PlaylistItem = ({ item }) => {
       fontSize: 14,
       fontFamily: 'AngemeRegular',
     },
+    checkbox: {
+      margin: 8,
+    },
   });
 
   return (
-    <TouchableOpacity>
-      <View style={styles.container}>
+    <GestureDetector gesture={pan}>
+      <Animated.View style={[styles.container, animatedStyles]}>
+        <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked} />
         <View style={styles.trackInfo}>
           <Text style={styles.trackTitle} numberOfLines={1}>
             {item.song}
@@ -43,8 +83,9 @@ const PlaylistItem = ({ item }) => {
             {item.artist}
           </Text>
         </View>
-      </View>
-    </TouchableOpacity>
+        <Ionicons name="reorder-three-outline" size={24} color="#fff" />
+      </Animated.View>
+    </GestureDetector>
   );
 };
 
