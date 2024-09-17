@@ -23,13 +23,7 @@ const LoadingIndicator = () => {
     { rotate: '315deg', delay: 700 },
   ];
 
-  const ActivityItem = ({
-    rotate,
-    delay,
-  }: {
-    rotate: string;
-    delay: number;
-  }) => {
+  const ActivityItem = ({ rotate, delay }: { rotate: string; delay: number }) => {
     const backgroundColor = useSharedValue(0);
 
     const animatedColors = useDerivedValue(() => {
@@ -69,12 +63,9 @@ const LoadingIndicator = () => {
 
   return (
     <View style={styles.container}>
-      {ActivityItemProps.map((item) => 
-        <ActivityItem
-          rotate={item.rotate}
-          delay={item.delay}
-        />
-      )}
+      {ActivityItemProps.map((item) => (
+        <ActivityItem rotate={item.rotate} delay={item.delay} />
+      ))}
     </View>
   );
 };

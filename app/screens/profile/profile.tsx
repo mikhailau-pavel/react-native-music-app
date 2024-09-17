@@ -71,7 +71,7 @@ const ProfileScreen = () => {
           />
         </View>
 
-        {/* <View style={styles.settingItem}>
+        <View style={styles.settingItem}>
           <Text style={styles.settingLabel}>{t('language')}</Text>
           <Switch
             trackColor={{ false: '#767577', true: '#1DB954' }}
@@ -80,9 +80,8 @@ const ProfileScreen = () => {
             onValueChange={toggleLanguage}
             value={isLanguageSwitchEnabled}
           />
-        </View> */}
-        <LoadingIndicator/>
-        {/* <QueueScreen /> */}
+        </View>
+        <QueueScreen />
       </View>
     </View>
   );

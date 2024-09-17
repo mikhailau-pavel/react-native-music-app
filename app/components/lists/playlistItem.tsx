@@ -2,15 +2,23 @@ import { useTheme } from '@react-navigation/native';
 import { View, StyleSheet, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Checkbox from 'expo-checkbox';
-import { useMemo, useState } from 'react';
-import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { useEffect, useMemo, useState } from 'react';
+import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
-const PlaylistItem = (item, index) => {
+type PlaylistItemProps = {
+  item: { song: string; artist: string };
+  index: number;
+  onReorder: (fromIndex: number, toIndex: number) => void;
+  itemCount: number;
+};
+
+const PlaylistItem = ({ item, index, onReorder, itemCount }: PlaylistItemProps) => {
   const [isChecked, setChecked] = useState(false);
   const { colors } = useTheme();
   const panY = useSharedValue(0);
   const active = useSharedValue(false);
+  const [itemHeight, setItemHeight] = useState(1);
 
   const pan = useMemo(() => {
     return Gesture.Pan()
@@ -20,19 +28,21 @@ const PlaylistItem = (item, index) => {
       .onUpdate(({ translationY }) => {
         panY.value = translationY;
       })
-      .onEnd((e) => {
+      .onEnd(() => {
+        const dragged = Math.round(panY.value / itemHeight);
+        const newIndex = Math.max(0, Math.min(index + dragged));
+        if (newIndex !== index) {
+          runOnJS(onReorder)(index, newIndex);
+        }
+        panY.value = withTiming(0)
+        console.log('dragged to:', dragged);
         active.value = false;
-
-        // const threshold = screenHeight - screenHeight / 6;
-        // if (e.absoluteY > threshold) {
-        //   panY.value = withTiming(screenHeight);
-        //   // runOnJS(navigation.goBack)();
-        //   // runOnJS(setPlaybackData)({ isShowing: true });
-        // } else {
-        //   panY.value = withTiming(0);
-        // }
       });
   }, [active, panY]);
+
+  useEffect(() => {
+    console.log('item', itemHeight);
+  }, [itemHeight]);
 
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [{ translateY: panY.value }],
@@ -72,20 +82,20 @@ const PlaylistItem = (item, index) => {
   });
 
   return (
-    <GestureDetector gesture={pan}>
-      <Animated.View style={[styles.container, animatedStyles]}>
-        <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked} />
-        <View style={styles.trackInfo}>
-          <Text style={styles.trackTitle} numberOfLines={1}>
-            {item.song}
-          </Text>
-          <Text style={styles.trackArtist} numberOfLines={1}>
-            {item.artist}
-          </Text>
-        </View>
+    <Animated.View style={[styles.container, animatedStyles]}>
+      <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked} />
+      <View style={styles.trackInfo} onLayout={(e) => setItemHeight(e.nativeEvent.layout.height)}>
+        <Text style={styles.trackTitle} numberOfLines={1}>
+          {item.song}
+        </Text>
+        <Text style={styles.trackArtist} numberOfLines={1}>
+          {item.artist}
+        </Text>
+      </View>
+      <GestureDetector gesture={pan}>
         <Ionicons name="reorder-three-outline" size={24} color="#fff" />
-      </Animated.View>
-    </GestureDetector>
+      </GestureDetector>
+    </Animated.View>
   );
 };
 
