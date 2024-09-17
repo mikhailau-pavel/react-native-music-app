@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Translation, useTranslation } from 'react-i18next';
 import { Text, View, StyleSheet, Image, Switch, useColorScheme, Appearance } from 'react-native';
 import QueueScreen from '../queue/queue';
+import LoadingIndicator from '../../components/loader/loader';
 
 const ProfileScreen = () => {
   const [profileData, setProfileData] = useState<ProfileScreenUserData>();
@@ -70,7 +71,7 @@ const ProfileScreen = () => {
           />
         </View>
 
-        <View style={styles.settingItem}>
+        {/* <View style={styles.settingItem}>
           <Text style={styles.settingLabel}>{t('language')}</Text>
           <Switch
             trackColor={{ false: '#767577', true: '#1DB954' }}
@@ -79,8 +80,9 @@ const ProfileScreen = () => {
             onValueChange={toggleLanguage}
             value={isLanguageSwitchEnabled}
           />
-        </View>
-        <QueueScreen />
+        </View> */}
+        <LoadingIndicator/>
+        {/* <QueueScreen /> */}
       </View>
     </View>
   );

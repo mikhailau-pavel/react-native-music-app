@@ -126,6 +126,15 @@ const QueueScreen = () => {
     artist: string;
   };
 
+  const onReorder = (fromIndex: number, toIndex: number, sectionIndex: number) => {
+    setSections((prevSections) => {
+      const newSections = [...prevSections];
+      const [reorderedItem] = newSections[sectionIndex].data.splice(fromIndex, 1);
+      newSections[sectionIndex].data.splice(toIndex, 0, reorderedItem);
+      return newSections;
+    });
+  };
+
   useEffect(() => {
     const data: QueueItem[] = [];
     if (playbackData.currentPlaylistData) {
@@ -143,13 +152,12 @@ const QueueScreen = () => {
       },
       { title: `Next from:`, data: data },
     ];
-    //sections
-    setSections([]);
+    setSections(sections);
   }, [playbackData]);
 
   return (
     <SectionList
-      renderItem={PlaylistItem}
+      renderItem={({item, index, section, separators})=> <PlaylistItem item={item} index={index}></PlaylistItem>}
       sections={sections}
       ListHeaderComponent={NowPlayingHeader}
       ListEmptyComponent={EmptyQueueComponent}
@@ -157,6 +165,7 @@ const QueueScreen = () => {
       renderSectionHeader={({ section: { title } }) => (
         <Text style={styles.sectionHeaderText}>{title}</Text>
       )}
+      stickySectionHeadersEnabled={false}
     />
   );
 };

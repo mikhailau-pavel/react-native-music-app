@@ -6,7 +6,7 @@ import { useMemo, useState } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
-const PlaylistItem = ({ item }) => {
+const PlaylistItem = (item, index) => {
   const [isChecked, setChecked] = useState(false);
   const { colors } = useTheme();
   const panY = useSharedValue(0);
