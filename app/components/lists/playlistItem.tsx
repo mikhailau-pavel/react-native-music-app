@@ -1,9 +1,9 @@
 import { useTheme } from '@react-navigation/native';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Checkbox from 'expo-checkbox';
 import { useMemo, useState } from 'react';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 const PlaylistItem = ({ item }) => {

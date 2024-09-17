@@ -46,7 +46,6 @@ export const createLoginUrl = async () => {
   const sha = await sha256(codeVerifier);
   const base64String = base64encode(sha);
   const redirectUri = `${makeRedirectUri({ scheme: 'musicapp', path: 'home' })}`;
-  console.log('redirectUri', redirectUri);
   const authUrl = new URL('http://accounts.spotify.com/authorize');
   const params = {
     response_type: 'code',

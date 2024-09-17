@@ -1,8 +1,7 @@
 import PlaylistItem from '@/app/components/lists/playlistItem';
 import { useTheme } from '@react-navigation/native';
-import { SectionList, Text, StyleSheet, View, Image, Touchable } from 'react-native';
+import { SectionList, Text, StyleSheet, View, Image } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useContext, useEffect, useState } from 'react';
 import { PlaybackContext } from '@/scripts/playbackContext';
 
@@ -15,6 +14,8 @@ const mockSections = [
   },
   { title: 'Next from:', data: [{ song: 'Song 2', artist: 'Artist 2' }] },
 ];
+
+const mockSections2 = [{ title: '', data: [] }];
 
 const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
 
@@ -89,12 +90,34 @@ const NowPlayingHeader = () => {
   );
 };
 
+const EmptyQueueComponent = () => {
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    text: {
+      color: '#fff',
+      fontSize: 16,
+    },
+  });
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>Queue is empty</Text>
+    </View>
+  );
+};
+
 const QueueScreen = () => {
   const { playbackData } = useContext(PlaybackContext);
   const [sections, setSections] = useState(mockSections);
   const styles = StyleSheet.create({
     sectionHeaderText: {
       color: '#fff',
+      fontWeight: 'bold',
+      padding: 10,
     },
   });
 
@@ -109,7 +132,6 @@ const QueueScreen = () => {
       const temp = playbackData.currentPlaylistData.slice(
         playbackData.currentTrackNumberInPlaylist
       );
-      console.log('test', temp.length);
       temp.forEach((item) => {
         return data.push({ song: item.title, artist: item.artist });
       });
@@ -121,7 +143,8 @@ const QueueScreen = () => {
       },
       { title: `Next from:`, data: data },
     ];
-    setSections(sections);
+    //sections
+    setSections([]);
   }, [playbackData]);
 
   return (
@@ -129,6 +152,7 @@ const QueueScreen = () => {
       renderItem={PlaylistItem}
       sections={sections}
       ListHeaderComponent={NowPlayingHeader}
+      ListEmptyComponent={EmptyQueueComponent}
       keyExtractor={(item, index) => item.song + index}
       renderSectionHeader={({ section: { title } }) => (
         <Text style={styles.sectionHeaderText}>{title}</Text>
