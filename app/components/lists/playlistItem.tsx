@@ -47,9 +47,9 @@ const PlaylistItem = ({ item, index, onReorder, itemCount }: PlaylistItemProps) 
       });
   }, [active, panY]);
 
-  useEffect(() => {
-    console.log('item', itemHeight);
-  }, [itemHeight]);
+  // useEffect(() => {
+  //   console.log('item', itemHeight);
+  // }, [itemHeight]);
 
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [{ translateY: panY.value }],

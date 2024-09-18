@@ -3,7 +3,7 @@ import { useTheme } from '@react-navigation/native';
 import { SectionList, Text, StyleSheet, View, Image } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import { useContext, useEffect, useState } from 'react';
-import { PlaybackContext } from '@/scripts/playbackContext';
+import { PlaybackContext, QueueItem } from '@/scripts/playbackContext';
 
 const mockNowPlayingItem = { song: 'Song 1', artist: 'Artist 1' };
 
@@ -120,11 +120,6 @@ const QueueScreen = () => {
       padding: 10,
     },
   });
-
-  type QueueItem = {
-    song: string;
-    artist: string;
-  };
 
   const onReorder = (fromIndex: number, toIndex: number, sectionIndex: number) => {
     setSections((prevSections) => {

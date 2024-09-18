@@ -2,6 +2,18 @@ import { TrackItemData } from '@/types/types';
 import { Audio } from 'expo-av';
 import { createContext } from 'react';
 
+export type Queue = {
+  sections: {
+    title: string;
+    data: QueueItem;
+  }[];
+};
+
+export type QueueItem = {
+  song: string;
+  artist: string;
+};
+
 export type PlaybackData = {
   currentArtist?: string;
   currentSong?: string;
@@ -11,6 +23,7 @@ export type PlaybackData = {
   isShowing?: boolean;
   currentSound?: Audio.Sound | null;
   currentPlaylistData?: TrackItemData[] | [];
+  queue: Queue;
   currentTrackNumberInPlaylist?: number;
 };
 
@@ -28,6 +41,17 @@ export const initialPlaybackData: PlaybackData = {
   isShowing: false,
   currentSound: null,
   currentPlaylistData: [],
+  queue: {
+    sections: [
+      {
+        title: '',
+        data: {
+          song: '',
+          artist: '',
+        },
+      },
+    ],
+  },
   currentTrackNumberInPlaylist: 0,
 };
 
