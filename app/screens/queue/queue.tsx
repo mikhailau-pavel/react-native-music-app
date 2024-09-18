@@ -15,8 +15,6 @@ const mockSections = [
   { title: 'Next from:', data: [{ song: 'Song 2', artist: 'Artist 2' }] },
 ];
 
-const mockSections2 = [{ title: '', data: [] }];
-
 const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
 
 const NowPlayingHeader = () => {

@@ -1,8 +1,8 @@
 import { fetchTracksFromPlaylist } from '@/api/api';
 import {
   CurrentAlbumTracksResponse,
-  CurrentPlaylistTracksResponse,
   PlaylistScreenProps,
+  SelectedPlaylistTracksResponse,
   TrackItemData,
   TrackItemProps,
 } from '@/types/types';
@@ -14,7 +14,6 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  ImageBackground,
   TextInput,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -99,17 +98,29 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
 
   const createPlaylistsTrackList = useCallback(async (playlistId: string) => {
     const tracks = await fetchTracksFromPlaylist(playlistId);
-    const currentPlaylistTracks = tracks.map((elem: CurrentPlaylistTracksResponse) => {
-      const tracksInfoList = {
+    const selectedPlaylistTracks = tracks.map((elem: SelectedPlaylistTracksResponse) => {
+      const tracksData = {
         title: elem.track.name,
         artist: elem.track.artists[0].name,
         imageURL: elem.track.album.images[0].url,
         trackId: elem.track.id,
         previewUrl: elem.track.preview_url,
       };
-      return tracksInfoList;
+      return tracksData;
     });
-    setPlaybackData({ currentPlaylistData: currentPlaylistTracks });
+    
+    setPlaybackData({
+      currentPlaylistData: selectedPlaylistTracks,
+      queue: {
+        sections: [
+          { title: 'Now playing:', data: selectedPlaylistTracks },
+          { title: 'Next from:', data: selectedPlaylistTracks },
+        ],
+      },
+    });
+    if (playbackData.queue) {
+      console.log('playback data queue:', playbackData.queue.sections);
+    }
   }, []);
 
   const createAlbumTrackList = useCallback(async (playlistId: string) => {

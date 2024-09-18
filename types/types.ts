@@ -107,7 +107,7 @@ export type CurrentUserPlaylist = {
   name: string;
 };
 
-export type CurrentPlaylistTracksResponse = {
+export type SelectedPlaylistTracksResponse = {
   track: {
     name: string;
     artists: {

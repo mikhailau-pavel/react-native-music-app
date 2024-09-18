@@ -23,13 +23,32 @@ export type PlaybackData = {
   isShowing?: boolean;
   currentSound?: Audio.Sound | null;
   currentPlaylistData?: TrackItemData[] | [];
-  queue: Queue;
+  queue?: Queue;
   currentTrackNumberInPlaylist?: number;
 };
 
 export type PlaybackDataContext = {
   playbackData: PlaybackData;
   setPlaybackData: (input: PlaybackData) => void;
+};
+
+export const initialQueue: Queue = {
+  sections: [
+    {
+      title: 'Now playing:',
+      data: {
+        song: '',
+        artist: '',
+      },
+    },
+    {
+      title: 'Next from:',
+      data: {
+        song: '',
+        artist: '',
+      },
+    },
+  ],
 };
 
 export const initialPlaybackData: PlaybackData = {
@@ -41,17 +60,7 @@ export const initialPlaybackData: PlaybackData = {
   isShowing: false,
   currentSound: null,
   currentPlaylistData: [],
-  queue: {
-    sections: [
-      {
-        title: '',
-        data: {
-          song: '',
-          artist: '',
-        },
-      },
-    ],
-  },
+  queue: initialQueue,
   currentTrackNumberInPlaylist: 0,
 };
 
