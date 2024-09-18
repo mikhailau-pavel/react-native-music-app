@@ -94,7 +94,7 @@ const PlaylistItem = ({ item, index, onReorder, itemCount }: PlaylistItemProps) 
   return (
     <Animated.View style={[styles.container, animatedStyles]}>
       <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked} />
-      <View style={styles.trackInfo} onLayout={(e) => setItemHeight(e.nativeEvent.layout.height)}>
+      <View style={styles.trackInfo}>
         <Text style={styles.trackTitle} numberOfLines={1}>
           {item.song}
         </Text>
