@@ -41,7 +41,7 @@ const LoadingIndicator = () => {
         delay,
         withRepeat(withTiming(1, { duration: 1000, easing: Easing.linear }), -1, true)
       );
-    });
+    }, [backgroundColor, delay]);
 
     const styles = StyleSheet.create({
       container: {
