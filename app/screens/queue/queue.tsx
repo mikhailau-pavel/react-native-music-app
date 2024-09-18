@@ -158,8 +158,14 @@ const QueueScreen = () => {
   return (
     <SectionList
       renderItem={({ item, index, section, separators }) => (
-        <PlaylistItem item={item} index={index} onReorder={(fromIndex, toIndex) => onReorder(fromIndex, toIndex, sections.indexOf(section))}
-        itemCount={section.data.length}/>
+        <PlaylistItem
+          item={item}
+          index={index}
+          onReorder={(fromIndex, toIndex) =>
+            onReorder(fromIndex, toIndex, sections.indexOf(section))
+          }
+          itemCount={section.data.length}
+        />
       )}
       sections={sections}
       ListHeaderComponent={NowPlayingHeader}

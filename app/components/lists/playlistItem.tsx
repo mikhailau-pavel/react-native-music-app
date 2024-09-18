@@ -3,7 +3,12 @@ import { View, StyleSheet, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Checkbox from 'expo-checkbox';
 import { useEffect, useMemo, useState } from 'react';
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 type PlaylistItemProps = {
@@ -18,7 +23,8 @@ const PlaylistItem = ({ item, index, onReorder, itemCount }: PlaylistItemProps) 
   const { colors } = useTheme();
   const panY = useSharedValue(0);
   const active = useSharedValue(false);
-  const [itemHeight, setItemHeight] = useState(1);
+  const initialListItemHeight = 50;
+  const [itemHeight, setItemHeight] = useState(initialListItemHeight);
 
   const pan = useMemo(() => {
     return Gesture.Pan()
@@ -34,7 +40,7 @@ const PlaylistItem = ({ item, index, onReorder, itemCount }: PlaylistItemProps) 
         if (newIndex !== index) {
           runOnJS(onReorder)(index, newIndex);
         }
-        panY.value = withTiming(0)
+        panY.value = withTiming(0);
         console.log('dragged to:', dragged);
         active.value = false;
       });
@@ -46,6 +52,8 @@ const PlaylistItem = ({ item, index, onReorder, itemCount }: PlaylistItemProps) 
 
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [{ translateY: panY.value }],
+    zIndex: active.value ? 1 : 0,
+    shadowOpacity: withTiming(active.value ? 1 : 0),
   }));
 
   const styles = StyleSheet.create({
@@ -56,6 +64,8 @@ const PlaylistItem = ({ item, index, onReorder, itemCount }: PlaylistItemProps) 
       justifyContent: 'space-between',
       borderBottomWidth: 0.5,
       borderBottomColor: colors.border,
+      paddingHorizontal: 10,
+      height: 50,
     },
     playingItemAlbumImage: {
       width: 50,
