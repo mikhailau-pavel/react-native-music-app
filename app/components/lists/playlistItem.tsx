@@ -30,6 +30,7 @@ const PlaylistItem = ({ item, index, onReorder, itemCount }: PlaylistItemProps) 
     return Gesture.Pan()
       .onStart(() => {
         active.value = true;
+        console.log('moving')
       })
       .onUpdate(({ translationY }) => {
         panY.value = translationY;
@@ -92,8 +93,10 @@ const PlaylistItem = ({ item, index, onReorder, itemCount }: PlaylistItemProps) 
   });
 
   return (
+
     <Animated.View style={[styles.container, animatedStyles]}>
       <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked} />
+      <GestureDetector gesture={pan}>
       <View style={styles.trackInfo}>
         <Text style={styles.trackTitle} numberOfLines={1}>
           {item.song}
@@ -102,9 +105,10 @@ const PlaylistItem = ({ item, index, onReorder, itemCount }: PlaylistItemProps) 
           {item.artist}
         </Text>
       </View>
-      <GestureDetector gesture={pan}>
+
+    </GestureDetector>
         <Ionicons name="reorder-three-outline" size={24} color="#fff" />
-      </GestureDetector>
+      
     </Animated.View>
   );
 };
