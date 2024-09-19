@@ -12,7 +12,7 @@ export enum LightSchemeColors {
   BACKGROUND = Colors.WHITE,
   CARD = Colors.WHITE,
   BORDER = Colors.WHITE,
-  NOTIFICATION = Colors.WHITE,
+  NOTIFICATION = Colors.BLACK,
 }
 
 export enum DarkSchemeColors {
@@ -21,5 +21,5 @@ export enum DarkSchemeColors {
   BACKGROUND = Colors.BLACK,
   CARD = Colors.BLACK,
   BORDER = Colors.WHITE,
-  NOTIFICATION = Colors.BLACK,
+  NOTIFICATION = Colors.WHITE,
 }

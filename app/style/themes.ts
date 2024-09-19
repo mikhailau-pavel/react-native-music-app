@@ -7,6 +7,7 @@ export const CustomLightTheme = {
     ...DefaultTheme.colors,
     primary: LightSchemeColors.PRIMARY,
     text: LightSchemeColors.TEXT,
+    notification: LightSchemeColors.NOTIFICATION,
   },
 };
 
@@ -18,5 +19,6 @@ export const CustomDarkTheme = {
     primary: DarkSchemeColors.PRIMARY,
     text: DarkSchemeColors.TEXT,
     background: DarkSchemeColors.BACKGROUND,
+    notification: DarkSchemeColors.NOTIFICATION,
   },
 };

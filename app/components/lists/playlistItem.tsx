@@ -2,7 +2,7 @@ import { useTheme } from '@react-navigation/native';
 import { View, StyleSheet, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Checkbox from 'expo-checkbox';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -12,13 +12,13 @@ import Animated, {
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 type PlaylistItemProps = {
-  item: { song: string; artist: string };
+  item: { title: string; artist: string };
   index: number;
   onReorder: (fromIndex: number, toIndex: number) => void;
   itemCount: number;
 };
 
-const PlaylistItem = ({ item, index, onReorder, itemCount }: PlaylistItemProps) => {
+const PlaylistItem = ({ item, index, onReorder }: PlaylistItemProps) => {
   const [isChecked, setChecked] = useState(false);
   const { colors } = useTheme();
   const panY = useSharedValue(0);
@@ -30,7 +30,6 @@ const PlaylistItem = ({ item, index, onReorder, itemCount }: PlaylistItemProps) 
     return Gesture.Pan()
       .onStart(() => {
         active.value = true;
-        console.log('moving');
       })
       .onUpdate(({ translationY }) => {
         panY.value = translationY;
@@ -42,18 +41,17 @@ const PlaylistItem = ({ item, index, onReorder, itemCount }: PlaylistItemProps) 
           runOnJS(onReorder)(index, newIndex);
         }
         panY.value = withTiming(0);
-        console.log('dragged to:', dragged);
         active.value = false;
       });
-  }, [active, panY]);
-
-  // useEffect(() => {
-  //   console.log('item', itemHeight);
-  // }, [itemHeight]);
+  }, [active, index, itemHeight, panY]);
 
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [{ translateY: panY.value }],
-    zIndex: active.value ? 1 : 0,
+    // position: active.value ? 'absolute' : 'static',
+    position: 'relative',
+    left: 0,
+    zIndex: active.value ? 999 : 0,
+    backgroundColor: '#000',
     shadowOpacity: withTiming(active.value ? 1 : 0),
   }));
 
@@ -98,7 +96,7 @@ const PlaylistItem = ({ item, index, onReorder, itemCount }: PlaylistItemProps) 
       <GestureDetector gesture={pan}>
         <View style={styles.trackInfo}>
           <Text style={styles.trackTitle} numberOfLines={1}>
-            {item.song}
+            {item.title}
           </Text>
           <Text style={styles.trackArtist} numberOfLines={1}>
             {item.artist}

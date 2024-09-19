@@ -3,14 +3,12 @@ import { Audio } from 'expo-av';
 import { createContext } from 'react';
 
 export type Queue = {
-  sections: {
     title: string;
-    data: QueueItem;
+    data: QueueItem[];
   }[];
-};
 
 export type QueueItem = {
-  song: string;
+  title: string;
   artist: string;
 };
 
@@ -32,25 +30,6 @@ export type PlaybackDataContext = {
   setPlaybackData: (input: PlaybackData) => void;
 };
 
-export const initialQueue: Queue = {
-  sections: [
-    {
-      title: 'Now playing:',
-      data: {
-        song: '',
-        artist: '',
-      },
-    },
-    {
-      title: 'Next from:',
-      data: {
-        song: '',
-        artist: '',
-      },
-    },
-  ],
-};
-
 export const initialPlaybackData: PlaybackData = {
   currentArtist: '',
   currentSong: '',
@@ -60,7 +39,7 @@ export const initialPlaybackData: PlaybackData = {
   isShowing: false,
   currentSound: null,
   currentPlaylistData: [],
-  queue: initialQueue,
+  queue: [],
   currentTrackNumberInPlaylist: 0,
 };
 

@@ -7,19 +7,15 @@ import { PlaybackContext, QueueItem } from '@/scripts/playbackContext';
 
 const mockNowPlayingItem = { song: 'Song 1', artist: 'Artist 1' };
 
-const mockSections = [
-  {
-    title: 'Next in Queue:',
-    data: [{ song: 'Song 1', artist: 'Artist 1' }],
-  },
-  { title: 'Next from:', data: [{ song: 'Song 2', artist: 'Artist 2' }] },
-];
-
 const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
 
 const NowPlayingHeader = () => {
   const { colors } = useTheme();
   const { playbackData } = useContext(PlaybackContext);
+
+  // useEffect(() => {
+  //   console.log('isPlaying', playbackData.isPlaying);
+  // }, [playbackData.isPlaying]);
 
   const styles = StyleSheet.create({
     container: {
@@ -27,6 +23,8 @@ const NowPlayingHeader = () => {
     },
     sectionHeaderText: {
       color: '#fff',
+      fontWeight: 'bold',
+      padding: 10,
     },
     trackAlbumImage: {
       width: 50,
@@ -43,6 +41,7 @@ const NowPlayingHeader = () => {
     },
     nowPlayingIcon: {
       alignSelf: 'center',
+      color: colors.notification,
     },
     nowPlayingInfo: {
       flexDirection: 'row',
@@ -59,7 +58,7 @@ const NowPlayingHeader = () => {
     },
   });
 
-  return (
+  return playbackData.isPlaying ? (
     <View style={styles.container}>
       <Text style={styles.sectionHeaderText}>Now playing:</Text>
       <View style={styles.nowPlayingContainer}>
@@ -85,7 +84,7 @@ const NowPlayingHeader = () => {
         />
       </View>
     </View>
-  );
+  ) : null;
 };
 
 const EmptyQueueComponent = () => {
@@ -109,8 +108,23 @@ const EmptyQueueComponent = () => {
 };
 
 const QueueScreen = () => {
+  const mockSections = [
+    {
+      title: 'Next in Queue:',
+      data: [{ title: 'Song 1', artist: 'Artist 1' }],
+      // renderItem: (item, index: number) => {
+      //   return (
+      //     <Text>test</Text>
+      //     // <PlaylistItem item={item} index={index} onReorder={() => {}}></PlaylistItem>
+      //   );
+      // },
+    },
+    { title: 'Next from:', data: [{ title: 'Song 2', artist: 'Artist 2' }] },
+  ];
   const { playbackData } = useContext(PlaybackContext);
   const [sections, setSections] = useState(mockSections);
+  const [queueState, setQueueState] = useState(true);
+
   const styles = StyleSheet.create({
     sectionHeaderText: {
       color: '#fff',
@@ -129,45 +143,42 @@ const QueueScreen = () => {
   };
 
   useEffect(() => {
-    const data: QueueItem[] = [];
-    if (playbackData.currentPlaylistData) {
-      const temp = playbackData.currentPlaylistData.slice(
-        playbackData.currentTrackNumberInPlaylist
-      );
-      temp.forEach((item) => {
-        return data.push({ song: item.title, artist: item.artist });
-      });
+    if (playbackData.queue) {
+      const queue = playbackData.queue;
+      // const data: { title: string; artist: string }[] = [];
+      // queue[1].data.forEach((value) => {
+      //   data.push({ title: value.title, artist: value.artist });
+      // });
+
+      setSections(playbackData.queue);
     }
-    const sections = [
-      {
-        title: 'Next in Queue:',
-        data: [{ song: 'Song 1', artist: 'Artist 1' }],
-      },
-      { title: `Next from:`, data: data },
-    ];
-    setSections(sections);
-  }, [playbackData]);
+  }, [playbackData.queue]);
 
   return (
     <SectionList
-      renderItem={({ item, index, section, separators }) => (
-        <PlaylistItem
-          item={item}
-          index={index}
-          onReorder={(fromIndex, toIndex) =>
-            onReorder(fromIndex, toIndex, sections.indexOf(section))
-          }
-          itemCount={section.data.length}
-        />
-      )}
+      renderItem={({ item, index, section, separators }) => {
+        return (
+          <PlaylistItem
+            item={item}
+            index={index}
+            onReorder={(fromIndex, toIndex) =>
+              onReorder(fromIndex, toIndex, sections.indexOf(section))
+            }
+            itemCount={section.data.length}
+          />
+        );
+      }}
       sections={sections}
       ListHeaderComponent={NowPlayingHeader}
       ListEmptyComponent={EmptyQueueComponent}
-      keyExtractor={(item, index) => item.song + index}
+      keyExtractor={(item, index) => item.title + index}
       renderSectionHeader={({ section: { title } }) => (
         <Text style={styles.sectionHeaderText}>{title}</Text>
       )}
       stickySectionHeadersEnabled={false}
+      // CellRendererComponent={({ children }) => {
+      //   return <>{children}</>;
+      // }}
     />
   );
 };

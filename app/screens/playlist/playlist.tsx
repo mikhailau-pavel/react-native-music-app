@@ -108,18 +108,29 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       };
       return tracksData;
     });
-    
+    console.log('selected', selectedPlaylistTracks);
     setPlaybackData({
       currentPlaylistData: selectedPlaylistTracks,
-      queue: {
-        sections: [
-          { title: 'Now playing:', data: selectedPlaylistTracks },
-          { title: 'Next from:', data: selectedPlaylistTracks },
-        ],
-      },
+      queue: [
+        // { title: 'Now playing:', data: selectedPlaylistTracks.splice(0,1) },
+        // { title: 'Next in queue: ', data: []},
+        {
+          title: 'Next from:',
+          data: [
+            ...selectedPlaylistTracks,
+            ...selectedPlaylistTracks,
+            ...selectedPlaylistTracks,
+            ...selectedPlaylistTracks,
+            ...selectedPlaylistTracks,
+            ...selectedPlaylistTracks,
+          ],
+        },
+      ],
     });
     if (playbackData.queue) {
-      console.log('playback data queue:', playbackData.queue.sections);
+      // console.log('type', Array.isArray(selectedPlaylistTracks))
+      // console.log('playback data queue:', playbackData.queue.sections[0].data, '---------------', playbackData.queue.sections[1].data )
+      //playbackData.queue.sections[0].data);
     }
   }, []);
 
