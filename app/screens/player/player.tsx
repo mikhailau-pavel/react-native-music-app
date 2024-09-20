@@ -284,9 +284,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
           )}
           {!expanded ? (
             <View style={styles.trackInfoControlContainer}>
-              <TouchableOpacity
-              // onPress={handleFavButtonPress}
-              >
+              <TouchableOpacity>
                 <Image
                   style={styles.controlButton}
                   source={require('../../../assets/icons/favButton.png')}
