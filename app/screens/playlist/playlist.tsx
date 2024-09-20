@@ -108,7 +108,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       };
       return tracksData;
     });
-    console.log('selected', selectedPlaylistTracks);
+
     setPlaybackData({
       currentPlaylistData: selectedPlaylistTracks,
       queue: [
@@ -127,11 +127,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
         },
       ],
     });
-    if (playbackData.queue) {
-      // console.log('type', Array.isArray(selectedPlaylistTracks))
-      // console.log('playback data queue:', playbackData.queue.sections[0].data, '---------------', playbackData.queue.sections[1].data )
-      //playbackData.queue.sections[0].data);
-    }
   }, []);
 
   const createAlbumTrackList = useCallback(async (playlistId: string) => {

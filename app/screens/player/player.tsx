@@ -24,7 +24,7 @@ import { useTheme } from '@react-navigation/native';
 import { getTrackInfo } from '@/api/tracks';
 // import { useImageColors } from '@/hooks/useImageColors';
 import { LinearGradient } from 'expo-linear-gradient';
-// import { getColors } from 'react-native-image-colors'
+import { getColors } from 'react-native-image-colors'
 
 const initialColorsFromImageState = {
   colorOne: { value: '', name: '' },
@@ -85,7 +85,6 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   //       default:
   //         throw new Error('Unexpected platform')
   //     }
-  //     console.log('fetched primary color: ', imageColors.colorOne.value)
   //     setLoading(false)
   //   }
 
@@ -159,12 +158,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     }
   };
 
-  // const handleFavButtonPress = async () => {
-  //   console.log('colors: ', imageColors);
-  // };
-
   // useEffect(() => {
-  //   console.log('current album image:', playbackData.currentAlbumImage);
   //   if (playbackData.currentAlbumImage) {
   //     setUrl(playbackData.currentAlbumImage);
   //   }

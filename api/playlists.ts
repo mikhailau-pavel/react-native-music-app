@@ -32,7 +32,6 @@ export const createPlaylist = async (
 export const addTracksToPlaylist = async (uris: string[], playlistId: string) => {
   const token = await getData('access_token');
   const playlistUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
-  console.log('playlist url', playlistUrl);
   const payloadBody = JSON.stringify({
     uris: uris,
     position: 0,
@@ -46,11 +45,9 @@ export const addTracksToPlaylist = async (uris: string[], playlistId: string) =>
     body: payloadBody,
   };
 
-  console.log('payload body', payload);
   try {
     const response = await fetch(playlistUrl, payload);
     const data = await response.json();
-    console.log('response on adding tracks:', data);
   } catch (err) {
     throw new Error(`Error message: ${err}`);
   }

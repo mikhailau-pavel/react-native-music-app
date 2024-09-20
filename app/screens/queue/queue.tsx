@@ -13,10 +13,6 @@ const NowPlayingHeader = () => {
   const { colors } = useTheme();
   const { playbackData } = useContext(PlaybackContext);
 
-  // useEffect(() => {
-  //   console.log('isPlaying', playbackData.isPlaying);
-  // }, [playbackData.isPlaying]);
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,

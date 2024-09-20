@@ -47,11 +47,9 @@ const PlaylistItem = ({ item, index, onReorder }: PlaylistItemProps) => {
 
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [{ translateY: panY.value }],
-    // position: active.value ? 'absolute' : 'static',
     position: 'relative',
     left: 0,
-    zIndex: active.value ? 999 : 0,
-    backgroundColor: '#000',
+    zIndex: active.value ? 1 : 0,
     shadowOpacity: withTiming(active.value ? 1 : 0),
   }));
 

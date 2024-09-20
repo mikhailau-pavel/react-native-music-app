@@ -20,7 +20,6 @@
 //         cache: true,
 //         key: url,
 //       }).then(setImageColors);
-//       console.log('changed image color', imageColors);
 //     };
 //     calcColors();
 //   }, [url]);
