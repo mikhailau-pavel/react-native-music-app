@@ -1,4 +1,4 @@
-import { PlaybackContext } from '@/scripts/playbackContext';
+import { PlaybackContext } from '@/app/context/playbackContext';
 import { pauseTrack, playTrack } from '@/scripts/player';
 import { RootStackParamList } from '@/types/types';
 import { useNavigation } from '@react-navigation/native';

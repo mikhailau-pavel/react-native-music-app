@@ -4,14 +4,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
-import { initialPlaybackData, PlaybackContext, PlaybackData } from './scripts/playbackContext';
+import { initialPlaybackData, PlaybackContext, PlaybackData } from './app/context/playbackContext';
 import PlaybackBar from './app/components/playbackBar/playbackBar';
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { linking, Tabs } from './app/navigation/navigation';
 import { CustomLightTheme, CustomDarkTheme } from './app/style/themes';
 import './utils/language/i18NextConfig';
-
+import { AuthContext, AuthContextData, initialAuthData } from './app/context/authContext';
 
 // if (__DEV__) {
 //   require('./ReactotronConfig');
@@ -35,6 +35,7 @@ export default function App() {
   });
   const colorScheme = useColorScheme();
   const [playbackData, setPlaybackData] = useState(initialPlaybackData);
+  const [authData, setAuthData] = useState<AuthContextData>(initialAuthData);
   const handleChangePBData = (input: PlaybackData) => {
     setPlaybackData((prevState) => {
       return {
@@ -44,6 +45,7 @@ export default function App() {
     });
   };
 
+  const authContextValue = { authData, setAuthData };
   const playbackContextValue = { playbackData, setPlaybackData: handleChangePBData };
 
   useEffect(() => {
@@ -62,16 +64,19 @@ export default function App() {
     <NavigationContainer
       linking={linking}
       theme={colorScheme === 'light' ? CustomLightTheme : CustomDarkTheme}
+      //TODO: set loading indicator from components as fallback if possible, check positioning
       fallback={<Text>Loading...</Text>}
     >
-      <PlaybackContext.Provider value={playbackContextValue}>
-        <QueryClientProvider client={queryClient}>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <Tabs />
-            <PlaybackBar />
-          </GestureHandlerRootView>
-        </QueryClientProvider>
-      </PlaybackContext.Provider>
+      <AuthContext.Provider value={authContextValue}>
+        <PlaybackContext.Provider value={playbackContextValue}>
+          <QueryClientProvider client={queryClient}>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <Tabs />
+              <PlaybackBar />
+            </GestureHandlerRootView>
+          </QueryClientProvider>
+        </PlaybackContext.Provider>
+      </AuthContext.Provider>
     </NavigationContainer>
   );
 }

@@ -1,10 +1,11 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-export enum PropsRoutes {
+export enum HomePropsRoutes {
   HOME = 'Home',
-  LOGIN = 'Login',
   PLAYLIST = 'Playlist',
   PLAYER = 'Player',
+  WELCOME = 'Welcome',
+  LOGIN = 'Login',
 }
 
 export enum TopsPropsRoutes {
@@ -26,34 +27,38 @@ export type AuthParams = {
 
 export type RootStackParamList = {
   Home: { loginAttempt: boolean } | undefined;
-  Login: undefined;
   Profile: undefined;
   Playlist: { playlistId: string; playlistCover: string; playlistTitle: string; type: string };
   Player: TrackItemData[] | undefined;
   NotFound: undefined;
+  Welcome: undefined;
+  Login: undefined;
 };
 
-export type RootTopsStackParamList = {
+export type TopsStackParamList = {
   TopsMain: undefined;
 };
 
-export type RootProfileStackParamList = {
+export type ProfileStackParamList = {
   Profile: undefined;
 };
 
-export type HomeScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.HOME>;
-export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.LOGIN>;
-export type PlaylistScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PLAYLIST>;
-export type PlayerScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PLAYER>;
+export type HomeScreenProps = NativeStackScreenProps<RootStackParamList, HomePropsRoutes.HOME>;
+export type PlaylistScreenProps = NativeStackScreenProps<RootStackParamList, HomePropsRoutes.PLAYLIST>;
+export type PlayerScreenProps = NativeStackScreenProps<RootStackParamList, HomePropsRoutes.PLAYER>;
 export type NotFoundScreenProps = NativeStackScreenProps<RootStackParamList>;
 
+
+export type WelcomeScreenProps = NativeStackScreenProps<RootStackParamList, HomePropsRoutes.WELCOME>;
+export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, HomePropsRoutes.LOGIN>;
+
 export type TopsMainScreenProps = NativeStackScreenProps<
-  RootTopsStackParamList,
+  TopsStackParamList,
   TopsPropsRoutes.TOPS
 >;
 
 export type ProfileScreenProps = NativeStackScreenProps<
-  RootProfileStackParamList,
+  ProfileStackParamList,
   ProfilePropsRoutes.PROFILE
 >;
 

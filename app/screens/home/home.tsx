@@ -1,5 +1,5 @@
 import { useFocusEffect } from '@react-navigation/native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Text,
@@ -19,6 +19,7 @@ import {
   PlaylistItemData,
   PlaylistItemProps,
 } from '@/types/types';
+import { AuthContext } from '@/app/context/authContext';
 
 const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
 
@@ -69,6 +70,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string>('');
   const [currentPlaylistsList, setCurrentPlaylistsList] = useState(playlistsMockList);
   const [isLogined, setIsLogined] = useState(false);
+  const { authData, setAuthData } = useContext(AuthContext);
 
   const readPlaylistsFromStorage = async () => {
     const currentUserPlaylists = await getData('playlists');
@@ -99,7 +101,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
     const tokenCheck = async () => {
       const token = await getData('access_token');
       if (token) {
-        setIsLogined(true);
+        setAuthData({...authData, isSignedIn: true})
         await createPlaylistsList();
       }
     };
@@ -141,66 +143,50 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
       />
     );
   };
-  if (!isLogined) {
-    return (
-      <View style={styles.loginContainer}>
-        <Image source={require('../../../assets/images/splash-dark.png')} style={styles.logo} />
-        <Text style={styles.welcomeTitle}>Login</Text>
-        <Text style={styles.welcomeTitle}>And Listen</Text>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('Login');
-          }}
-          style={styles.loginButton}
-        >
-          <Text style={styles.loginButtonText}>Log in with Spotify</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  } else {
-    return (
-      <View style={styles.container}>
-        <ImageBackground
-          source={require('../../../assets/images/main_background.png')}
-          resizeMode="cover"
-          style={styles.background}
-        >
-          <FlatList
-            data={currentPlaylistsList}
-            renderItem={({ item }) => (
-              <PlaylistItem
-                item={item}
-                isSelected={item.id === selectedPlaylistId}
-                onPress={() => {
-                  setSelectedPlaylistId(item.id);
-                  navigation.navigate('Playlist', {
-                    playlistId: item.playlistId,
-                    playlistCover: item.imageURL,
-                    playlistTitle: item.title,
-                    type: 'playlist',
-                  });
-                }}
-              />
-            )}
-            keyExtractor={(item) => item.id}
-            numColumns={2}
-            contentContainerStyle={{ padding: 8 }}
-            ListFooterComponent={
-              <TouchableOpacity
-                onPress={() => {
-                  resetAccessToken();
-                  setIsLogined(false);
-                }}
-                style={styles.logoutButton}
-              >
-                <Text style={styles.logoutText}>Log out</Text>
-              </TouchableOpacity>
-            }
-          />
-        </ImageBackground>
-      </View>
-    );
-  }
+
+  return (
+    <View style={styles.container}>
+      <ImageBackground
+        source={require('../../../assets/images/main_background.png')}
+        resizeMode="cover"
+        style={styles.background}
+      >
+        <FlatList
+          data={currentPlaylistsList}
+          renderItem={({ item }) => (
+            <PlaylistItem
+              item={item}
+              isSelected={item.id === selectedPlaylistId}
+              onPress={() => {
+                setSelectedPlaylistId(item.id);
+                navigation.navigate('Playlist', {
+                  playlistId: item.playlistId,
+                  playlistCover: item.imageURL,
+                  playlistTitle: item.title,
+                  type: 'playlist',
+                });
+              }}
+            />
+          )}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          contentContainerStyle={{ padding: 8 }}
+          ListFooterComponent={
+            <TouchableOpacity
+              onPress={() => {
+                resetAccessToken();
+                setAuthData({ ...authData, isSignedIn: false });
+              }}
+              style={styles.logoutButton}
+            >
+              <Text style={styles.logoutText}>Log out</Text>
+            </TouchableOpacity>
+          }
+        />
+      </ImageBackground>
+    </View>
+  );
+  // }
 };
 
 const styles = StyleSheet.create({

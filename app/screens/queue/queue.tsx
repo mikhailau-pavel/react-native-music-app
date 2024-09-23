@@ -3,7 +3,7 @@ import { useTheme } from '@react-navigation/native';
 import { SectionList, Text, StyleSheet, View, Image } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import { useContext, useEffect, useState } from 'react';
-import { PlaybackContext, QueueItem } from '@/scripts/playbackContext';
+import { PlaybackContext, QueueItem } from '@/app/context/playbackContext';
 
 const mockNowPlayingItem = { song: 'Song 1', artist: 'Artist 1' };
 

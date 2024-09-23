@@ -1,4 +1,4 @@
-import { PlaybackContext } from '@/scripts/playbackContext';
+import { PlaybackContext } from '@/app/context/playbackContext';
 import { calculateNewPlayPosition, playFromNewPosition } from '@/scripts/player';
 import { useContext, useEffect, useState } from 'react';
 

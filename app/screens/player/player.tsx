@@ -16,7 +16,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import { PlaybackContext } from '@/scripts/playbackContext';
+import { PlaybackContext } from '@/app/context/playbackContext';
 import { pauseTrack, playTrack } from '@/scripts/player';
 import { useTrackChange } from '@/hooks/useTrackChange';
 import ProgressBar from '@/app/components/progressBar/progressBar';
@@ -32,7 +32,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
   const { colors } = useTheme();
-  
+
   const pan = useMemo(() => {
     return Gesture.Pan()
       .onStart(() => {

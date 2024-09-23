@@ -1,8 +1,10 @@
 import {
   ProfilePropsRoutes,
-  PropsRoutes,
+  HomePropsRoutes,
   RootStackParamList,
   TopsPropsRoutes,
+  TopsStackParamList,
+  ProfileStackParamList,
 } from '@/types/types';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -14,12 +16,15 @@ import PlayerScreen from '../screens/player/player';
 import PlaylistScreen from '../screens/playlist/playlist';
 import ProfileScreen from '../screens/profile/profile';
 import TopsMainScreen from '../screens/tops/tops';
+import WelcomeScreen from '../screens/welcome/welcome';
+import { useContext } from 'react';
+import { AuthContext } from '../context/authContext';
 
 const prefix = Linking.createURL('/');
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator<RootStackParamList>();
-const TopsStack = createNativeStackNavigator();
-const ProfileStack = createNativeStackNavigator();
+const TopsStack = createNativeStackNavigator<TopsStackParamList>();
+const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
 
 const config = {
   screens: {
@@ -27,11 +32,12 @@ const config = {
       path: 'home',
       screens: {
         Home: 'home',
-        Login: 'login',
         Profile: 'profile',
         Playlist: 'playlist',
         Player: 'player',
         NotFound: '*',
+        Welcome: 'welcome',
+        Login: 'Login',
       },
     },
     TopsStackScreen: {
@@ -49,33 +55,42 @@ export const linking = {
 };
 
 const HomeStackScreen = () => {
+  const { authData } = useContext(AuthContext);
   return (
-    <HomeStack.Navigator initialRouteName="Home">
-      <HomeStack.Screen
-        name={PropsRoutes.HOME}
-        component={HomeScreen}
-        options={{ title: 'Home' }}
-      />
-      <HomeStack.Screen
-        name={PropsRoutes.LOGIN}
-        component={LoginScreen}
-        options={{ title: 'Login' }}
-      />
-      <HomeStack.Screen
-        name={PropsRoutes.PLAYLIST}
-        component={PlaylistScreen}
-        options={{ title: 'Playlist' }}
-      />
-      <HomeStack.Screen
-        name={PropsRoutes.PLAYER}
-        component={PlayerScreen}
-        options={{ title: 'Player' }}
-      />
-      <HomeStack.Screen
-        name={'NotFound'}
-        component={NotFoundScreen}
-        options={{ title: '404 Not Found' }}
-      />
+    <HomeStack.Navigator>
+      {authData.isSignedIn ? (
+        <>
+          <HomeStack.Screen
+            name={HomePropsRoutes.HOME}
+            component={HomeScreen}
+            options={{ title: 'Home' }}
+          />
+          <HomeStack.Screen
+            name={HomePropsRoutes.PLAYLIST}
+            component={PlaylistScreen}
+            options={{ title: 'Playlist' }}
+          />
+          <HomeStack.Screen
+            name={HomePropsRoutes.PLAYER}
+            component={PlayerScreen}
+            options={{ title: 'Player' }}
+          />
+          <HomeStack.Screen
+            name={'NotFound'}
+            component={NotFoundScreen}
+            options={{ title: '404 Not Found' }}
+          />
+        </>
+      ) : (
+        <>
+          <HomeStack.Screen
+            name={HomePropsRoutes.WELCOME}
+            component={WelcomeScreen}
+            options={{ headerShown: false }}
+          />
+          <HomeStack.Screen name={HomePropsRoutes.LOGIN} component={LoginScreen} />
+        </>
+      )}
     </HomeStack.Navigator>
   );
 };

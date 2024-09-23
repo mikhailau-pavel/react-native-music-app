@@ -1,13 +1,14 @@
 import { createLoginUrl, parseResponseCode, requestAccessToken } from '@/scripts/authentication';
 import { LoginScreenProps } from '@/types/types';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Button, Platform, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useQuery } from '@tanstack/react-query';
 import { WebView } from 'react-native-webview';
 import { storeData } from '@/scripts/asyncStorage';
+import { AuthContext } from '@/app/context/authContext';
 
-const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
+const LoginScreen = ({ navigation }: LoginScreenProps) => {
   const [loginUrl, setLoginUrl] = useState<string>('');
   const loginUrlQuery = useQuery({ queryFn: createLoginUrl, queryKey: ['get_login_url'] });
   const accessTokenQuery = useQuery({
@@ -15,6 +16,7 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
     queryKey: ['request_access_token'],
     enabled: false,
   });
+  const {authData, setAuthData} = useContext(AuthContext)
 
   useEffect(() => {
     if (loginUrlQuery.data && (Platform.OS === 'ios' || Platform.OS === 'android')) {
@@ -35,10 +37,7 @@ const LoginScreen = ({ route, navigation }: LoginScreenProps) => {
         await storeData('access_token', accessTokenQuery.data.access_token);
         await storeData('refresh_token', accessTokenQuery.data.refresh_token);
       }
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Home' }],
-      });
+      setAuthData({...authData, isSignedIn: true})
       return false;
     }
     return true;

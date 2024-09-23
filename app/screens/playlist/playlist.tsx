@@ -17,7 +17,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
 } from 'react-native';
-import { PlaybackContext } from '@/scripts/playbackContext';
+import { PlaybackContext } from '@/app/context/playbackContext';
 import { createPlayback, playTrack, stopTrack, unloadSound } from '@/scripts/player';
 import { getAlbum } from '@/api/albums';
 
