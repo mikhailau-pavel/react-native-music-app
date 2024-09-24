@@ -107,7 +107,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
       }
     };
     tokenCheck();
-  },[authData, createPlaylistsList, setAuthData]);
+  },[createPlaylistsList, setAuthData]);
 
   useEffect(() => {
     const getPlaylists = async () => {
