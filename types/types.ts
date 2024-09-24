@@ -44,18 +44,20 @@ export type ProfileStackParamList = {
 };
 
 export type HomeScreenProps = NativeStackScreenProps<RootStackParamList, HomePropsRoutes.HOME>;
-export type PlaylistScreenProps = NativeStackScreenProps<RootStackParamList, HomePropsRoutes.PLAYLIST>;
+export type PlaylistScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  HomePropsRoutes.PLAYLIST
+>;
 export type PlayerScreenProps = NativeStackScreenProps<RootStackParamList, HomePropsRoutes.PLAYER>;
 export type NotFoundScreenProps = NativeStackScreenProps<RootStackParamList>;
 
-
-export type WelcomeScreenProps = NativeStackScreenProps<RootStackParamList, HomePropsRoutes.WELCOME>;
+export type WelcomeScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  HomePropsRoutes.WELCOME
+>;
 export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, HomePropsRoutes.LOGIN>;
 
-export type TopsMainScreenProps = NativeStackScreenProps<
-  TopsStackParamList,
-  TopsPropsRoutes.TOPS
->;
+export type TopsMainScreenProps = NativeStackScreenProps<TopsStackParamList, TopsPropsRoutes.TOPS>;
 
 export type ProfileScreenProps = NativeStackScreenProps<
   ProfileStackParamList,

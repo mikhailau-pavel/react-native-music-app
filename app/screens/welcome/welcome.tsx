@@ -11,7 +11,7 @@ type ColorsSet = {
   notification: string;
 };
 
-const WelcomeScreen = ({navigation}: WelcomeScreenProps) => {
+const WelcomeScreen = ({ navigation }: WelcomeScreenProps) => {
   const { colors } = useTheme();
 
   const styles = getStyles(colors);

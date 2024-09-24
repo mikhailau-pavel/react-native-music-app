@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
-    "@tanstack/eslint-plugin-query": "^5.51.15",
+    "@tanstack/eslint-plugin-query": "^5.57.1",
     "@types/crypto-js": "^4.2.2",
     "@types/jest": "^29.5.12",
     "@types/react": "~18.2.45",

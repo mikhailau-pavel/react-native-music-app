@@ -3,9 +3,9 @@ import { Audio } from 'expo-av';
 import { createContext } from 'react';
 
 export type Queue = {
-    title: string;
-    data: QueueItem[];
-  }[];
+  title: string;
+  data: QueueItem[];
+}[];
 
 export type QueueItem = {
   title: string;

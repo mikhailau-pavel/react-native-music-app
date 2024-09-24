@@ -31,6 +31,7 @@ export const requestRefreshToken = async () => {
 
 export const fetchCurrentUserPlaylists = async () => {
   const token = await getData('access_token');
+  console.log('fetching playlists')
   const response = await fetch(RequestUrls.CURRENT_USER_PLAYlISTS, {
     headers: {
       Authorization: 'Bearer ' + token,

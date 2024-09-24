@@ -78,6 +78,7 @@ export const requestAccessToken = async () => {
     //process.env.REDIRECT_URI,
     code_verifier: codeVerifier,
   };
+
   const payloadBody = Object.keys(params)
     .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
     .join('&');
@@ -89,8 +90,11 @@ export const requestAccessToken = async () => {
     },
     body: payloadBody,
   };
-
-  const body = await fetch(AuthURLs.TOKEN, payload);
-  const result = await body.json();
-  return result;
+  try {
+    const response = await fetch(AuthURLs.TOKEN, payload);
+    const result = await response.json();
+    return result;
+  } catch (err) {
+    throw new Error(`Error message: ${err}`);
+  }
 };

@@ -24,7 +24,7 @@ const PlaylistItem = ({ item, index, onReorder }: PlaylistItemProps) => {
   const panY = useSharedValue(0);
   const active = useSharedValue(false);
   const initialListItemHeight = 50;
-  const [itemHeight, setItemHeight] = useState(initialListItemHeight);
+  const [itemHeight] = useState(initialListItemHeight);
 
   const pan = useMemo(() => {
     return Gesture.Pan()

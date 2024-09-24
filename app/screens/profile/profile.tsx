@@ -1,19 +1,16 @@
 import { fetchUserProfile } from '@/api/api';
 import { ProfileScreenUserData } from '@/types/types';
 import { Languages } from '@/utils/language/LanguageUtils';
-import { useTheme } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { Translation, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Text, View, StyleSheet, Image, Switch, useColorScheme, Appearance } from 'react-native';
 import QueueScreen from '../queue/queue';
-import LoadingIndicator from '../../components/loader/loader';
 
 const ProfileScreen = () => {
   const [profileData, setProfileData] = useState<ProfileScreenUserData>();
   const [isThemeSwitchEnabled, setIsThemeSwitchEnabled] = useState(false);
   const [isLanguageSwitchEnabled, setIsLanguageSwitchEnabled] = useState(false);
   const colorScheme = useColorScheme();
-  const { colors } = useTheme();
   const { t, i18n } = useTranslation();
 
   const toggleTheme = () => {

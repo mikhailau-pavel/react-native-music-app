@@ -1,4 +1,3 @@
-import { useFocusEffect } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import {
@@ -69,9 +68,8 @@ const PlaylistItem = ({
 const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string>('');
   const [currentPlaylistsList, setCurrentPlaylistsList] = useState(playlistsMockList);
-  const [isLogined, setIsLogined] = useState(false);
+  const [isLogined] = useState(false);
   const { authData, setAuthData } = useContext(AuthContext);
-
   const readPlaylistsFromStorage = async () => {
     const currentUserPlaylists = await getData('playlists');
     if (currentUserPlaylists) {
@@ -82,6 +80,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
 
   const createPlaylistsList = useCallback(async () => {
     const playlists = await readPlaylistsFromStorage();
+    
     if (playlists) {
       const currentPlaylistsList = playlists.map((elem: CurrentUserPlaylist, index: number) => {
         return {
@@ -89,24 +88,26 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
           id: `${elem.name}-${index}`,
           imageURL: `${elem.images[0].url}`,
           playlistId: `${elem.id}`,
-        };
+        }
       });
       setCurrentPlaylistsList(currentPlaylistsList);
     } else {
-      setCurrentPlaylistsList(playlistsMockList);
+      await fetchCurrentUserPlaylists();
+      await readPlaylistsFromStorage();
+      await createPlaylistsList();
     }
-  }, []);
+  },[]);
 
-  useFocusEffect(() => {
+  useEffect(() => {
     const tokenCheck = async () => {
       const token = await getData('access_token');
       if (token) {
-        setAuthData({...authData, isSignedIn: true})
+        setAuthData({ ...authData, isSignedIn: true });
         await createPlaylistsList();
       }
     };
     tokenCheck();
-  });
+  },[authData, createPlaylistsList, setAuthData]);
 
   useEffect(() => {
     const getPlaylists = async () => {

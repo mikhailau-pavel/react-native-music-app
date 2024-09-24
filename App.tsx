@@ -25,6 +25,8 @@ if (Platform.OS === 'android') {
   }
 }
 
+const queryClient = new QueryClient();
+
 export default function App() {
   const [loaded, error] = useFonts({
     Beograd: require('./assets/fonts/Beograd.ttf'),
@@ -57,8 +59,6 @@ export default function App() {
   if (!loaded && !error) {
     return null;
   }
-
-  const queryClient = new QueryClient();
 
   return (
     <NavigationContainer
