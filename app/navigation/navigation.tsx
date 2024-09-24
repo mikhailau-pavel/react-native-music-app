@@ -119,6 +119,7 @@ export const ProfileStackScreen = () => {
   );
 };
 
+//TODO: depend on top level auth provider
 export const Tabs = () => {
   return (
     <Tab.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>

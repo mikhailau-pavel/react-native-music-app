@@ -59,7 +59,9 @@ export default function App() {
   if (!loaded && !error) {
     return null;
   }
+   
 
+  
   return (
     <NavigationContainer
       linking={linking}

@@ -25,7 +25,7 @@ const LoginScreen = () => {
     if (url.startsWith('musicapp://')) {
       const responseCode = parseResponseCode(url);
       await storeData('responseCode', responseCode);
-      const tokens = await requestAccessToken()
+      const tokens = await requestAccessToken();
       if (tokens) {
         await storeData('access_token', tokens.access_token);
         await storeData('refresh_token', tokens.refresh_token);

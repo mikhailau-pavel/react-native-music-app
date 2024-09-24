@@ -80,7 +80,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
 
   const createPlaylistsList = useCallback(async () => {
     const playlists = await readPlaylistsFromStorage();
-    
+
     if (playlists) {
       const currentPlaylistsList = playlists.map((elem: CurrentUserPlaylist, index: number) => {
         return {
@@ -88,7 +88,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
           id: `${elem.name}-${index}`,
           imageURL: `${elem.images[0].url}`,
           playlistId: `${elem.id}`,
-        }
+        };
       });
       setCurrentPlaylistsList(currentPlaylistsList);
     } else {
@@ -96,18 +96,21 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
       await readPlaylistsFromStorage();
       await createPlaylistsList();
     }
-  },[]);
+  }, []);
 
+
+  //TODO: on top level
   useEffect(() => {
     const tokenCheck = async () => {
       const token = await getData('access_token');
+      console.log('received token: ', token)
       if (token) {
         setAuthData({ ...authData, isSignedIn: true });
         await createPlaylistsList();
       }
     };
     tokenCheck();
-  },[createPlaylistsList, setAuthData]);
+  }, [createPlaylistsList, setAuthData]);
 
   useEffect(() => {
     const getPlaylists = async () => {
