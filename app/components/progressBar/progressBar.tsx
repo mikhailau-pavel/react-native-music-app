@@ -90,7 +90,16 @@ const ProgressBar = () => {
         }
       };
     }
-  }, [progress, playbackData.currentSound, progressBarWidth, playbackData.currentPlaylistData, playbackData.currentTrackNumberInPlaylist, isDragging, setTrackIndex, setPlaybackData]);
+  }, [
+    progress,
+    playbackData.currentSound,
+    progressBarWidth,
+    playbackData.currentPlaylistData,
+    playbackData.currentTrackNumberInPlaylist,
+    isDragging,
+    setTrackIndex,
+    setPlaybackData,
+  ]);
 
   return (
     <View style={styles.progressBarContainer}>
