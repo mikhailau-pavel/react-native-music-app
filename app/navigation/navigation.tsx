@@ -20,7 +20,7 @@ import WelcomeScreen from '../screens/welcome/welcome';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/authContext';
 import { getData } from '@/scripts/asyncStorage';
-import { Text} from 'react-native'
+import { Text } from 'react-native';
 import LoadingIndicator from '../components/loader/loader';
 
 const prefix = Linking.createURL('/');
@@ -124,7 +124,7 @@ export const ProfileStackScreen = () => {
 
 export const Tabs = () => {
   const { authData, setAuthData } = useContext(AuthContext);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const tokenCheck = async () => {
@@ -137,17 +137,17 @@ export const Tabs = () => {
       setLoading(false);
     };
 
-    tokenCheck(); 
+    tokenCheck();
   }, []);
 
   if (loading) {
-    return <LoadingIndicator/>; 
+    return <LoadingIndicator />;
   }
 
   return (
     <Tab.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
       {!authData.isSignedIn ? (
-        <Tab.Screen name="Main" component={HomeStackScreen} />
+        <Tab.Screen name="Main" component={HomeStackScreen} options={{tabBarShowLabel: false, tabBarActiveTintColor: '#fff'}}/>
       ) : (
         <>
           <Tab.Screen name="Main" component={HomeStackScreen} />
@@ -158,4 +158,3 @@ export const Tabs = () => {
     </Tab.Navigator>
   );
 };
-

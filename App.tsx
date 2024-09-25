@@ -65,7 +65,7 @@ export default function App() {
     <NavigationContainer
       linking={linking}
       theme={colorScheme === 'light' ? CustomLightTheme : CustomDarkTheme}
-      fallback={<LoadingIndicator/>}
+      fallback={<LoadingIndicator />}
     >
       <AuthContext.Provider value={authContextValue}>
         <PlaybackContext.Provider value={playbackContextValue}>
