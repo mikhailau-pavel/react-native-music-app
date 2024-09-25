@@ -17,8 +17,11 @@ import PlaylistScreen from '../screens/playlist/playlist';
 import ProfileScreen from '../screens/profile/profile';
 import TopsMainScreen from '../screens/tops/tops';
 import WelcomeScreen from '../screens/welcome/welcome';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/authContext';
+import { getData } from '@/scripts/asyncStorage';
+import { Text} from 'react-native'
+import LoadingIndicator from '../components/loader/loader';
 
 const prefix = Linking.createURL('/');
 const Tab = createBottomTabNavigator();
@@ -119,13 +122,40 @@ export const ProfileStackScreen = () => {
   );
 };
 
-//TODO: depend on top level auth provider
 export const Tabs = () => {
+  const { authData, setAuthData } = useContext(AuthContext);
+  const [loading, setLoading] = useState(true); 
+
+  useEffect(() => {
+    const tokenCheck = async () => {
+      const token = await getData('access_token');
+      if (token) {
+        setAuthData({ ...authData, isSignedIn: true });
+      } else {
+        setAuthData({ ...authData, isSignedIn: false });
+      }
+      setLoading(false);
+    };
+
+    tokenCheck(); 
+  }, []);
+
+  if (loading) {
+    return <LoadingIndicator/>; 
+  }
+
   return (
     <Tab.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-      <Tab.Screen name="Main" component={HomeStackScreen} />
-      <Tab.Screen name="Tops" component={TopsStackScreen} />
-      <Tab.Screen name="Profile" component={ProfileStackScreen} />
+      {!authData.isSignedIn ? (
+        <Tab.Screen name="Main" component={HomeStackScreen} />
+      ) : (
+        <>
+          <Tab.Screen name="Main" component={HomeStackScreen} />
+          <Tab.Screen name="Tops" component={TopsStackScreen} />
+          <Tab.Screen name="Profile" component={ProfileStackScreen} />
+        </>
+      )}
     </Tab.Navigator>
   );
 };
+

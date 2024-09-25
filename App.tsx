@@ -12,6 +12,7 @@ import { linking, Tabs } from './app/navigation/navigation';
 import { CustomLightTheme, CustomDarkTheme } from './app/style/themes';
 import './utils/language/i18NextConfig';
 import { AuthContext, AuthContextData, initialAuthData } from './app/context/authContext';
+import LoadingIndicator from './app/components/loader/loader';
 
 // if (__DEV__) {
 //   require('./ReactotronConfig');
@@ -59,15 +60,12 @@ export default function App() {
   if (!loaded && !error) {
     return null;
   }
-   
 
-  
   return (
     <NavigationContainer
       linking={linking}
       theme={colorScheme === 'light' ? CustomLightTheme : CustomDarkTheme}
-      //TODO: set loading indicator from components as fallback if possible, check positioning
-      fallback={<Text>Loading...</Text>}
+      fallback={<LoadingIndicator/>}
     >
       <AuthContext.Provider value={authContextValue}>
         <PlaybackContext.Provider value={playbackContextValue}>

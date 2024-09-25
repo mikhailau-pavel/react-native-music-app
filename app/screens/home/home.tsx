@@ -98,12 +98,9 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
     }
   }, []);
 
-
-  //TODO: on top level
   useEffect(() => {
     const tokenCheck = async () => {
       const token = await getData('access_token');
-      console.log('received token: ', token)
       if (token) {
         setAuthData({ ...authData, isSignedIn: true });
         await createPlaylistsList();
@@ -281,3 +278,4 @@ const styles = StyleSheet.create({
   },
 });
 export default HomeScreen;
+
