@@ -187,7 +187,6 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
       </ImageBackground>
     </View>
   );
-  // }
 };
 
 const styles = StyleSheet.create({

@@ -63,8 +63,8 @@ const LoadingIndicator = () => {
 
   return (
     <View style={styles.container}>
-      {ActivityItemProps.map((item) => (
-        <ActivityItem rotate={item.rotate} delay={item.delay} />
+      {ActivityItemProps.map((item, index) => (
+        <ActivityItem rotate={item.rotate} delay={item.delay} key={index}/>
       ))}
     </View>
   );

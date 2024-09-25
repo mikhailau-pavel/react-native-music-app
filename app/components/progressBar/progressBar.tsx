@@ -22,11 +22,14 @@ const ProgressBar = () => {
   const { setPlayPosition, setElementWidth, setIsMoving } = usePlayPosition();
   const [trackDuration, setTrackDuration] = useState(0);
   const setTrackIndex = useTrackChange(playbackData.currentTrackNumberInPlaylist || 0);
+  const [isDragging, setIsDragging] = useState(false);
 
   const pan = useMemo(() => {
     return Gesture.Pan()
       .onStart(() => {
         runOnJS(setIsMoving)(true);
+        runOnJS(setIsDragging)(true);
+        cancelAnimation(progress);
       })
       .onChange((e) => {
         const newProgress = Math.max(0, Math.min(e.absoluteX, progressBarWidth));
@@ -36,6 +39,7 @@ const ProgressBar = () => {
         runOnJS(setPlayPosition)(progress.value);
         runOnJS(setElementWidth)(progressBarWidth);
         runOnJS(setIsMoving)(false);
+        runOnJS(setIsDragging)(false);
       });
   }, [progress, progressBarWidth, setElementWidth, setIsMoving, setPlayPosition]);
 
@@ -48,7 +52,7 @@ const ProgressBar = () => {
   useEffect(() => {
     if (playbackData.currentSound) {
       playbackData.currentSound._onPlaybackStatusUpdate = (playbackStatus) => {
-        if (playbackStatus.isLoaded && playbackStatus.durationMillis) {
+        if (!isDragging && playbackStatus.isLoaded && playbackStatus.durationMillis) {
           const progressConfig = {
             duration: (progress.value =
               playbackStatus.durationMillis - playbackStatus.positionMillis),
@@ -86,7 +90,7 @@ const ProgressBar = () => {
         }
       };
     }
-  }, [progress, playbackData.currentSound, progressBarWidth]);
+  }, [progress, playbackData.currentSound, progressBarWidth, playbackData.currentPlaylistData, playbackData.currentTrackNumberInPlaylist, isDragging, setTrackIndex, setPlaybackData]);
 
   return (
     <View style={styles.progressBarContainer}>

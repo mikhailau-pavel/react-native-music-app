@@ -20,7 +20,6 @@ import WelcomeScreen from '../screens/welcome/welcome';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/authContext';
 import { getData } from '@/scripts/asyncStorage';
-import { Text } from 'react-native';
 import LoadingIndicator from '../components/loader/loader';
 
 const prefix = Linking.createURL('/');
@@ -147,7 +146,11 @@ export const Tabs = () => {
   return (
     <Tab.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
       {!authData.isSignedIn ? (
-        <Tab.Screen name="Main" component={HomeStackScreen} options={{tabBarShowLabel: false, tabBarActiveTintColor: '#fff'}}/>
+        <Tab.Screen
+          name="Main"
+          component={HomeStackScreen}
+          options={{ tabBarShowLabel: false, tabBarActiveTintColor: '#fff' }}
+        />
       ) : (
         <>
           <Tab.Screen name="Main" component={HomeStackScreen} />
