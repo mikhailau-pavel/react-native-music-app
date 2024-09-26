@@ -172,17 +172,6 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
           keyExtractor={(item) => item.id}
           numColumns={2}
           contentContainerStyle={{ padding: 8 }}
-          ListFooterComponent={
-            <TouchableOpacity
-              onPress={() => {
-                resetAccessToken();
-                setAuthData({ ...authData, isSignedIn: false });
-              }}
-              style={styles.logoutButton}
-            >
-              <Text style={styles.logoutText}>Log out</Text>
-            </TouchableOpacity>
-          }
         />
       </ImageBackground>
     </View>
@@ -227,19 +216,6 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   welcomeText: {
-    fontFamily: 'Beograd',
-    fontSize: 18,
-    color: '#FFFFFF',
-  },
-  logoutButton: {
-    alignItems: 'center',
-    alignSelf: 'center',
-    backgroundColor: '#017371',
-    padding: 15,
-    borderRadius: 25,
-    marginVertical: 20,
-  },
-  logoutText: {
     fontFamily: 'Beograd',
     fontSize: 18,
     color: '#FFFFFF',

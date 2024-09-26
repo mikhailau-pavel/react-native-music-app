@@ -1,10 +1,20 @@
-import { fetchUserProfile } from '@/api/api';
+import { fetchUserProfile, resetAccessToken } from '@/api/api';
 import { ProfileScreenUserData } from '@/types/types';
 import { Languages } from '@/utils/language/LanguageUtils';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, View, StyleSheet, Image, Switch, useColorScheme, Appearance } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  Switch,
+  useColorScheme,
+  Appearance,
+  TouchableOpacity,
+} from 'react-native';
 import QueueScreen from '../queue/queue';
+import { AuthContext } from '@/app/context/authContext';
 
 const ProfileScreen = () => {
   const [profileData, setProfileData] = useState<ProfileScreenUserData>();
@@ -12,6 +22,7 @@ const ProfileScreen = () => {
   const [isLanguageSwitchEnabled, setIsLanguageSwitchEnabled] = useState(false);
   const colorScheme = useColorScheme();
   const { t, i18n } = useTranslation();
+  const { authData } = useContext(AuthContext);
 
   const toggleTheme = () => {
     if (colorScheme === 'dark') {
@@ -42,6 +53,10 @@ const ProfileScreen = () => {
     fetchProfile();
     setIsThemeSwitchEnabled(colorScheme === 'dark');
   }, []);
+
+  function setAuthData(arg0: any) {
+    throw new Error('Function not implemented.');
+  }
 
   return (
     <View style={styles.profileContainer}>
@@ -78,6 +93,15 @@ const ProfileScreen = () => {
             value={isLanguageSwitchEnabled}
           />
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            resetAccessToken();
+            setAuthData({ ...authData, isSignedIn: false });
+          }}
+          style={styles.logoutButton}
+        >
+          <Text style={styles.logoutText}>Log out</Text>
+        </TouchableOpacity>
         <QueueScreen />
       </View>
     </View>
@@ -128,6 +152,19 @@ const styles = StyleSheet.create({
   settingLabel: {
     color: '#ffffff',
     fontSize: 18,
+  },
+  logoutButton: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: '#017371',
+    padding: 15,
+    borderRadius: 25,
+    marginVertical: 20,
+  },
+  logoutText: {
+    fontFamily: 'Beograd',
+    fontSize: 18,
+    color: '#FFFFFF',
   },
 });
 
