@@ -1,7 +1,7 @@
 import { Audio } from 'expo-av';
 
 export const createPlayback = async (url: string) => {
-  await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+  await Audio.setAudioModeAsync({ playsInSilentModeIOS: true, staysActiveInBackground: true });
   const track = await Audio.Sound.createAsync({ uri: url });
   await track.sound._loaded;
   return track.sound;

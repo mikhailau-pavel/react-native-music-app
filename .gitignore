@@ -13,7 +13,6 @@ ios
 android
 app-example
 *.env
-modules/
 # macOS
 .DS_Store
 *.swp

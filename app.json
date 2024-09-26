@@ -45,6 +45,12 @@
             "./assets/fonts/Angeme-Regular.ttf"
           ]
         }
+      ],
+      [
+        "@bacons/apple-targets",
+        {
+          "appleTeamId": "FabulousTeamID"
+        }
       ]
     ]
   }

@@ -22,7 +22,7 @@ const ProfileScreen = () => {
   const [isLanguageSwitchEnabled, setIsLanguageSwitchEnabled] = useState(false);
   const colorScheme = useColorScheme();
   const { t, i18n } = useTranslation();
-  const { authData } = useContext(AuthContext);
+  const { authData, setAuthData } = useContext(AuthContext);
 
   const toggleTheme = () => {
     if (colorScheme === 'dark') {
@@ -53,10 +53,6 @@ const ProfileScreen = () => {
     fetchProfile();
     setIsThemeSwitchEnabled(colorScheme === 'dark');
   }, []);
-
-  function setAuthData(arg0: any) {
-    throw new Error('Function not implemented.');
-  }
 
   return (
     <View style={styles.profileContainer}>

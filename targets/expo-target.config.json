@@ -1,0 +1,15 @@
+{
+  "type": "widget",
+  "name": "external-player-controls-widget",
+  "colors": {
+    "$accent": {
+      "color": "red",
+      "darkColor": "blue"
+    }
+  },
+  "icon": "../assets/icons/playButton.png",
+  "frameworks": [
+    "SwiftUI"
+  ],
+  "deploymentTarget": "13.4"
+}
