@@ -13,7 +13,6 @@ ios
 android
 app-example
 *.env
-package-lock.json
 modules/
 # macOS
 .DS_Store

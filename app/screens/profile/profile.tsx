@@ -162,7 +162,6 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   logoutText: {
-    fontFamily: 'Beograd',
     fontSize: 18,
     color: '#FFFFFF',
   },
