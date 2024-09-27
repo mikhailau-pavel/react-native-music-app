@@ -5,7 +5,7 @@ const fallback = {
     _endTime: number,
     _title: string,
     _headline: string,
-    _widgetUrl: string,
+    _widgetUrl: string
   ) {
     return false;
   },

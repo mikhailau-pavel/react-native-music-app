@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Text,
+  Button,
   View,
   StyleSheet,
   Image,
@@ -15,6 +16,7 @@ import {
 } from 'react-native';
 import QueueScreen from '../queue/queue';
 import { AuthContext } from '@/app/context/authContext';
+import LiveActivityControlModule from '../../../modules/fizl-live-activity-sample/src/LiveActivityControlModule';
 
 const ProfileScreen = () => {
   const [profileData, setProfileData] = useState<ProfileScreenUserData>();
@@ -53,6 +55,32 @@ const ProfileScreen = () => {
     fetchProfile();
     setIsThemeSwitchEnabled(colorScheme === 'dark');
   }, []);
+
+  const handleStartActivityPress = () => {
+    const currentTime = Date.now();
+    const startTime = currentTime + 60 * 1000;
+    const endTime = currentTime + 120 * 1000;
+    const startDate = new Date(startTime);
+    const endDate = new Date(endTime);
+
+    const activityParams = {
+      startTime: startTime,
+      endTime: endTime,
+      headline: 'headline test',
+      title: 'title test',
+      widgetUrl: 'musicapp://home',
+    };
+
+    console.log('testing time: ', endDate, startDate);
+
+    LiveActivityControlModule.startActivity(
+      activityParams.startTime,
+      activityParams.endTime,
+      activityParams.headline,
+      activityParams.title,
+      activityParams.widgetUrl
+    );
+  };
 
   return (
     <View style={styles.profileContainer}>
@@ -98,6 +126,7 @@ const ProfileScreen = () => {
         >
           <Text style={styles.logoutText}>Log out</Text>
         </TouchableOpacity>
+        <Button title={'Start activity'} onPress={handleStartActivityPress} />
         <QueueScreen />
       </View>
     </View>
