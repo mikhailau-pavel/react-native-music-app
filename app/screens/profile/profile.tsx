@@ -58,7 +58,7 @@ const ProfileScreen = () => {
 
   const handleStartActivityPress = () => {
     const currentTime = Date.now();
-    const startTime = currentTime + 60 * 1000;
+    const startTime = currentTime * 1000;
     const endTime = currentTime + 120 * 1000;
     const startDate = new Date(startTime);
     const endDate = new Date(endTime);

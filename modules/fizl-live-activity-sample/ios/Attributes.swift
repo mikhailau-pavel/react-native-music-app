@@ -1,10 +1,3 @@
-//
-//  FizlAttributes.swift
-//  Fizl
-//
-//  Created by Dominic on 2023-12-27.
-//
-
 import ActivityKit
 import SwiftUI
 
