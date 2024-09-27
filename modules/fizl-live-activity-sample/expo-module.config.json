@@ -1,0 +1,6 @@
+{
+  "platforms": ["ios", "tvos", "android", "web"],
+  "ios": {
+    "modules": ["LiveActivityControlModule"]
+  }
+}
