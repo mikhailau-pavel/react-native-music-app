@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export class AsyncStorageService {
+class AsyncStorageService {
   private static instance: AsyncStorageService;
 
   private constructor() {}
@@ -45,3 +45,5 @@ export class AsyncStorageService {
     }
   }
 }
+
+export const storage = AsyncStorageService.getInstance()

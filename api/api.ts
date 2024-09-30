@@ -1,6 +1,4 @@
-import { AsyncStorageService } from '@/scripts/asyncStorage';
-
-const storage = AsyncStorageService.getInstance();
+import { storage } from '@/scripts/asyncStorage';
 
 enum RequestUrls {
   TOKEN = 'https://accounts.spotify.com/api/token',

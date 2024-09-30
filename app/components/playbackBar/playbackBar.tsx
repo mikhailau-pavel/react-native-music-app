@@ -4,7 +4,7 @@ import { RootStackParamList } from '@/types/types';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useContext } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { Text, View, TouchableOpacity, Image } from 'react-native';
 import { getStyles } from './styles';
 
 const PlaybackBar = () => {

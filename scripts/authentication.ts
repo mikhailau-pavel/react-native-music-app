@@ -1,8 +1,6 @@
 import * as Crypto from 'expo-crypto';
-import { AsyncStorageService } from './asyncStorage';
+import { storage } from './asyncStorage';
 import { makeRedirectUri } from 'expo-auth-session';
-
-const storage = AsyncStorageService.getInstance();
 
 enum AuthURLs {
   TOKEN = 'https://accounts.spotify.com/api/token',

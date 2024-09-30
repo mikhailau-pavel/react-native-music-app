@@ -4,14 +4,13 @@ import { Platform, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useQuery } from '@tanstack/react-query';
 import { WebView } from 'react-native-webview';
-import { AsyncStorageService } from '@/scripts/asyncStorage';
+import { storage } from '@/scripts/asyncStorage';
 import { AuthContext } from '@/app/context/authContext';
 
 const LoginScreen = () => {
   const [loginUrl, setLoginUrl] = useState<string>('');
   const loginUrlQuery = useQuery({ queryFn: createLoginUrl, queryKey: ['get_login_url'] });
   const { authData, setAuthData } = useContext(AuthContext);
-  const storage = AsyncStorageService.getInstance();
 
   useEffect(() => {
     if (loginUrlQuery.data && (Platform.OS === 'ios' || Platform.OS === 'android')) {

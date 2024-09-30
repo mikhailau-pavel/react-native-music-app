@@ -19,7 +19,7 @@ import TopsMainScreen from '../screens/tops/tops';
 import WelcomeScreen from '../screens/welcome/welcome';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/authContext';
-import { AsyncStorageService } from '@/scripts/asyncStorage';
+import { storage } from '@/scripts/asyncStorage';
 import LoadingIndicator from '../components/loader/loader';
 import React from 'react';
 
@@ -28,7 +28,6 @@ const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator<RootStackParamList>();
 const TopsStack = createNativeStackNavigator<TopsStackParamList>();
 const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
-const storage = AsyncStorageService.getInstance();
 
 const config = {
   screens: {

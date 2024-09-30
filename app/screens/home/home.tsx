@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Text, Image, FlatList, View, TouchableOpacity, ImageBackground } from 'react-native';
 
 import { fetchCurrentUserPlaylists } from '@/api/api';
-import { AsyncStorageService } from '@/scripts/asyncStorage';
+import { storage } from '@/scripts/asyncStorage';
 import {
   CurrentUserPlaylist,
   HomeScreenProps,
@@ -71,7 +71,6 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const { authData, setAuthData } = useContext(AuthContext);
   const { colors } = useTheme();
   const styles = getStyles(colors);
-  const storage = AsyncStorageService.getInstance();
 
   const readPlaylistsFromStorage = async () => {
     const currentUserPlaylists = await storage.getData('playlists');

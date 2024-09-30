@@ -1,5 +1,4 @@
-import { AsyncStorageService } from '@/scripts/asyncStorage';
-const storage = AsyncStorageService.getInstance();
+import { storage } from '@/scripts/asyncStorage';
 
 enum UserRequestUrls {
   CURRENT_USER = 'https://api.spotify.com/v1/me',
