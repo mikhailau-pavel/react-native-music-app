@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { PlaybackContext } from '@/app/context/playbackContext';
-import { pauseTrack, playTrack } from '@/scripts/player';
+import { player } from '@/scripts/player';
 import { useTrackChange } from '@/hooks/useTrackChange';
 import ProgressBar from '@/app/components/progressBar/progressBar';
 import { useTheme } from '@react-navigation/native';
@@ -83,11 +83,11 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
 
   const handlePlayButtonPress = async () => {
     if (!playbackData.isPlaying && playbackData.currentSound) {
-      await playTrack(playbackData.currentSound);
+      await player.playTrack(playbackData.currentSound);
       setPlaybackData({ ...playbackData, isPlaying: true });
     } else {
       if (playbackData.currentSound) {
-        await pauseTrack(playbackData.currentSound);
+        await player.pauseTrack(playbackData.currentSound);
       }
       setPlaybackData({ ...playbackData, isPlaying: false });
     }

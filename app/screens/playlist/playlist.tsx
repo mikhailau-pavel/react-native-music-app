@@ -17,7 +17,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import { PlaybackContext } from '@/app/context/playbackContext';
-import { createPlayback, playTrack, stopTrack, unloadSound } from '@/scripts/player';
+import { player } from '@/scripts/player';
 import { getAlbum } from '@/api/albums';
 
 import { useTranslation } from 'react-i18next';
@@ -36,10 +36,10 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
     if (playbackData.currentPlaylistData) {
       const item = playbackData.currentPlaylistData[0];
       if (playbackData.currentSound) {
-        stopTrack(playbackData.currentSound);
-        unloadSound(playbackData.currentSound);
+        player.stopTrack(playbackData.currentSound);
+        player.unloadSound(playbackData.currentSound);
       }
-      const newSound = await createPlayback(item.previewUrl);
+      const newSound = await player.createPlayback(item.previewUrl);
       setPlaybackData({
         ...playbackData,
         currentArtist: item.artist,
@@ -50,7 +50,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
         currentTrackNumberInPlaylist: 0,
       });
       if (newSound) {
-        playTrack(newSound);
+        player.playTrack(newSound);
       }
       setPlaybackData({ isShowing: false });
     }
@@ -59,10 +59,10 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
 
   const setTrackInPlayer = async (item: TrackItemData, index: number) => {
     if (playbackData.currentSound) {
-      stopTrack(playbackData.currentSound);
-      unloadSound(playbackData.currentSound);
+      player.stopTrack(playbackData.currentSound);
+      player.unloadSound(playbackData.currentSound);
     }
-    const newSound = await createPlayback(item.previewUrl);
+    const newSound = await player.createPlayback(item.previewUrl);
     setPlaybackData({
       ...playbackData,
       currentArtist: item.artist,
@@ -74,7 +74,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       currentTrackNumberInPlaylist: index,
     });
     if (newSound) {
-      playTrack(newSound);
+      player.playTrack(newSound);
     }
   };
 
