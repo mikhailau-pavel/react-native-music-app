@@ -15,6 +15,7 @@ import ProgressBar from '@/app/components/progressBar/progressBar';
 import { useTheme } from '@react-navigation/native';
 import { getTrackInfo } from '@/api/tracks';
 import { getStyles } from './styles';
+import React from 'react';
 
 const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const active = useSharedValue(false);
@@ -137,7 +138,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
       <Animated.View style={[styles.background, animatedStyles]}>
         <View style={styles.trackCoverContainer}>
           {playbackData.currentPlaylistData && (
-            <View>
+            <>
               <Text style={styles.trackTitle}>
                 {
                   playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist || 0]
@@ -162,7 +163,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
                   }
                 </Text>
               </TouchableOpacity>
-            </View>
+            </>
           )}
           {!expanded ? (
             <View style={styles.trackInfoControlContainer}>

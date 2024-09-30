@@ -18,6 +18,7 @@ import { AuthContext } from '@/app/context/authContext';
 import LiveActivityControlModule from '../../../modules/fizl-live-activity-sample/src/LiveActivityControlModule';
 import { useTheme } from '@react-navigation/native';
 import { getStyles } from './styles';
+import { AllAsyncStorageKeys } from '@/utils/constants';
 
 const ProfileScreen = () => {
   const [profileData, setProfileData] = useState<ProfileScreenUserData>();
@@ -121,7 +122,7 @@ const ProfileScreen = () => {
         </View>
         <TouchableOpacity
           onPress={() => {
-            resetAccessToken();
+            resetAccessToken(AllAsyncStorageKeys);
             setAuthData({ ...authData, isSignedIn: false });
           }}
           style={styles.logoutButton}

@@ -1,15 +1,16 @@
-import { getData, storeData } from '@/scripts/asyncStorage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AsyncStorageService } from '@/scripts/asyncStorage';
+
+const storage = AsyncStorageService.getInstance();
 
 enum RequestUrls {
-  //TOKEN = 'https://accounts.spotify.com/api/token',
+  TOKEN = 'https://accounts.spotify.com/api/token',
   CURRENT_USER_PLAYlISTS = 'https://api.spotify.com/v1/me/playlists',
   CURRENT_USER_TOPS = 'https://api.spotify.com/v1/me/top/',
   CURRENT_USER_PROFILE = 'https://api.spotify.com/v1/me',
 }
 
 export const requestRefreshToken = async () => {
-  const refreshToken = (await getData('refresh_token')) || '';
+  const refreshToken = (await storage.getData('refresh_token')) || '';
   const params: Record<string, string> = {
     grant_type: 'refresh_token',
     refresh_token: refreshToken,
@@ -30,7 +31,7 @@ export const requestRefreshToken = async () => {
 };
 
 export const fetchCurrentUserPlaylists = async () => {
-  const token = await getData('access_token');
+  const token = await storage.getData('access_token');
   const response = await fetch(RequestUrls.CURRENT_USER_PLAYlISTS, {
     headers: {
       Authorization: 'Bearer ' + token,
@@ -39,13 +40,13 @@ export const fetchCurrentUserPlaylists = async () => {
   const data = await response.json();
   const playlistsData = JSON.stringify(data.items);
   if (playlistsData) {
-    await storeData('playlists', playlistsData);
+    await storage.storeData('playlists', playlistsData);
   }
   return data.items;
 };
 
 export const fetchTracksFromPlaylist = async (playlistId: string) => {
-  const token = await getData('access_token');
+  const token = await storage.getData('access_token');
   const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks/`;
   try {
     const response = await fetch(url, {
@@ -66,18 +67,12 @@ export const fetchTracksFromPlaylist = async (playlistId: string) => {
   }
 };
 
-export const resetAccessToken = async () => {
-  await AsyncStorage.multiRemove([
-    'access_token',
-    'refresh_token',
-    'code_verifier',
-    'responseCode',
-    'playlists',
-  ]);
+export const resetAccessToken = async (keys: string[]) => {
+  await storage.multiRemove(keys);
 };
 
 export const fetchUserTops = async (type: string, timeRange: string) => {
-  const token = await getData('access_token');
+  const token = await storage.getData('access_token');
   try {
     const response = await fetch(
       `${RequestUrls.CURRENT_USER_TOPS + type}?time_range=${timeRange}`,
@@ -96,7 +91,7 @@ export const fetchUserTops = async (type: string, timeRange: string) => {
 };
 
 export const fetchUserProfile = async () => {
-  const token = await getData('access_token');
+  const token = await storage.getData('access_token');
   try {
     const response = await fetch(RequestUrls.CURRENT_USER_PROFILE, {
       method: 'GET',

@@ -4,13 +4,14 @@ import { Platform, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useQuery } from '@tanstack/react-query';
 import { WebView } from 'react-native-webview';
-import { storeData } from '@/scripts/asyncStorage';
+import { AsyncStorageService } from '@/scripts/asyncStorage';
 import { AuthContext } from '@/app/context/authContext';
 
 const LoginScreen = () => {
   const [loginUrl, setLoginUrl] = useState<string>('');
   const loginUrlQuery = useQuery({ queryFn: createLoginUrl, queryKey: ['get_login_url'] });
   const { authData, setAuthData } = useContext(AuthContext);
+  const storage = AsyncStorageService.getInstance();
 
   useEffect(() => {
     if (loginUrlQuery.data && (Platform.OS === 'ios' || Platform.OS === 'android')) {
@@ -24,11 +25,11 @@ const LoginScreen = () => {
   const handleNavigationStateChange = async ({ url }: { url: string }) => {
     if (url.startsWith('musicapp://')) {
       const responseCode = parseResponseCode(url);
-      await storeData('responseCode', responseCode);
+      await storage.storeData('responseCode', responseCode);
       const tokens = await requestAccessToken();
       if (tokens) {
-        await storeData('access_token', tokens.access_token);
-        await storeData('refresh_token', tokens.refresh_token);
+        await storage.storeData('access_token', tokens.access_token);
+        await storage.storeData('refresh_token', tokens.refresh_token);
       }
       await setAuthData({ ...authData, isSignedIn: true });
       return false;

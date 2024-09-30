@@ -1,28 +1,47 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const storeData = async (key: string, value: string) => {
-  try {
-    await AsyncStorage.setItem(key, value);
-  } catch (err) {
-    throw new Error(`Error message is:${err}`);
-  }
-};
+export class AsyncStorageService {
+  private static instance: AsyncStorageService;
 
-const removeData = async (key: string) => {
-  try {
-    await AsyncStorage.removeItem(key);
-  } catch (err) {
-    throw new Error(`Error message is:${err}`);
-  }
-};
+  private constructor() {}
 
-const getData = async (key: string) => {
-  try {
-    const value = await AsyncStorage.getItem(key);
-    return value;
-  } catch (err) {
-    throw new Error(`Error message is:${err}`);
+  static getInstance() {
+    if (!AsyncStorageService.instance) {
+      AsyncStorageService.instance = new AsyncStorageService();
+    }
+    return AsyncStorageService.instance;
   }
-};
 
-export { storeData, getData, removeData };
+  async storeData(key: string, value: string) {
+    try {
+      await AsyncStorage.setItem(key, value);
+    } catch (err) {
+      throw new Error(`Error message is:${err}`);
+    }
+  }
+
+  async removeData(key: string) {
+    try {
+      await AsyncStorage.removeItem(key);
+    } catch (err) {
+      throw new Error(`Error message is:${err}`);
+    }
+  }
+
+  async getData(key: string) {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      return value;
+    } catch (err) {
+      throw new Error(`Error message is:${err}`);
+    }
+  }
+
+  async multiRemove(keys: string[]) {
+    try {
+      await AsyncStorage.multiRemove(keys);
+    } catch (err) {
+      throw new Error(`Error message is:${err}`);
+    }
+  }
+}

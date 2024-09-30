@@ -1,11 +1,13 @@
-import { getData } from '@/scripts/asyncStorage';
+import { AsyncStorageService } from '@/scripts/asyncStorage';
+
+const storage = AsyncStorageService.getInstance();
 
 export const createPlaylist = async (
   playlistName: string,
   playlistDescription: string,
   userId: string
 ) => {
-  const token = await getData('access_token');
+  const token = await storage.getData('access_token');
   const currentUserPlaylistsUrl = `https://api.spotify.com/v1/users/${userId}/playlists`;
   const bodyPayload = JSON.stringify({
     name: playlistName || 'New Playlist',
@@ -30,7 +32,7 @@ export const createPlaylist = async (
 };
 
 export const addTracksToPlaylist = async (uris: string[], playlistId: string) => {
-  const token = await getData('access_token');
+  const token = await storage.getData('access_token');
   const playlistUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
   const payloadBody = JSON.stringify({
     uris: uris,

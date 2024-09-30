@@ -1,5 +1,5 @@
 import { useTheme } from '@react-navigation/native';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Checkbox from 'expo-checkbox';
 import { useMemo, useState } from 'react';

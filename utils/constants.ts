@@ -8,3 +8,11 @@ export const ActivityItemProps = [
   { rotate: '270deg', delay: 600 },
   { rotate: '315deg', delay: 700 },
 ];
+
+export const AllAsyncStorageKeys = [
+  'access_token',
+  'refresh_token',
+  'code_verifier',
+  'responseCode',
+  'playlists',
+];

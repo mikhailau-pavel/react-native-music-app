@@ -1,17 +1,9 @@
 import React, { useContext } from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import {
-  Text,
-  Image,
-  FlatList,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  ImageBackground,
-} from 'react-native';
+import { Text, Image, FlatList, View, TouchableOpacity, ImageBackground } from 'react-native';
 
 import { fetchCurrentUserPlaylists } from '@/api/api';
-import { getData } from '@/scripts/asyncStorage';
+import { AsyncStorageService } from '@/scripts/asyncStorage';
 import {
   CurrentUserPlaylist,
   HomeScreenProps,
@@ -79,9 +71,10 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const { authData, setAuthData } = useContext(AuthContext);
   const { colors } = useTheme();
   const styles = getStyles(colors);
+  const storage = AsyncStorageService.getInstance();
 
   const readPlaylistsFromStorage = async () => {
-    const currentUserPlaylists = await getData('playlists');
+    const currentUserPlaylists = await storage.getData('playlists');
     if (currentUserPlaylists) {
       const playlists = JSON.parse(currentUserPlaylists);
       return playlists;
@@ -110,7 +103,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
 
   useEffect(() => {
     const tokenCheck = async () => {
-      const token = await getData('access_token');
+      const token = await storage.getData('access_token');
       if (token) {
         setAuthData({ ...authData, isSignedIn: true });
         await createPlaylistsList();

@@ -5,6 +5,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { useContext, useEffect, useState } from 'react';
 import { PlaybackContext } from '@/app/context/playbackContext';
 import { getStyles } from './styles';
+import React from 'react';
 
 const mockNowPlayingItem = { song: 'Song 1', artist: 'Artist 1' };
 
@@ -24,14 +25,14 @@ const NowPlayingHeader = () => {
             style={styles.trackAlbumImage}
             source={{ uri: playbackData.currentAlbumImage ?? mockImage }}
           />
-          <View>
+          <>
             <Text style={styles.trackTitle} numberOfLines={1}>
               {playbackData.currentSong ?? mockNowPlayingItem.song}
             </Text>
             <Text style={styles.trackArtist} numberOfLines={1}>
               {playbackData.currentArtist ?? mockNowPlayingItem.artist}
             </Text>
-          </View>
+          </>
         </View>
         <Entypo
           name="dots-three-vertical"

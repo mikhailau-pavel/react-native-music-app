@@ -1,6 +1,8 @@
 import * as Crypto from 'expo-crypto';
-import { getData, storeData } from './asyncStorage';
+import { AsyncStorageService } from './asyncStorage';
 import { makeRedirectUri } from 'expo-auth-session';
+
+const storage = AsyncStorageService.getInstance();
 
 enum AuthURLs {
   TOKEN = 'https://accounts.spotify.com/api/token',
@@ -27,7 +29,7 @@ export const base64encode = (input: ArrayBuffer) => {
 
 export const hashed = async () => {
   const codeVerifier = generateRandomString(44);
-  await storeData('code_verifier', codeVerifier);
+  await storage.storeData('code_verifier', codeVerifier);
   return await sha256(codeVerifier);
 };
 
@@ -42,7 +44,7 @@ export const parseResponseCode = (string: string) => {
 
 export const createLoginUrl = async () => {
   const codeVerifier = generateRandomString(44);
-  storeData('code_verifier', codeVerifier);
+  storage.storeData('code_verifier', codeVerifier);
   const sha = await sha256(codeVerifier);
   const base64String = base64encode(sha);
   const redirectUri = `${makeRedirectUri({ scheme: 'musicapp', path: 'home' })}`;
@@ -66,8 +68,8 @@ export const createLoginUrl = async () => {
 };
 
 export const requestAccessToken = async () => {
-  const codeVerifier = (await getData('code_verifier')) || '';
-  const code = (await getData('responseCode')) || '';
+  const codeVerifier = (await storage.getData('code_verifier')) || '';
+  const code = (await storage.getData('responseCode')) || '';
   const redirectUri = `${makeRedirectUri({ scheme: 'musicapp', path: 'home' })}`;
   const params: Record<string, string> = {
     client_id: 'e6d38f8e338847f0a2909ea813ec79e4',

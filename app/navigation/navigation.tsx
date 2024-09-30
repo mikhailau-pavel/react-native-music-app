@@ -19,14 +19,16 @@ import TopsMainScreen from '../screens/tops/tops';
 import WelcomeScreen from '../screens/welcome/welcome';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/authContext';
-import { getData } from '@/scripts/asyncStorage';
+import { AsyncStorageService } from '@/scripts/asyncStorage';
 import LoadingIndicator from '../components/loader/loader';
+import React from 'react';
 
 const prefix = Linking.createURL('/');
 const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator<RootStackParamList>();
 const TopsStack = createNativeStackNavigator<TopsStackParamList>();
 const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
+const storage = AsyncStorageService.getInstance();
 
 const config = {
   screens: {
@@ -127,7 +129,7 @@ export const Tabs = () => {
 
   useEffect(() => {
     const tokenCheck = async () => {
-      const token = await getData('access_token');
+      const token = await storage.getData('access_token');
       if (token) {
         setAuthData({ ...authData, isSignedIn: true });
       } else {

@@ -1,11 +1,12 @@
-import { getData } from '@/scripts/asyncStorage';
+import { AsyncStorageService } from '@/scripts/asyncStorage';
+const storage = AsyncStorageService.getInstance();
 
 enum UserRequestUrls {
   CURRENT_USER = 'https://api.spotify.com/v1/me',
 }
 
 export const getUserData = async () => {
-  const token = await getData('access_token');
+  const token = await storage.getData('access_token');
   const payload = {
     headers: {
       Authorization: 'Bearer ' + token,
