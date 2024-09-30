@@ -1,4 +1,4 @@
-import { storage } from '@/scripts/asyncStorage';
+import { AsyncStorageKeys, storage } from '@/scripts/asyncStorage';
 
 enum RequestUrls {
   TOKEN = 'https://accounts.spotify.com/api/token',
@@ -8,7 +8,7 @@ enum RequestUrls {
 }
 
 export const requestRefreshToken = async () => {
-  const refreshToken = (await storage.getData('refresh_token')) || '';
+  const refreshToken = (await storage.getData(AsyncStorageKeys.REFRESH_TOKEN)) || '';
   const params: Record<string, string> = {
     grant_type: 'refresh_token',
     refresh_token: refreshToken,
@@ -29,7 +29,7 @@ export const requestRefreshToken = async () => {
 };
 
 export const fetchCurrentUserPlaylists = async () => {
-  const token = await storage.getData('access_token');
+  const token = await storage.getData(AsyncStorageKeys.ACCESS_TOKEN);
   const response = await fetch(RequestUrls.CURRENT_USER_PLAYlISTS, {
     headers: {
       Authorization: 'Bearer ' + token,
@@ -44,7 +44,7 @@ export const fetchCurrentUserPlaylists = async () => {
 };
 
 export const fetchTracksFromPlaylist = async (playlistId: string) => {
-  const token = await storage.getData('access_token');
+  const token = await storage.getData(AsyncStorageKeys.ACCESS_TOKEN);
   const url = `https://api.spotify.com/v1/playlists/${playlistId}/tracks/`;
   try {
     const response = await fetch(url, {
@@ -70,7 +70,7 @@ export const resetAccessToken = async (keys: string[]) => {
 };
 
 export const fetchUserTops = async (type: string, timeRange: string) => {
-  const token = await storage.getData('access_token');
+  const token = await storage.getData(AsyncStorageKeys.ACCESS_TOKEN);
   try {
     const response = await fetch(
       `${RequestUrls.CURRENT_USER_TOPS + type}?time_range=${timeRange}`,
@@ -89,7 +89,7 @@ export const fetchUserTops = async (type: string, timeRange: string) => {
 };
 
 export const fetchUserProfile = async () => {
-  const token = await storage.getData('access_token');
+  const token = await storage.getData(AsyncStorageKeys.ACCESS_TOKEN);
   try {
     const response = await fetch(RequestUrls.CURRENT_USER_PROFILE, {
       method: 'GET',

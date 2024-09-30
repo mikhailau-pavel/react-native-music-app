@@ -1,11 +1,11 @@
-import { storage } from '@/scripts/asyncStorage';
+import { AsyncStorageKeys, storage } from '@/scripts/asyncStorage';
 
 enum AlbumsRequestUrls {
   ALBUM_INFO = 'https://api.spotify.com/v1/albums/',
 }
 
 export const getAlbum = async (id: string) => {
-  const token = await storage.getData('access_token');
+  const token = await storage.getData(AsyncStorageKeys.ACCESS_TOKEN);
   const response = await fetch(`${AlbumsRequestUrls.ALBUM_INFO}${id}`, {
     headers: {
       Authorization: 'Bearer ' + token,

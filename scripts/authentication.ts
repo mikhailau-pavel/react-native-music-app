@@ -1,5 +1,5 @@
 import * as Crypto from 'expo-crypto';
-import { storage } from './asyncStorage';
+import { AsyncStorageKeys, storage } from './asyncStorage';
 import { makeRedirectUri } from 'expo-auth-session';
 
 enum AuthURLs {
@@ -66,8 +66,8 @@ export const createLoginUrl = async () => {
 };
 
 export const requestAccessToken = async () => {
-  const codeVerifier = (await storage.getData('code_verifier')) || '';
-  const code = (await storage.getData('responseCode')) || '';
+  const codeVerifier = (await storage.getData(AsyncStorageKeys.CODE_VERIFIER)) || '';
+  const code = (await storage.getData(AsyncStorageKeys.RESPONSE_CODE)) || '';
   const redirectUri = `${makeRedirectUri({ scheme: 'musicapp', path: 'home' })}`;
   const params: Record<string, string> = {
     client_id: 'e6d38f8e338847f0a2909ea813ec79e4',

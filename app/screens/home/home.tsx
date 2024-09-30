@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Text, Image, FlatList, View, TouchableOpacity, ImageBackground } from 'react-native';
 
 import { fetchCurrentUserPlaylists } from '@/api/api';
-import { storage } from '@/scripts/asyncStorage';
+import { AsyncStorageKeys, storage } from '@/scripts/asyncStorage';
 import {
   CurrentUserPlaylist,
   HomeScreenProps,
@@ -73,7 +73,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const styles = getStyles(colors);
 
   const readPlaylistsFromStorage = async () => {
-    const currentUserPlaylists = await storage.getData('playlists');
+    const currentUserPlaylists = await storage.getData(AsyncStorageKeys.PLAYLISTS);
     if (currentUserPlaylists) {
       const playlists = JSON.parse(currentUserPlaylists);
       return playlists;
@@ -102,7 +102,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
 
   useEffect(() => {
     const tokenCheck = async () => {
-      const token = await storage.getData('access_token');
+      const token = await storage.getData(AsyncStorageKeys.ACCESS_TOKEN);
       if (token) {
         setAuthData({ ...authData, isSignedIn: true });
         await createPlaylistsList();

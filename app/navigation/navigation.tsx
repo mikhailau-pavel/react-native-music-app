@@ -19,7 +19,7 @@ import TopsMainScreen from '../screens/tops/tops';
 import WelcomeScreen from '../screens/welcome/welcome';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/authContext';
-import { storage } from '@/scripts/asyncStorage';
+import { AsyncStorageKeys, storage } from '@/scripts/asyncStorage';
 import LoadingIndicator from '../components/loader/loader';
 import React from 'react';
 
@@ -128,7 +128,7 @@ export const Tabs = () => {
 
   useEffect(() => {
     const tokenCheck = async () => {
-      const token = await storage.getData('access_token');
+      const token = await storage.getData(AsyncStorageKeys.ACCESS_TOKEN);
       if (token) {
         setAuthData({ ...authData, isSignedIn: true });
       } else {

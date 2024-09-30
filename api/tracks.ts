@@ -1,11 +1,11 @@
-import { storage } from '@/scripts/asyncStorage';
+import { AsyncStorageKeys, storage } from '@/scripts/asyncStorage';
 
 enum TracksRequestUrls {
   TRACK_INFO = 'https://api.spotify.com/v1/tracks/',
 }
 
 export const getTrackInfo = async (id: string) => {
-  const token = await storage.getData('access_token');
+  const token = await storage.getData(AsyncStorageKeys.ACCESS_TOKEN);
   try {
     const response = await fetch(`${TracksRequestUrls.TRACK_INFO}${id}`, {
       headers: {
