@@ -1,69 +1,12 @@
 import PlaylistItem from '@/app/components/lists/playlistItem';
-import { useTheme } from '@react-navigation/native';
-import { SectionList, Text, StyleSheet, View, Image } from 'react-native';
-import Entypo from '@expo/vector-icons/Entypo';
+import { SectionList, Text, StyleSheet} from 'react-native';
 import { useContext, useEffect, useState } from 'react';
 import { PlaybackContext } from '@/app/context/playbackContext';
-import { getStyles } from './styles';
 import React from 'react';
+import { NowPlayingHeader } from './nowPlaying';
+import { EmptyQueueComponent } from './emptyQueue';
 
-const mockNowPlayingItem = { song: 'Song 1', artist: 'Artist 1' };
 
-const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
-
-const NowPlayingHeader = () => {
-  const { colors } = useTheme();
-  const { playbackData } = useContext(PlaybackContext);
-  const styles = getStyles(colors);
-
-  return playbackData.isPlaying ? (
-    <View style={styles.container}>
-      <Text style={styles.sectionHeaderText}>Now playing:</Text>
-      <View style={styles.nowPlayingContainer}>
-        <View style={styles.nowPlayingInfo}>
-          <Image
-            style={styles.trackAlbumImage}
-            source={{ uri: playbackData.currentAlbumImage ?? mockImage }}
-          />
-          <>
-            <Text style={styles.trackTitle} numberOfLines={1}>
-              {playbackData.currentSong ?? mockNowPlayingItem.song}
-            </Text>
-            <Text style={styles.trackArtist} numberOfLines={1}>
-              {playbackData.currentArtist ?? mockNowPlayingItem.artist}
-            </Text>
-          </>
-        </View>
-        <Entypo
-          name="dots-three-vertical"
-          size={18}
-          color={colors.text}
-          style={styles.nowPlayingIcon}
-        />
-      </View>
-    </View>
-  ) : null;
-};
-
-const EmptyQueueComponent = () => {
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    text: {
-      color: '#fff',
-      fontSize: 16,
-    },
-  });
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Queue is empty</Text>
-    </View>
-  );
-};
 
 const QueueScreen = () => {
   const mockSections = [

@@ -1,5 +1,5 @@
 import { PlaybackContext } from '@/app/context/playbackContext';
-import { pauseTrack, playTrack } from '@/scripts/player';
+import { player } from '@/scripts/player';
 import { RootStackParamList } from '@/types/types';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -15,10 +15,10 @@ const PlaybackBar = () => {
 
   const handlePlayButton = () => {
     if (playbackData.currentSound && !playbackData.isPlaying) {
-      playTrack(playbackData.currentSound);
+      player.playTrack(playbackData.currentSound);
       setPlaybackData({ ...playbackData, isPlaying: true });
     } else if (playbackData.currentSound && playbackData.isPlaying) {
-      pauseTrack(playbackData.currentSound);
+      player.pauseTrack(playbackData.currentSound);
       setPlaybackData({ ...playbackData, isPlaying: false });
     }
   };

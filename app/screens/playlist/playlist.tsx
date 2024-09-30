@@ -4,7 +4,6 @@ import {
   PlaylistScreenProps,
   SelectedPlaylistTracksResponse,
   TrackItemData,
-  TrackItemProps,
 } from '@/types/types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
@@ -23,6 +22,7 @@ import { getAlbum } from '@/api/albums';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@react-navigation/native';
 import { getStyles } from './styles';
+import { TrackItem } from './trackItem';
 
 const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
@@ -57,46 +57,8 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
     navigation.navigate('Player');
   };
 
-  const setTrackInPlayer = async (item: TrackItemData, index: number) => {
-    if (playbackData.currentSound) {
-      player.stopTrack(playbackData.currentSound);
-      player.unloadSound(playbackData.currentSound);
-    }
-    const newSound = await player.createPlayback(item.previewUrl);
-    setPlaybackData({
-      ...playbackData,
-      currentArtist: item.artist,
-      currentSong: item.title,
-      currentAlbumImage: item.imageURL,
-      isPlaying: true,
-      isShowing: true,
-      currentSound: newSound,
-      currentTrackNumberInPlaylist: index,
-    });
-    if (newSound) {
-      player.playTrack(newSound);
-    }
-  };
-
-  const TrackItem = ({ item, index, onPress, backgroundColor, textColor }: TrackItemProps) => (
-    <TouchableOpacity
-      onPress={() => {
-        setTrackInPlayer(item, index);
-      }}
-      style={styles.trackItemContainer}
-    >
-      <Image style={styles.trackAlbumImage} source={{ uri: item.imageURL }} />
-      <View style={styles.trackInfo}>
-        <Text style={styles.trackTitle} numberOfLines={1}>
-          {item.title}
-        </Text>
-        <Text style={styles.trackArtist} numberOfLines={1}>
-          {item.artist}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-
+  
+  
   const createPlaylistsTrackList = useCallback(async (playlistId: string) => {
     const tracks = await fetchTracksFromPlaylist(playlistId);
     const selectedPlaylistTracks = tracks.map((elem: SelectedPlaylistTracksResponse) => {
