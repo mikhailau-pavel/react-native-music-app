@@ -13,6 +13,8 @@ import {
   Easing,
 } from 'react-native-reanimated';
 import Animated from 'react-native-reanimated';
+import { useTheme } from '@react-navigation/native';
+import { getStyles } from './styles';
 
 const ProgressBar = () => {
   const [playTimeCurrent, setPlayTimeCurrent] = useState(0);
@@ -23,6 +25,8 @@ const ProgressBar = () => {
   const [trackDuration, setTrackDuration] = useState(0);
   const setTrackIndex = useTrackChange(playbackData.currentTrackNumberInPlaylist || 0);
   const [isDragging, setIsDragging] = useState(false);
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
 
   const pan = useMemo(() => {
     return Gesture.Pan()
@@ -122,37 +126,5 @@ const ProgressBar = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  progressBarContainer: {
-    width: '100%',
-  },
-  barContainer: {
-    height: 4,
-    backgroundColor: 'grey',
-    borderRadius: 2,
-    margin: 10,
-  },
-  progressFiller: {
-    height: '100%',
-    backgroundColor: 'black',
-    borderRadius: 2,
-  },
-  timersContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 5,
-  },
-  knob: {
-    position: 'absolute',
-    top: -8,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: 'black',
-  },
-});
 
 export default ProgressBar;

@@ -1,14 +1,18 @@
 import { PlaybackContext } from '@/app/context/playbackContext';
 import { pauseTrack, playTrack } from '@/scripts/player';
 import { RootStackParamList } from '@/types/types';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useTheme } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useContext } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { getStyles } from './styles';
 
 const PlaybackBar = () => {
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
+
   const handlePlayButton = () => {
     if (playbackData.currentSound && !playbackData.isPlaying) {
       playTrack(playbackData.currentSound);
@@ -48,44 +52,5 @@ const PlaybackBar = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  playbackBar: {
-    flex: 1,
-    width: '90%',
-    alignSelf: 'center',
-    flexDirection: 'row',
-    position: 'absolute',
-    bottom: 40,
-    margin: 10,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 15,
-    alignItems: 'center',
-    shadowColor: '#000',
-    elevation: 5,
-  },
-  playbackBarImage: {
-    flex: 1,
-    height: 55,
-    width: 55,
-    margin: 5,
-    borderRadius: 10,
-  },
-  playbackBarText: { flex: 2 },
-  playbackBarButtonContainer: {
-    flex: 1,
-  },
-  playbackBarButtonImage: {
-    height: 55,
-    width: 55,
-  },
-  trackCreditsContainer: {
-    flex: 5,
-  },
-  playButtonContainer: {
-    flex: 1,
-  },
-});
 
 export default PlaybackBar;

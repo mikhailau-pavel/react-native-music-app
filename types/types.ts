@@ -155,3 +155,12 @@ export type ProfileScreenUserData = {
   followersCount: number;
   imageUrl: string;
 };
+
+export type ColorsSet = {
+  primary: string;
+  background: string;
+  card: string;
+  text: string;
+  border: string;
+  notification: string;
+};

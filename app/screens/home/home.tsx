@@ -10,7 +10,7 @@ import {
   ImageBackground,
 } from 'react-native';
 
-import { fetchCurrentUserPlaylists, resetAccessToken } from '@/api/api';
+import { fetchCurrentUserPlaylists } from '@/api/api';
 import { getData } from '@/scripts/asyncStorage';
 import {
   CurrentUserPlaylist,
@@ -19,6 +19,8 @@ import {
   PlaylistItemProps,
 } from '@/types/types';
 import { AuthContext } from '@/app/context/authContext';
+import { useTheme } from '@react-navigation/native';
+import { getStyles } from './styles';
 
 const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228';
 
@@ -53,23 +55,31 @@ const PlaylistItem = ({
   item,
   onPress,
   isSelected,
-}: PlaylistItemProps & { isSelected: boolean }) => (
-  <TouchableOpacity
-    onPress={onPress}
-    style={[styles.item, isSelected && { backgroundColor: '#017371' }]}
-  >
-    <View style={styles.itemContent}>
-      <Image source={{ uri: item.imageURL }} style={styles.itemImage} />
-      <Text style={[styles.title, isSelected && { color: '#FFFFFF' }]}>{item.title}</Text>
-    </View>
-  </TouchableOpacity>
-);
+}: PlaylistItemProps & { isSelected: boolean }) => {
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
+
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.item, isSelected && { backgroundColor: '#017371' }]}
+    >
+      <View style={styles.itemContent}>
+        <Image source={{ uri: item.imageURL }} style={styles.itemImage} />
+        <Text style={[styles.title, isSelected && { color: '#FFFFFF' }]}>{item.title}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string>('');
   const [currentPlaylistsList, setCurrentPlaylistsList] = useState(playlistsMockList);
   const [isLogined] = useState(false);
   const { authData, setAuthData } = useContext(AuthContext);
+  const { colors } = useTheme();
+  const styles = getStyles(colors);
+
   const readPlaylistsFromStorage = async () => {
     const currentUserPlaylists = await getData('playlists');
     if (currentUserPlaylists) {
@@ -178,78 +188,4 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   );
 };
 
-const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    backgroundColor: '#16171b',
-  },
-  container: {
-    flex: 1,
-  },
-  item: {
-    backgroundColor: '#282828',
-    flex: 1,
-    margin: 5,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  itemContent: {
-    padding: 10,
-  },
-  itemImage: {
-    width: '100%',
-    aspectRatio: 1,
-    borderRadius: 4,
-  },
-  title: {
-    fontFamily: 'AngemeBold',
-    fontSize: 16,
-    color: '#FFFFFF',
-    padding: 10,
-  },
-  welcomeButton: {
-    alignItems: 'center',
-    alignSelf: 'center',
-    backgroundColor: '#7bfdc7',
-    padding: 15,
-    borderRadius: 25,
-    marginVertical: 20,
-  },
-  welcomeText: {
-    fontFamily: 'Beograd',
-    fontSize: 18,
-    color: '#FFFFFF',
-  },
-  loginContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  logo: {
-    width: 280,
-    height: 280,
-    marginBottom: 30,
-  },
-  welcomeTitle: {
-    fontFamily: 'AngemeBold',
-    fontSize: 32,
-    color: '#FFFFFF',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  loginButton: {
-    backgroundColor: '#7bfdc7',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 30,
-    marginTop: 30,
-  },
-  loginButtonText: {
-    fontFamily: 'AngemeBold',
-    fontSize: 18,
-    color: '#FFFFFF',
-    textAlign: 'center',
-  },
-});
 export default HomeScreen;

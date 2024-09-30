@@ -3,7 +3,8 @@ import { useTheme } from '@react-navigation/native';
 import { SectionList, Text, StyleSheet, View, Image } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import { useContext, useEffect, useState } from 'react';
-import { PlaybackContext, QueueItem } from '@/app/context/playbackContext';
+import { PlaybackContext } from '@/app/context/playbackContext';
+import { getStyles } from './styles';
 
 const mockNowPlayingItem = { song: 'Song 1', artist: 'Artist 1' };
 
@@ -12,47 +13,7 @@ const mockImage = 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8
 const NowPlayingHeader = () => {
   const { colors } = useTheme();
   const { playbackData } = useContext(PlaybackContext);
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    sectionHeaderText: {
-      color: '#fff',
-      fontWeight: 'bold',
-      padding: 10,
-    },
-    trackAlbumImage: {
-      width: 50,
-      height: 50,
-      marginRight: 10,
-      borderRadius: 5,
-    },
-    nowPlayingContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      padding: 10,
-      borderBottomWidth: 0.5,
-      borderBottomColor: colors.border,
-    },
-    nowPlayingIcon: {
-      alignSelf: 'center',
-      color: colors.notification,
-    },
-    nowPlayingInfo: {
-      flexDirection: 'row',
-    },
-    trackTitle: {
-      color: colors.text,
-      fontSize: 16,
-      fontFamily: 'AngemeBold',
-    },
-    trackArtist: {
-      color: colors.text,
-      fontSize: 14,
-      fontFamily: 'AngemeRegular',
-    },
-  });
+  const styles = getStyles(colors);
 
   return playbackData.isPlaying ? (
     <View style={styles.container}>

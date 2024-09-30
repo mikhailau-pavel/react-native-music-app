@@ -13,7 +13,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  StyleSheet,
   TextInput,
   KeyboardAvoidingView,
 } from 'react-native';
@@ -23,6 +22,7 @@ import { getAlbum } from '@/api/albums';
 
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@react-navigation/native';
+import { getStyles } from './styles';
 
 const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
@@ -30,6 +30,7 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const styles = getStyles(colors);
 
   const handlePlayPlaylistButtonPress = async () => {
     if (playbackData.currentPlaylistData) {
@@ -197,79 +198,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
       />
     );
   };
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    searchContainer: {
-      padding: 10,
-      backgroundColor: colors.card,
-    },
-    searchInput: {
-      backgroundColor: colors.background,
-      borderRadius: 20,
-      padding: 10,
-      color: colors.text,
-      fontFamily: 'AngemeRegular',
-    },
-    playlistHeader: {
-      alignItems: 'center',
-      padding: 20,
-      backgroundColor: colors.primary,
-    },
-    playlistCover: {
-      width: 200,
-      height: 200,
-      marginBottom: 20,
-      borderRadius: 10,
-    },
-    playlistTitle: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      color: colors.text,
-      marginBottom: 10,
-      fontFamily: 'AngemeBold',
-    },
-    playButton: {
-      backgroundColor: colors.primary,
-      paddingVertical: 10,
-      paddingHorizontal: 40,
-      borderRadius: 25,
-    },
-    playButtonText: {
-      color: colors.text,
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    trackItemContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      padding: 10,
-      borderBottomWidth: 0.5,
-      borderBottomColor: colors.border,
-    },
-    trackAlbumImage: {
-      width: 50,
-      height: 50,
-      marginRight: 10,
-      borderRadius: 5,
-    },
-    trackInfo: {
-      flex: 1,
-    },
-    trackTitle: {
-      color: colors.text,
-      fontSize: 16,
-      fontFamily: 'AngemeBold',
-    },
-    trackArtist: {
-      color: colors.text,
-      fontSize: 14,
-      fontFamily: 'AngemeRegular',
-    },
-  });
 
   return (
     <KeyboardAvoidingView

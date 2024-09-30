@@ -10,6 +10,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { getStyles } from './styles';
 
 type PlaylistItemProps = {
   item: { title: string; artist: string };
@@ -25,6 +26,7 @@ const PlaylistItem = ({ item, index, onReorder }: PlaylistItemProps) => {
   const active = useSharedValue(false);
   const initialListItemHeight = 50;
   const [itemHeight] = useState(initialListItemHeight);
+  const styles = getStyles(colors);
 
   const pan = useMemo(() => {
     return Gesture.Pan()
@@ -52,41 +54,6 @@ const PlaylistItem = ({ item, index, onReorder }: PlaylistItemProps) => {
     zIndex: active.value ? 1 : 0,
     shadowOpacity: withTiming(active.value ? 1 : 0),
   }));
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      borderBottomWidth: 0.5,
-      borderBottomColor: colors.border,
-      paddingHorizontal: 10,
-      height: 50,
-    },
-    playingItemAlbumImage: {
-      width: 50,
-      height: 50,
-      marginRight: 10,
-      borderRadius: 5,
-    },
-    trackInfo: {
-      flexDirection: 'row',
-    },
-    trackTitle: {
-      color: colors.text,
-      fontSize: 16,
-      fontFamily: 'AngemeBold',
-    },
-    trackArtist: {
-      color: colors.text,
-      fontSize: 14,
-      fontFamily: 'AngemeRegular',
-    },
-    checkbox: {
-      margin: 8,
-    },
-  });
 
   return (
     <Animated.View style={[styles.container, animatedStyles]}>

@@ -1,14 +1,6 @@
 import { PlayerScreenProps } from '@/types/types';
 import { useContext, useEffect, useMemo, useState } from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  StyleSheet,
-  LayoutAnimation,
-  Dimensions,
-} from 'react-native';
+import { Text, TouchableOpacity, View, Image, LayoutAnimation, Dimensions } from 'react-native';
 import Animated, {
   runOnJS,
   useAnimatedStyle,
@@ -22,6 +14,7 @@ import { useTrackChange } from '@/hooks/useTrackChange';
 import ProgressBar from '@/app/components/progressBar/progressBar';
 import { useTheme } from '@react-navigation/native';
 import { getTrackInfo } from '@/api/tracks';
+import { getStyles } from './styles';
 
 const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const active = useSharedValue(false);
@@ -32,6 +25,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
   const { colors } = useTheme();
+  const styles = getStyles(colors);
 
   const pan = useMemo(() => {
     return Gesture.Pan()
@@ -138,54 +132,12 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
     }
   };
 
-  const styles = StyleSheet.create({
-    background: {
-      flex: 1,
-    },
-    trackCoverGradient: {
-      position: 'absolute',
-      height: 600,
-      left: 0,
-      right: 0,
-      top: 0,
-    },
-    trackCoverContainer: {
-      margin: 5,
-    },
-    trackCover: {
-      alignSelf: 'center',
-    },
-    trackTitle: {
-      fontSize: 40,
-      alignSelf: 'center',
-      fontFamily: 'AngemeBold',
-      margin: 5,
-      color: colors.text,
-    },
-    trackInfoControlContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignContent: 'center',
-    },
-    trackControlContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    controlButton: {
-      width: 60,
-      height: 60,
-      alignSelf: 'flex-end',
-      margin: 15,
-    },
-  });
-
   return (
     <GestureDetector gesture={pan}>
       <Animated.View style={[styles.background, animatedStyles]}>
         <View style={styles.trackCoverContainer}>
           {playbackData.currentPlaylistData && (
-            <>
+            <View>
               <Text style={styles.trackTitle}>
                 {
                   playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist || 0]
@@ -210,7 +162,7 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
                   }
                 </Text>
               </TouchableOpacity>
-            </>
+            </View>
           )}
           {!expanded ? (
             <View style={styles.trackInfoControlContainer}>
