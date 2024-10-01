@@ -164,3 +164,12 @@ export type ColorsSet = {
   border: string;
   notification: string;
 };
+
+export type TopsChartType = 'artists' | 'tracks';
+export type TopsPeriod = 'short_term' | 'medium_term' | 'long_term';
+export type TopsHeaderProps = {
+  type: TopsChartType;
+  period: TopsPeriod;
+  updateChartType: (newType: TopsChartType) => void;
+  updatePeriod: (newPeriod: TopsPeriod) => void;
+};

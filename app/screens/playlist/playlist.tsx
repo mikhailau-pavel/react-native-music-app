@@ -57,8 +57,6 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
     navigation.navigate('Player');
   };
 
-  
-  
   const createPlaylistsTrackList = useCallback(async (playlistId: string) => {
     const tracks = await fetchTracksFromPlaylist(playlistId);
     const selectedPlaylistTracks = tracks.map((elem: SelectedPlaylistTracksResponse) => {

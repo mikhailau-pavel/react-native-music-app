@@ -1,10 +1,10 @@
-import { PlaybackContext } from "@/app/context/playbackContext";
-import { mockImage, mockNowPlayingItem } from "@/utils/constants";
-import Entypo from "@expo/vector-icons/Entypo";
-import { useTheme } from "@react-navigation/native";
-import React, { useContext } from "react";
-import { View, Text, Image } from "react-native";
-import { getStyles } from "./styles";
+import { PlaybackContext } from '@/app/context/playbackContext';
+import { mockImage, mockNowPlayingItem } from '@/utils/constants';
+import Entypo from '@expo/vector-icons/Entypo';
+import { useTheme } from '@react-navigation/native';
+import React, { useContext } from 'react';
+import { View, Text, Image } from 'react-native';
+import { getStyles } from './styles';
 
 export const NowPlayingHeader = () => {
   const { colors } = useTheme();

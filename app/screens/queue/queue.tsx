@@ -1,12 +1,10 @@
 import PlaylistItem from '@/app/components/lists/playlistItem';
-import { SectionList, Text, StyleSheet} from 'react-native';
+import { SectionList, Text, StyleSheet } from 'react-native';
 import { useContext, useEffect, useState } from 'react';
 import { PlaybackContext } from '@/app/context/playbackContext';
 import React from 'react';
 import { NowPlayingHeader } from './nowPlaying';
 import { EmptyQueueComponent } from './emptyQueue';
-
-
 
 const QueueScreen = () => {
   const mockSections = [

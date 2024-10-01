@@ -1,4 +1,4 @@
-import { PlaylistItemData } from "@/types/types";
+import { PlaylistItemData } from '@/types/types';
 
 export const ActivityItemProps = [
   { rotate: '0deg', delay: 0 },
@@ -47,6 +47,5 @@ export const playlistsMockList: PlaylistItemData[] = [
     playlistId: '3cEYpjA9oz9GiPac4AsH4n',
   },
 ];
-
 
 export const mockNowPlayingItem = { song: 'Song 1', artist: 'Artist 1' };

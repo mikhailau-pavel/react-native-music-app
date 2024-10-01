@@ -3,17 +3,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { FlatList, View, ImageBackground } from 'react-native';
 import { fetchCurrentUserPlaylists } from '@/api/api';
 import { AsyncStorageKeys, storage } from '@/scripts/asyncStorage';
-import {
-  CurrentUserPlaylist,
-  HomeScreenProps,
-} from '@/types/types';
+import { CurrentUserPlaylist, HomeScreenProps } from '@/types/types';
 import { AuthContext } from '@/app/context/authContext';
 import { useTheme } from '@react-navigation/native';
 import { getStyles } from './styles';
 import { playlistsMockList } from '@/utils/constants';
 import { PlaylistItem } from './playlistItem';
-
-
 
 const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string>('');

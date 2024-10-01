@@ -1,7 +1,7 @@
-import { PlaylistItemProps } from "@/types/types";
-import { useTheme } from "@react-navigation/native";
-import { TouchableOpacity, View, Image, Text } from "react-native";
-import { getStyles } from "./styles";
+import { PlaylistItemProps } from '@/types/types';
+import { useTheme } from '@react-navigation/native';
+import { TouchableOpacity, View, Image, Text } from 'react-native';
+import { getStyles } from './styles';
 
 export const PlaylistItem = ({
   item,
