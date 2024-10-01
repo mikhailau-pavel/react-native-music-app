@@ -1,13 +1,22 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-enum PropsRoutes {
+export enum HomePropsRoutes {
   HOME = 'Home',
-  LOGIN = 'Login',
-  PROFILE = 'Profile',
   PLAYLIST = 'Playlist',
+  PLAYER = 'Player',
+  WELCOME = 'Welcome',
+  LOGIN = 'Login',
 }
 
-type AuthParams = {
+export enum TopsPropsRoutes {
+  TOPS = 'TopsMain',
+}
+
+export enum ProfilePropsRoutes {
+  PROFILE = 'Profile',
+}
+
+export type AuthParams = {
   response_type: 'code';
   client_id: string;
   scope: string;
@@ -16,49 +25,76 @@ type AuthParams = {
   redirect_uri: string;
 };
 
-type RootStackParamList = {
-  Home: { loginAttempt: boolean };
-  Login: undefined;
+export type RootStackParamList = {
+  Home: { loginAttempt: boolean } | undefined;
   Profile: undefined;
-  Playlist: { playlistId: string; playlistCover: string; playlistTitle: string };
+  Playlist: { playlistId: string; playlistCover: string; playlistTitle: string; type: string };
+  Player: TrackItemData[] | undefined;
   NotFound: undefined;
+  Welcome: undefined;
+  Login: undefined;
 };
 
-type HomeScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.HOME>;
-type LoginScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.LOGIN>;
-type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PROFILE>;
-type PlaylistScreenProps = NativeStackScreenProps<RootStackParamList, PropsRoutes.PLAYLIST>;
-type NotFoundScreenProps = NativeStackScreenProps<RootStackParamList>;
+export type TopsStackParamList = {
+  TopsMain: undefined;
+};
 
-type PlaylistItemData = {
+export type ProfileStackParamList = {
+  Profile: undefined;
+};
+
+export type HomeScreenProps = NativeStackScreenProps<RootStackParamList, HomePropsRoutes.HOME>;
+export type PlaylistScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  HomePropsRoutes.PLAYLIST
+>;
+export type PlayerScreenProps = NativeStackScreenProps<RootStackParamList, HomePropsRoutes.PLAYER>;
+export type NotFoundScreenProps = NativeStackScreenProps<RootStackParamList>;
+
+export type WelcomeScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  HomePropsRoutes.WELCOME
+>;
+export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, HomePropsRoutes.LOGIN>;
+
+export type TopsMainScreenProps = NativeStackScreenProps<TopsStackParamList, TopsPropsRoutes.TOPS>;
+
+export type ProfileScreenProps = NativeStackScreenProps<
+  ProfileStackParamList,
+  ProfilePropsRoutes.PROFILE
+>;
+
+export type PlaylistItemData = {
   title: string;
   id: string;
   imageURL: string;
   playlistId: string;
 };
 
-type TrackItemData = {
+export type TrackItemData = {
   title: string;
   artist: string;
   imageURL: string;
   trackId: string;
+  previewUrl: string;
 };
 
-type PlaylistItemProps = {
+export type PlaylistItemProps = {
   item: PlaylistItemData;
   onPress: () => void;
-  backgroundColor: string;
-  textColor: string;
+  backgroundColor?: string;
+  textColor?: string;
 };
 
-type TrackItemProps = {
+export type TrackItemProps = {
   item: TrackItemData;
+  index: number;
   onPress: () => void;
   backgroundColor: string;
   textColor: string;
 };
 
-type CurrentUserPlaylist = {
+export type CurrentUserPlaylist = {
   index: number;
   description: string;
   external_url: string;
@@ -78,7 +114,7 @@ type CurrentUserPlaylist = {
   name: string;
 };
 
-type CurrentPlaylistTracksResponse = {
+export type SelectedPlaylistTracksResponse = {
   track: {
     name: string;
     artists: {
@@ -90,23 +126,50 @@ type CurrentPlaylistTracksResponse = {
       }[];
     };
     id: string;
+    preview_url: string;
   };
 };
 
-export type {
-  AuthParams,
-  RootStackParamList,
-  HomeScreenProps,
-  LoginScreenProps,
-  ProfileScreenProps,
-  PlaylistScreenProps,
-  NotFoundScreenProps,
-  PlaylistItemData,
-  PlaylistItemProps,
-  CurrentUserPlaylist,
-  TrackItemData,
-  TrackItemProps,
-  CurrentPlaylistTracksResponse,
+export type CurrentAlbumTracksResponse = {
+  name: string;
+  id: string;
+  preview_url: string;
 };
 
-export { PropsRoutes };
+export type TopsResponseDataItem = {
+  name: string;
+  images: { url: string }[];
+  album: {
+    images: { url: string }[];
+  };
+  uri?: string;
+};
+
+export type TopsListItem = {
+  title: string;
+  imageUrl: string;
+};
+
+export type ProfileScreenUserData = {
+  name: string;
+  followersCount: number;
+  imageUrl: string;
+};
+
+export type ColorsSet = {
+  primary: string;
+  background: string;
+  card: string;
+  text: string;
+  border: string;
+  notification: string;
+};
+
+export type TopsChartType = 'artists' | 'tracks';
+export type TopsPeriod = 'short_term' | 'medium_term' | 'long_term';
+export type TopsHeaderProps = {
+  type: TopsChartType;
+  period: TopsPeriod;
+  updateChartType: (newType: TopsChartType) => void;
+  updatePeriod: (newPeriod: TopsPeriod) => void;
+};

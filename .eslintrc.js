@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['expo'],
+  extends: ['expo', 'plugin:@tanstack/eslint-plugin-query/recommended'],
   rules: {
     'no-console': 'warn',
   },
