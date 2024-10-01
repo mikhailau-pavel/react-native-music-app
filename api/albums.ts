@@ -5,12 +5,16 @@ enum AlbumsRequestUrls {
 }
 
 export const getAlbum = async (id: string) => {
-  const token = await storage.getData(AsyncStorageKeys.ACCESS_TOKEN);
-  const response = await fetch(`${AlbumsRequestUrls.ALBUM_INFO}${id}`, {
-    headers: {
-      Authorization: 'Bearer ' + token,
-    },
-  });
-  const data = await response.json();
-  return data;
+  try {
+    const token = await storage.getData(AsyncStorageKeys.ACCESS_TOKEN);
+    const response = await fetch(`${AlbumsRequestUrls.ALBUM_INFO}${id}`, {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    });
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    throw new Error(`Error message: ${err}`);
+  }
 };

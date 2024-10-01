@@ -52,7 +52,14 @@ const TopsMainScreen = () => {
         data={topsData}
         renderItem={ItemOfTop}
         entering={FadeIn.duration(2000)}
-        ListHeaderComponent={<TopsHeader type={type} period={period} updateChartType={updateChartType} updatePeriod={updatePeriod}/>}
+        ListHeaderComponent={
+          <TopsHeader
+            type={type}
+            period={period}
+            updateChartType={updateChartType}
+            updatePeriod={updatePeriod}
+          />
+        }
         ListFooterComponent={type === 'tracks' ? <TopsFooter period={period} /> : null}
       />
     </View>
