@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 import QueueScreen from '../queue/queue';
 import { AuthContext } from '@/app/context/authContext';
-import LiveActivityControlModule from '../../../modules/fizl-live-activity-sample/src/LiveActivityControlModule';
 import { useTheme } from '@react-navigation/native';
 import { getStyles } from './styles';
 import { AllAsyncStorageKeys } from '@/utils/constants';
@@ -73,16 +72,6 @@ const ProfileScreen = () => {
       title: 'title test',
       widgetUrl: 'musicapp://home',
     };
-
-    console.log('testing time: ', endDate, startDate);
-
-    LiveActivityControlModule.startActivity(
-      activityParams.startTime,
-      activityParams.endTime,
-      activityParams.headline,
-      activityParams.title,
-      activityParams.widgetUrl
-    );
   };
 
   return (
