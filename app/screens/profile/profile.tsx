@@ -74,21 +74,18 @@ const ProfileScreen = () => {
       widgetUrl: 'musicapp://home',
     };
 
-    console.log('activity options: ', activityParams)
-    startActivity(activityParams)
+    console.log('activity options: ', activityParams);
+    startActivity(activityParams);
   };
 
-  const handleStopActivityPress = ()=> {
-
+  const handleStopActivityPress = () => {
     const activityEndParams = {
       headline: 'headline 2test',
       title: 'title test',
       widgetUrl: 'musicapp://home',
-    }
-    endActivity(activityEndParams)
-
-  }
-
+    };
+    endActivity(activityEndParams);
+  };
 
   return (
     <View style={styles.profileContainer}>

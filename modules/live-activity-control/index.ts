@@ -41,13 +41,7 @@ function startActivityInner(
   headline: string,
   widgetUrl: string
 ): boolean {
-  return LiveActivityControlModule.startActivity(
-    startTime,
-    endTime,
-    title,
-    headline,
-    widgetUrl
-  );
+  return LiveActivityControlModule.startActivity(startTime, endTime, title, headline, widgetUrl);
 }
 
 /**
@@ -55,14 +49,10 @@ function startActivityInner(
  * @param options Options for the activity.
  */
 export function endActivity(options: EndActivityOptions): void {
-  console.log('end activity called')
+  console.log('end activity called');
   endActivityInner(options.title, options.headline, options.widgetUrl);
 }
 
-function endActivityInner(
-  title: string,
-  headline: string,
-  widgetUrl: string
-): void {
+function endActivityInner(title: string, headline: string, widgetUrl: string): void {
   LiveActivityControlModule.endActivity(title, headline, widgetUrl);
 }

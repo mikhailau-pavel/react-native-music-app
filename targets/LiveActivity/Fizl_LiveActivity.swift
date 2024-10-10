@@ -84,26 +84,40 @@ struct FizlWidget: Widget {
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    Image("FizlIconWhite")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 36)
-                        .padding(.leading)
+                  Text("Leading Content")
+                    .background(Color.blue)
+//                    Image("FizlIconWhite")
+//                        .resizable()
+//                        .aspectRatio(contentMode: .fit)
+//                        .frame(width: 36)
+//                        .padding(.leading)
                 }
-                DynamicIslandExpandedRegion(.trailing) {}
+                DynamicIslandExpandedRegion(.trailing) {
+                  Text("Trailing Content")
+                    .background(Color.white)
+                }
                 DynamicIslandExpandedRegion(.bottom) {
-                    FizlIslandBottom(context: context)
+                  Text("Bottom Content")
+                    .background(Color.white)
+//                    FizlIslandBottom(context: context)
                 }
             } compactLeading: {
-                Image("FizlIconWhite")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 16)
-            } compactTrailing: {} minimal: {
-                Image("FizlIconWhite")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 16)
+              Text("CL")
+                .background(Color.white)
+//                Image("FizlIconWhite")
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fit)
+//                    .frame(width: 16)
+            } compactTrailing: {
+              Text("CT")
+                .background(Color.white)
+            } minimal: {
+              Text("M")
+                .background(Color.white)
+//                Image("FizlIconWhite")
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fit)
+//                    .frame(width: 16)
             }
             .widgetURL(URL(string: context.state.widgetUrl))
         }
