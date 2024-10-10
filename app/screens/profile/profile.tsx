@@ -18,6 +18,7 @@ import { AuthContext } from '@/app/context/authContext';
 import { useTheme } from '@react-navigation/native';
 import { getStyles } from './styles';
 import { AllAsyncStorageKeys } from '@/utils/constants';
+import { startActivity, endActivity } from '@/modules/live-activity-control';
 
 const ProfileScreen = () => {
   const [profileData, setProfileData] = useState<ProfileScreenUserData>();
@@ -60,19 +61,34 @@ const ProfileScreen = () => {
 
   const handleStartActivityPress = () => {
     const currentTime = Date.now();
-    const startTime = currentTime * 1000;
+    const startTime = currentTime + 10 * 1000;
     const endTime = currentTime + 120 * 1000;
     const startDate = new Date(startTime);
     const endDate = new Date(endTime);
 
     const activityParams = {
-      startTime: startTime,
-      endTime: endTime,
-      headline: 'headline test',
+      startTime: startDate,
+      endTime: endDate,
+      headline: 'headline 2test',
       title: 'title test',
       widgetUrl: 'musicapp://home',
     };
+
+    console.log('activity options: ', activityParams)
+    startActivity(activityParams)
   };
+
+  const handleStopActivityPress = ()=> {
+
+    const activityEndParams = {
+      headline: 'headline 2test',
+      title: 'title test',
+      widgetUrl: 'musicapp://home',
+    }
+    endActivity(activityEndParams)
+
+  }
+
 
   return (
     <View style={styles.profileContainer}>
@@ -119,6 +135,7 @@ const ProfileScreen = () => {
           <Text style={styles.logoutText}>Log out</Text>
         </TouchableOpacity>
         <Button title={'Start activity'} onPress={handleStartActivityPress} />
+        <Button title={'Stop activity'} onPress={handleStopActivityPress} />
         <QueueScreen />
       </View>
     </View>
