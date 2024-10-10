@@ -14,7 +14,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.dialer.reactnativemusicapp"
+      "bundleIdentifier": "com.dialer.reactnativemusicapp",
+      "infoPlist": { "NSSupportsLiveActivities": true }
     },
     "android": {
       "adaptiveIcon": {
@@ -45,11 +46,19 @@
             "./assets/fonts/Angeme-Regular.ttf"
           ]
         }
-      ], 
+      ],
       [
         "@bacons/apple-targets",
         {
           "appleTeamId": "RandomTeamId"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "16.2"
+          }
         }
       ]
     ]
