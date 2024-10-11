@@ -2,6 +2,10 @@ import ActivityKit
 import SwiftUI
 import WidgetKit
 
+import ActivityKit
+import SwiftUI
+import WidgetKit
+
 struct FizlActivityView: View {
     let context: ActivityViewContext<FizlAttributes>
     @Environment(\.colorScheme) var colorScheme
@@ -10,10 +14,6 @@ struct FizlActivityView: View {
         HStack {
             VStack(spacing: 10) {
                 HStack {
-                    Image(colorScheme == .dark ? "FizlIconWhite" : "FizlIcon")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 32, height: 32)
                     Text(context.state.headline)
                         .font(.headline)
                     Spacer()
@@ -26,6 +26,26 @@ struct FizlActivityView: View {
                         .padding(.top, 5)
                     Spacer()
                 }
+
+                HStack(spacing: 20) {
+                    Button(action: {
+                    }) {
+                        Image(systemName: "backward.fill")
+                    }
+
+                    Button(action: {
+                    }) {
+                        Image(systemName: 
+                        // context.state.isPlaying ? "pause.fill" : 
+                        "play.fill")
+                    }
+
+                    Button(action: {
+                    }) {
+                        Image(systemName: "forward.fill")
+                    }
+                }
+                .font(.title2)
 
                 Spacer()
 
@@ -45,6 +65,7 @@ struct FizlActivityView: View {
         }
     }
 }
+
 
 struct FizlIslandBottom: View {
     let context: ActivityViewContext<FizlAttributes>
@@ -76,52 +97,48 @@ struct FizlIslandBottom: View {
 }
 
 struct FizlWidget: Widget {
-    let kind: String = "Fizl_Widget"
-
-    var body: some WidgetConfiguration {
-        ActivityConfiguration(for: FizlAttributes.self) { context in
-            FizlActivityView(context: context)
-        } dynamicIsland: { context in
-            DynamicIsland {
-                DynamicIslandExpandedRegion(.leading) {
-                  Text("Leading Content")
-                    .background(Color.blue)
-//                    Image("FizlIconWhite")
-//                        .resizable()
-//                        .aspectRatio(contentMode: .fit)
-//                        .frame(width: 36)
-//                        .padding(.leading)
-                }
-                DynamicIslandExpandedRegion(.trailing) {
-                  Text("Trailing Content")
-                    .background(Color.white)
-                }
-                DynamicIslandExpandedRegion(.bottom) {
-                  Text("Bottom Content")
-                    .background(Color.white)
-//                    FizlIslandBottom(context: context)
-                }
-            } compactLeading: {
-              Text("CL")
-                .background(Color.white)
-//                Image("FizlIconWhite")
-//                    .resizable()
-//                    .aspectRatio(contentMode: .fit)
-//                    .frame(width: 16)
-            } compactTrailing: {
-              Text("CT")
-                .background(Color.white)
-            } minimal: {
-              Text("M")
-                .background(Color.white)
-//                Image("FizlIconWhite")
-//                    .resizable()
-//                    .aspectRatio(contentMode: .fit)
-//                    .frame(width: 16)
-            }
-            .widgetURL(URL(string: context.state.widgetUrl))
+  let kind: String = "Fizl_Widget"
+  
+  var body: some WidgetConfiguration {
+    ActivityConfiguration(for: FizlAttributes.self) { context in
+      FizlActivityView(context: context)
+    } dynamicIsland: { context in
+      DynamicIsland {
+        DynamicIslandExpandedRegion(.leading) {
+          Text("Title")
         }
+        DynamicIslandExpandedRegion(.trailing) {
+          Text("Artist")
+        }
+        DynamicIslandExpandedRegion(.bottom) {
+          HStack(spacing: 20) {
+            Button(action: {
+            }) {
+              Image(systemName: "backward.fill")
+            }
+            
+            Button(action: {
+            }) {
+              Image(systemName: "play.fill")
+            }
+            
+            Button(action: {
+            }) {
+              Image(systemName: "forward.fill")
+            }
+          }
+          .font(.title2)
+        }
+      } compactLeading: {
+        Text("CL")
+      } compactTrailing: {
+        Text("CT")
+      } minimal: {
+        Text("M")
+      }
+      .widgetURL(URL(string: context.state.widgetUrl))
     }
+  }
 }
 
 private extension FizlAttributes {
@@ -132,7 +149,7 @@ private extension FizlAttributes {
 
 private extension FizlAttributes.ContentState {
     static var state: FizlAttributes.ContentState {
-        FizlAttributes.ContentState(startTime: Date(timeIntervalSince1970: TimeInterval(1704300710)), endTime: Date(timeIntervalSince1970: TimeInterval(1704304310)), title: "Started at 11:54AM", headline: "Fizl in Progress", widgetUrl: "https://www.apple.com")
+        FizlAttributes.ContentState(startTime: Date(timeIntervalSince1970: TimeInterval(1704300710)), endTime: Date(timeIntervalSince1970: TimeInterval(1704304310)), title: "Title", headline: "Artist", widgetUrl: "musicapp://home")
     }
 }
 

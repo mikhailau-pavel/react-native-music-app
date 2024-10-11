@@ -19,6 +19,7 @@ import { useTheme } from '@react-navigation/native';
 import { getStyles } from './styles';
 import { AllAsyncStorageKeys } from '@/utils/constants';
 import { startActivity, endActivity } from '@/modules/live-activity-control';
+import MessageQueue from 'react-native/Libraries/BatchedBridge/MessageQueue'
 
 const ProfileScreen = () => {
   const [profileData, setProfileData] = useState<ProfileScreenUserData>();
@@ -79,6 +80,8 @@ const ProfileScreen = () => {
   };
 
   const handleStopActivityPress = () => {
+    console.log('spying on the bridge, end of activity: ', MessageQueue.spy(true))
+
     const activityEndParams = {
       headline: 'headline 2test',
       title: 'title test',
