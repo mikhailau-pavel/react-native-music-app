@@ -81,7 +81,7 @@ const ProfileScreen = () => {
 
   const handleStopActivityPress = () => {
     console.log(
-      'spying on the bridge, end of activity: ',
+      'spying on the bridge, end of activity: '
       // MessageQueue.spy((info) => console.log('event!', info))
     );
 

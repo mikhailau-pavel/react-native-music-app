@@ -18,3 +18,4 @@ app-example
 .DS_Store
 *.swp
 !modules/live-activity-control/ios
+!modules/live-activity-control/android
