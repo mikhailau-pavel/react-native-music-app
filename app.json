@@ -32,6 +32,14 @@
       "eas": {
         "projectId": "3de6fe03-ece5-4b68-a53a-aa75fa85bcdb"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": ["./assets/fonts/Beograd.ttf", "./assets/fonts/Cartoon1471Extended-x3oyq.ttf", "./assets/fonts/HiykayaRegular.ttf", "./assets/fonts/Angeme-Bold.ttf", "./assets/fonts/Angeme-Regular.ttf"]
+        }
+      ]
+    ]
   }
 }
