@@ -1,20 +1,21 @@
 {
   "expo": {
-    "name": "react-native-music-app",
+    "name": "Gnomify",
     "slug": "react-native-music-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "musicapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/images/splash-dark.png",
+      "backgroundColor": "#000000",
+      "resizeMode": "contain"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.dialer.reactnativemusicapp"
+      "bundleIdentifier": "com.dialer.reactnativemusicapp",
+      "infoPlist": { "NSSupportsLiveActivities": true }
     },
     "android": {
       "adaptiveIcon": {
@@ -28,19 +29,38 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": [
-      "expo-router"
-    ],
-    "experiments": {
-      "typedRoutes": true
-    },
     "extra": {
-      "router": {
-        "origin": false
-      },
       "eas": {
         "projectId": "3de6fe03-ece5-4b68-a53a-aa75fa85bcdb"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Beograd.ttf",
+            "./assets/fonts/Cartoon1471Extended-x3oyq.ttf",
+            "./assets/fonts/HiykayaRegular.ttf",
+            "./assets/fonts/Angeme-Bold.ttf",
+            "./assets/fonts/Angeme-Regular.ttf"
+          ]
+        }
+      ],
+      [
+        "@bacons/apple-targets",
+        {
+          "appleTeamId": "RandomTeamId"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "16.2"
+          }
+        }
+      ]
+    ]
   }
 }
