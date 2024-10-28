@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "react-native-music-app",
+    "name": "Gnomify",
     "slug": "react-native-music-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,13 +8,14 @@
     "scheme": "musicapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/images/splash-dark.png",
+      "backgroundColor": "#000000",
+      "resizeMode": "contain"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.dialer.reactnativemusicapp"
+      "bundleIdentifier": "com.dialer.reactnativemusicapp",
+      "infoPlist": { "NSSupportsLiveActivities": true }
     },
     "android": {
       "adaptiveIcon": {
@@ -37,7 +38,27 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/Beograd.ttf", "./assets/fonts/Cartoon1471Extended-x3oyq.ttf", "./assets/fonts/HiykayaRegular.ttf", "./assets/fonts/Angeme-Bold.ttf", "./assets/fonts/Angeme-Regular.ttf"]
+          "fonts": [
+            "./assets/fonts/Beograd.ttf",
+            "./assets/fonts/Cartoon1471Extended-x3oyq.ttf",
+            "./assets/fonts/HiykayaRegular.ttf",
+            "./assets/fonts/Angeme-Bold.ttf",
+            "./assets/fonts/Angeme-Regular.ttf"
+          ]
+        }
+      ],
+      [
+        "@bacons/apple-targets",
+        {
+          "appleTeamId": "RandomTeamId"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "16.2"
+          }
         }
       ]
     ]

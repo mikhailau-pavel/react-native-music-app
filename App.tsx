@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Text } from 'react-native';
-import LoginScreen from './app/screens/login/login';
+import { Platform, Text, UIManager, useColorScheme } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProfileScreen from './app/screens/profile/profile';
@@ -12,9 +11,11 @@ import PlaylistScreen from './app/screens/playlist/playlist';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+
 // if (__DEV__) {
 //   require('./ReactotronConfig');
 // }
+
 SplashScreen.preventAutoHideAsync();
 const prefix = Linking.createURL('/');
 

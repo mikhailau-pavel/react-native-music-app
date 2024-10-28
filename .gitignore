@@ -10,9 +10,12 @@ npm-debug.*
 *.orig.*
 web-build/
 ios
+!modules/fizl-live-activity-sample/ios
 android
 app-example
 *.env
 # macOS
 .DS_Store
-
+*.swp
+!modules/live-activity-control/ios
+!modules/live-activity-control/android
