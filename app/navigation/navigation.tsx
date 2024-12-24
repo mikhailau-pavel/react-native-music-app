@@ -62,7 +62,8 @@ const HomeStackScreen = () => {
   return (
     <HomeStack.Navigator
       screenOptions={{
-        animation: 'simple_push'
+        animation: 'simple_push',
+        headerShown: false
       }}
     >
       {authData.isSignedIn ? (
@@ -104,7 +105,9 @@ const HomeStackScreen = () => {
 
 export const TopsStackScreen = () => {
   return (
-    <TopsStack.Navigator>
+    <TopsStack.Navigator screenOptions={{
+      headerShown: false
+    }}>
       <TopsStack.Screen
         name={TopsPropsRoutes.TOPS}
         component={TopsMainScreen}
@@ -116,7 +119,9 @@ export const TopsStackScreen = () => {
 
 export const ProfileStackScreen = () => {
   return (
-    <ProfileStack.Navigator>
+    <ProfileStack.Navigator screenOptions={{
+      headerShown: false
+    }}>
       <ProfileStack.Screen
         name={ProfilePropsRoutes.PROFILE}
         component={ProfileScreen}

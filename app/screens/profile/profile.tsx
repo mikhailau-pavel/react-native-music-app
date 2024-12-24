@@ -20,6 +20,7 @@ import { getStyles } from './styles';
 import { AllAsyncStorageKeys } from '@/utils/constants';
 import { startActivity, endActivity } from '@/modules/live-activity-control';
 import MessageQueue from 'react-native/Libraries/BatchedBridge/MessageQueue';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ProfileScreen = () => {
   const [profileData, setProfileData] = useState<ProfileScreenUserData>();
@@ -94,7 +95,7 @@ const ProfileScreen = () => {
   };
 
   return (
-    <View style={styles.profileContainer}>
+    <SafeAreaView style={styles.profileContainer}>
       <View style={styles.profileHeader}>
         <Image style={styles.profilePicture} source={{ uri: profileData?.imageUrl }} />
         <View style={styles.headerInfo}>
@@ -141,7 +142,7 @@ const ProfileScreen = () => {
         <Button title={'Stop activity'} onPress={handleStopActivityPress} />
         <QueueScreen />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

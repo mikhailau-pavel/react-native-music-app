@@ -1,11 +1,11 @@
 import { NotFoundScreenProps } from '@/types/types';
-import { Text, View } from 'react-native';
+import { SafeAreaView, Text } from 'react-native';
 
 const NotFoundScreen = ({ route, navigation }: NotFoundScreenProps) => {
   return (
-    <View>
+    <SafeAreaView>
       <Text>404 Not Found</Text>
-    </View>
+    </SafeAreaView>
   );
 };
 

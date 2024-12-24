@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '@react-navigation/native';
 import { getStyles } from './styles';
 import { TrackItem } from './trackItem';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   const { playbackData, setPlaybackData } = useContext(PlaybackContext);
@@ -160,7 +161,8 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
   };
 
   return (
-    <KeyboardAvoidingView
+    <SafeAreaView>
+      <KeyboardAvoidingView
       //"behavior" on ios?
       style={styles.container}
     >
@@ -182,6 +184,8 @@ const PlaylistScreen = ({ route, navigation }: PlaylistScreenProps) => {
         ListHeaderComponent={renderHeader}
       />
     </KeyboardAvoidingView>
+    </SafeAreaView>
+    
   );
 };
 

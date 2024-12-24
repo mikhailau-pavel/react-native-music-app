@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { FlatList, View, ImageBackground } from 'react-native';
+import { FlatList, ImageBackground } from 'react-native';
 import { fetchCurrentUserPlaylists } from '@/api/api';
 import { AsyncStorageKeys, storage } from '@/scripts/asyncStorage';
 import { CurrentUserPlaylist, HomeScreenProps } from '@/types/types';
@@ -9,6 +9,7 @@ import { useTheme } from '@react-navigation/native';
 import { getStyles } from './styles';
 import { playlistsMockList } from '@/utils/constants';
 import { PlaylistItem } from './playlistItem';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string>('');
@@ -69,7 +70,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
   }, [createPlaylistsList, isLogined, route]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ImageBackground
         source={require('../../../assets/images/main_background.png')}
         resizeMode="cover"
@@ -97,7 +98,7 @@ const HomeScreen = ({ route, navigation }: HomeScreenProps) => {
           contentContainerStyle={{ padding: 8 }}
         />
       </ImageBackground>
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -2,7 +2,7 @@ import { fetchUserTops } from '@/api/api';
 import { TopsChartType, TopsListItem, TopsPeriod, TopsResponseDataItem } from '@/types/types';
 import { useTheme } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { Text, View, Image } from 'react-native';
+import { Text, View, Image, SafeAreaView } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { getStyles } from './styles';
 import { TopsFooter } from './topsFooter';
@@ -47,7 +47,7 @@ const TopsMainScreen = () => {
   }, [type, period]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Animated.FlatList
         data={topsData}
         renderItem={ItemOfTop}
@@ -62,7 +62,7 @@ const TopsMainScreen = () => {
         }
         ListFooterComponent={type === 'tracks' ? <TopsFooter period={period} /> : null}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

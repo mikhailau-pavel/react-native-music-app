@@ -1,6 +1,6 @@
 import { createLoginUrl, parseResponseCode, requestAccessToken } from '@/scripts/authentication';
 import { useContext, useEffect, useState } from 'react';
-import { Platform, View } from 'react-native';
+import { Platform, SafeAreaView, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useQuery } from '@tanstack/react-query';
 import { WebView } from 'react-native-webview';
@@ -45,7 +45,7 @@ const LoginScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       {loginUrl ? (
         <WebView
           style={{ flex: 1 }}
@@ -56,7 +56,7 @@ const LoginScreen = () => {
           originWhitelist={['*']}
         />
       ) : null}
-    </View>
+    </SafeAreaView>
   );
 };
 

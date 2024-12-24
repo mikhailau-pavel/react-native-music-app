@@ -16,6 +16,7 @@ import { useTheme } from '@react-navigation/native';
 import { getTrackInfo } from '@/api/tracks';
 import { getStyles } from './styles';
 import React from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
   const active = useSharedValue(false);
@@ -135,129 +136,132 @@ const PlayerScreen = ({ navigation }: PlayerScreenProps) => {
 
   return (
     <GestureDetector gesture={pan}>
-      <Animated.View style={[styles.background, animatedStyles]}>
-        <View style={styles.trackCoverContainer}>
-          {playbackData.currentPlaylistData && (
-            <>
-              <Text style={styles.trackTitle}>
-                {
-                  playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist || 0]
-                    .artist
-                }
-              </Text>
-              <Image
-                style={styles.trackCover}
-                source={{
-                  height: 300,
-                  width: 300,
-                  uri: playbackData.currentPlaylistData[
-                    playbackData.currentTrackNumberInPlaylist || 0
-                  ].imageURL,
-                }}
-              />
-              <TouchableOpacity onPress={handleSongTitlePress}>
+      <SafeAreaView>
+        <Animated.View style={[styles.background, animatedStyles]}>
+          <View style={styles.trackCoverContainer}>
+            {playbackData.currentPlaylistData && (
+              <>
                 <Text style={styles.trackTitle}>
                   {
                     playbackData.currentPlaylistData[playbackData.currentTrackNumberInPlaylist || 0]
-                      .title
+                      .artist
                   }
                 </Text>
-              </TouchableOpacity>
-            </>
-          )}
-          {!expanded ? (
-            <View style={styles.trackInfoControlContainer}>
-              <TouchableOpacity>
                 <Image
-                  style={styles.controlButton}
-                  source={require('../../../assets/icons/favButton.png')}
-                ></Image>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleLoopButtonPress}>
-                {isLooping ? (
+                  style={styles.trackCover}
+                  source={{
+                    height: 300,
+                    width: 300,
+                    uri: playbackData.currentPlaylistData[
+                      playbackData.currentTrackNumberInPlaylist || 0
+                    ].imageURL,
+                  }}
+                />
+                <TouchableOpacity onPress={handleSongTitlePress}>
+                  <Text style={styles.trackTitle}>
+                    {
+                      playbackData.currentPlaylistData[
+                        playbackData.currentTrackNumberInPlaylist || 0
+                      ].title
+                    }
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
+            {!expanded ? (
+              <View style={styles.trackInfoControlContainer}>
+                <TouchableOpacity>
                   <Image
                     style={styles.controlButton}
-                    source={require('../../../assets/icons/loopingButton.png')}
+                    source={require('../../../assets/icons/favButton.png')}
                   ></Image>
-                ) : (
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleLoopButtonPress}>
+                  {isLooping ? (
+                    <Image
+                      style={styles.controlButton}
+                      source={require('../../../assets/icons/loopingButton.png')}
+                    ></Image>
+                  ) : (
+                    <Image
+                      style={styles.controlButton}
+                      source={require('../../../assets/icons/loopButton.png')}
+                    ></Image>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleMuteButtonPress}>
+                  {isMuted ? (
+                    <Image
+                      style={styles.controlButton}
+                      source={require('../../../assets/icons/mutedButton.png')}
+                    ></Image>
+                  ) : (
+                    <Image
+                      style={styles.controlButton}
+                      source={require('../../../assets/icons/muteButton.png')}
+                    ></Image>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleInfoButtonPress}>
                   <Image
                     style={styles.controlButton}
-                    source={require('../../../assets/icons/loopButton.png')}
+                    source={require('../../../assets/icons/closeButton.png')}
                   ></Image>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleMuteButtonPress}>
-                {isMuted ? (
-                  <Image
-                    style={styles.controlButton}
-                    source={require('../../../assets/icons/mutedButton.png')}
-                  ></Image>
-                ) : (
-                  <Image
-                    style={styles.controlButton}
-                    source={require('../../../assets/icons/muteButton.png')}
-                  ></Image>
-                )}
-              </TouchableOpacity>
+                </TouchableOpacity>
+              </View>
+            ) : (
               <TouchableOpacity onPress={handleInfoButtonPress}>
                 <Image
                   style={styles.controlButton}
-                  source={require('../../../assets/icons/closeButton.png')}
+                  source={require('../../../assets/icons/infoButton.png')}
                 ></Image>
               </TouchableOpacity>
-            </View>
-          ) : (
-            <TouchableOpacity onPress={handleInfoButtonPress}>
-              <Image
-                style={styles.controlButton}
-                source={require('../../../assets/icons/infoButton.png')}
-              ></Image>
-            </TouchableOpacity>
-          )}
-          <ProgressBar />
-        </View>
-        <View style={styles.trackControlContainer}>
-          {!(playbackData.currentTrackNumberInPlaylist === 0) ? (
-            <TouchableOpacity onPress={() => handleNextTrackButtonPress('previous')}>
-              <Image
-                style={[styles.controlButton]}
-                source={require('../../../assets/icons/prevTrackButton.png')}
-              ></Image>
-            </TouchableOpacity>
-          ) : (
-            <Image
-              style={[styles.controlButton, { opacity: 0.3 }]}
-              source={require('../../../assets/icons/prevTrackButton.png')}
-            ></Image>
-          )}
-          <TouchableOpacity onPress={handlePlayButtonPress}>
-            {!playbackData.isPlaying ? (
-              <Image
-                style={styles.controlButton}
-                source={require('../../../assets/icons/playButton.png')}
-              ></Image>
+            )}
+            <ProgressBar />
+          </View>
+          <View style={styles.trackControlContainer}>
+            {!(playbackData.currentTrackNumberInPlaylist === 0) ? (
+              <TouchableOpacity onPress={() => handleNextTrackButtonPress('previous')}>
+                <Image
+                  style={[styles.controlButton]}
+                  source={require('../../../assets/icons/prevTrackButton.png')}
+                ></Image>
+              </TouchableOpacity>
             ) : (
               <Image
-                style={styles.controlButton}
-                source={require('../../../assets/icons/pauseTrackButton.png')}
+                style={[styles.controlButton, { opacity: 0.3 }]}
+                source={require('../../../assets/icons/prevTrackButton.png')}
               ></Image>
             )}
-          </TouchableOpacity>
-          {!(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist) ? (
-            <TouchableOpacity onPress={() => handleNextTrackButtonPress('next')}>
+            <TouchableOpacity onPress={handlePlayButtonPress}>
+              {!playbackData.isPlaying ? (
+                <Image
+                  style={styles.controlButton}
+                  source={require('../../../assets/icons/playButton.png')}
+                ></Image>
+              ) : (
+                <Image
+                  style={styles.controlButton}
+                  source={require('../../../assets/icons/pauseTrackButton.png')}
+                ></Image>
+              )}
+            </TouchableOpacity>
+            {!(playbackData.currentTrackNumberInPlaylist === amountOfTracksInPlaylist) ? (
+              <TouchableOpacity onPress={() => handleNextTrackButtonPress('next')}>
+                <Image
+                  style={styles.controlButton}
+                  source={require('../../../assets/icons/nextTrackButton.png')}
+                ></Image>
+              </TouchableOpacity>
+            ) : (
               <Image
-                style={styles.controlButton}
+                style={[styles.controlButton, { opacity: 0.3 }]}
                 source={require('../../../assets/icons/nextTrackButton.png')}
               ></Image>
-            </TouchableOpacity>
-          ) : (
-            <Image
-              style={[styles.controlButton, { opacity: 0.3 }]}
-              source={require('../../../assets/icons/nextTrackButton.png')}
-            ></Image>
-          )}
-        </View>
-      </Animated.View>
+            )}
+          </View>
+        </Animated.View>
+      </SafeAreaView>
     </GestureDetector>
   );
 };
