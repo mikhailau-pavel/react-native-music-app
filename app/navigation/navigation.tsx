@@ -60,7 +60,11 @@ export const linking = {
 const HomeStackScreen = () => {
   const { authData } = useContext(AuthContext);
   return (
-    <HomeStack.Navigator>
+    <HomeStack.Navigator
+      screenOptions={{
+        animation: 'simple_push'
+      }}
+    >
       {authData.isSignedIn ? (
         <>
           <HomeStack.Screen
