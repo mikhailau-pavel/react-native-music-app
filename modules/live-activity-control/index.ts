@@ -49,7 +49,6 @@ function startActivityInner(
  * @param options Options for the activity.
  */
 export function endActivity(options: EndActivityOptions): void {
-  console.log('end activity called');
   endActivityInner(options.title, options.headline, options.widgetUrl);
 }
 

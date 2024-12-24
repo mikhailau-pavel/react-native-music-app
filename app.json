@@ -15,7 +15,9 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.dialer.reactnativemusicapp",
-      "infoPlist": { "NSSupportsLiveActivities": true }
+      "infoPlist": {
+        "NSSupportsLiveActivities": true
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -60,7 +62,8 @@
             "deploymentTarget": "16.2"
           }
         }
-      ]
+      ],
+      "expo-asset"
     ]
   }
 }

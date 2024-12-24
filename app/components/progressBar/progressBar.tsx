@@ -2,7 +2,7 @@ import usePlayPosition from '@/hooks/usePlayPosition';
 import { useTrackChange } from '@/hooks/useTrackChange';
 import { PlaybackContext } from '@/app/context/playbackContext';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import {
   cancelAnimation,

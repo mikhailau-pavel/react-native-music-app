@@ -9,6 +9,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+build/
 ios
 !modules/fizl-live-activity-sample/ios
 android
